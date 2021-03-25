@@ -33,4 +33,4 @@ Down below there is the diagram of our ER model.
 (<i>obs: the diagram was made with the program *DOT*, from 
 [GRAPHVIZ](https://graphviz.org/)</i>)
 
-<img style="text-align:center;" src="er.png" > Problems to load the image </img>
+<img style="text-align:center;" src="er.png" > 
