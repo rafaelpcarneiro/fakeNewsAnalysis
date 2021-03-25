@@ -1,4 +1,4 @@
-# Creating a Relational Database who will serve me as a platform to study how Fake News spread throughout social media.
+# Creating a Relational Database who will provide me a platform to study how Fake News spread throughout social media.
 
 The social media used for my analysis is *Twitter*. This choise is based on the 
 following facts:
@@ -28,8 +28,8 @@ on tweets whose content might have one of the following keywords:
 5. *early-treatment*
 6. *azithromycin*
 
-### The Entity-Relationship model of our database
-Down below there is the diagram of our ER model. 
+### The Entity-Relationship model of my database
+Down below there is the diagram of my ER model. 
 (<i>obs: the diagram was made with the program *DOT*, from 
 [GRAPHVIZ](https://graphviz.org/)</i>)
 
