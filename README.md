@@ -1,4 +1,4 @@
-# Creating a Relational Database who will serve for me as a platform to study how Fake News spread throughout social media.
+# Creating a Relational Database who will serve me as a platform to study how Fake News spread throughout social media.
 
 The social media used for my analysis is *Twitter*. This choise is based on the 
 following facts:
@@ -7,13 +7,14 @@ following facts:
     2. *500 million tweets per day* (Last updated: 10/10/2020)
     
 + It allows anybody to study the information being produced at the platform. And,
-By information I mean all the content produced such as messages, pictures, video, audio or, 
+By information I mean all the content produced, such as messages, pictures, video, audio or, 
 more abstractly, graphs representing the connections between the users and their interactions. 
 
 ## The  Database
 All data gathered will be stored at a *relational database* called
 [SQLite](https://www.sqlite.org/index.html). 
-In fact, we will use SQLite with *python3* using the following 
+In fact, I will use SQLite with *python3*. 
+Thihs is done using the following 
 library [sqlite3](https://docs.python.org/3/library/sqlite3.html).
 
 ### The metodology of collection of data
@@ -29,6 +30,6 @@ on tweets whose content might have one of the following keywords:
 
 ### The Entity-Relationship model of our database
 Down below there is the diagram of our ER model. 
-(/obs: the diagram was made with the program *DOT*, from 
-[GRAPHVIZ](https://graphviz.org/)/)
+(<i>obs: the diagram was made with the program *DOT*, from 
+[GRAPHVIZ](https://graphviz.org/)</i>)
 <img style="text-align:center;" src="er.png" > Problems to load the image </img>
