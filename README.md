@@ -17,7 +17,7 @@ In fact, I will use SQLite with *python3*.
 Thihs is done using the following 
 library [sqlite3](https://docs.python.org/3/library/sqlite3.html).
 
-### The metodology of collection of data
+### The metodology behind the collection of data
 The info gathered will be based on daily searches
 ranging from 7PM to 10PM (at the brazilian time) and will be based
 on tweets whose content might have one of the following keywords:
