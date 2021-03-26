@@ -23,10 +23,11 @@ ranging from 7PM to 10PM (at the brazilian time) and will be based
 on tweets whose content might have one of the following keywords:
 1. *Vaccine*;
 2. *chloroquine*
-3. *Covid*
+3. *Covid* or *corona* or *Covid-19*;
 4. *kit-covid* 
 5. *early-treatment*
 6. *azithromycin*
+7. *lockdown*
 
 ### The Entity-Relationship model of my database
 Down below there is the diagram of my ER model. 
