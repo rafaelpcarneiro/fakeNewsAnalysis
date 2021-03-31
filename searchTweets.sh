@@ -18,15 +18,32 @@
 #		   6. azithromycin;
 #		   7. lockdown.
 #
-#		 It is important to notice that a simple tweet enfolds a large set of
-#		 structures, such as: the owner of the tweet, how many people reacted 
-#		 to the message as well who, the images or urls at the text, and so
-#		 on...
+#		     It is important to notice that a simple tweet enfolds a large set 
+#		 of elements, such as: the owner of the tweet, how many people 
+#		 reacted to the message as well who, the images or urls at the text,
+# 		 and so on...
 #
-#		 Here we will be interested only at the following elements of a tweet:
+#		     Here we will be interested only at the following elements of a
+#		  tweet:
 # 		  => The tweet ID;
 #		  => The ID of the owner who wrote it;
+#		  => The text of the tweet;
 #         => A list up to 100 elements that have LIKED the tweet;
 #		  => A list up to 100 elements that have RT the tweet;
 
-myQuery=
+myQuery="vacina OR \
+		 cloroquina OR \
+		 covid OR corona OR covid-19 \
+		 \"tratamento antecipado\" OR \"tratamento precoce\" \
+		 azitromicina OR \
+		 lockdown"
+
+startSearch=2021-01-01
+endSearch=2021-03-31
+
+while [ "$startSearch" != "$endSearch" ]; do
+
+	echo $startSearch
+	startSearch=`date -I -d "$startSearch + 1 day"` 
+	sleep 1
+done	
