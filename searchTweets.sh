@@ -31,12 +31,19 @@
 #         => A list up to 100 elements that have LIKED the tweet;
 #		  => A list up to 100 elements that have RT the tweet;
 
-myQuery="vacina OR \
-		 cloroquina OR \
-		 covid OR corona OR covid-19 \
-		 \"tratamento antecipado\" OR \"tratamento precoce\" \
-		 azitromicina OR \
-		 lockdown"
+#myQuery="vacina OR \
+#		 cloroquina OR \
+#		 covid OR corona OR covid-19 \
+#		 \"tratamento antecipado\" OR \"tratamento precoce\" \
+#		 azitromicina OR \
+#		 lockdown"
+
+myQuery="(vacina%20OR%20\
+cloroquina%20OR%20\
+covid%20OR%20%20corona%20OR%20%20covid-19\
+\"tratamento%20antecipado\"%20OR%20%20\"tratamento%20precoce\"\
+azitromicina%20OR%20\
+lockdown)%20lang%3Apt"
 
 startSearch=2021-01-01
 endSearch=2021-03-31
@@ -46,13 +53,39 @@ echo $dayToSearch
 
 while [ "$dayToSearch" != "$endSearch" ]; do
 
-	timeToStartSearch="$dayToSearch"T:22:00:00Z
+	######################### TIME VARIABLES #############################
+	timeToStartSearch="$dayToSearch""T22:00:00Z"
 
 	timeToEndSearch=`date -I -d "$dayToSearch + 1 day"` 
-	timeToEndSearch="$timeToEndSearch"T:01:00:00Z
+	timeToEndSearch="$timeToEndSearch""T01:00:00Z"
+
+	timeToLook="start_time="$timeToStartSearch"&end_time="$timeToEndSearch
+	######################################################################
+
+	######################### TWITTER API ################################
+	twitterLink="https://api.twitter.com/2/tweets/search/all?"
+	######################################################################
+
+
+	######################## TWEET FIELDS ################################
+	tweetFields="author_id,id,text,lang,public_metrics,geo"	
+	######################################################################
+
+	######################## MAX TWEETS SEARCHED #########################
+	maxResults="&max_results=10"	
+	######################################################################
+
+	twitterAPI=$twitterLink$timeToLook"&query="$myQuery
+	twitterAPI+="&tweet.fields="$tweetFields$maxResults
+
+
+	curl -X GET -H "Authorization: Bearer $bearer_token" "$twitterAPI" >> "$dayToSearch"".txt"
+	break
 
 	echo $dayToSearch
-	echo "Interval to look at: ["$timeToStartSearch", "$timeToEndSearch" ]"
+	echo "Interval to look at: [$timeToStartSearch, $timeToEndSearch ]"
 	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
 	sleep 1
 done	
+
+#curl -X GET -H "Authorization: Bearer $bearer_token" "https://api.twitter.com/2/tweets/2/tweets/1374909220584370178?tweet.fields=author_id,text,lang,referenced_tweets" >> tweets.json
