@@ -41,9 +41,18 @@ myQuery="vacina OR \
 startSearch=2021-01-01
 endSearch=2021-03-31
 
-while [ "$startSearch" != "$endSearch" ]; do
+dayToSearch=$startSearch
+echo $dayToSearch
 
-	echo $startSearch
-	startSearch=`date -I -d "$startSearch + 1 day"` 
+while [ "$dayToSearch" != "$endSearch" ]; do
+
+	timeToStartSearch="$dayToSearch"T:22:00:00Z
+
+	timeToEndSearch=`date -I -d "$dayToSearch + 1 day"` 
+	timeToEndSearch="$timeToEndSearch"T:01:00:00Z
+
+	echo $dayToSearch
+	echo "Interval to look at: ["$timeToStartSearch", "$timeToEndSearch" ]"
+	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
 	sleep 1
 done	
