@@ -241,7 +241,7 @@ do
 
 
 	######################## MAX TWEETS SEARCHED #########################
-	maxResults="&max_results=10"	
+	maxResults="&max_results=100"	
 
 
 	#the whole url to make the request
