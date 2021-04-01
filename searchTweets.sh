@@ -31,20 +31,34 @@
 #		  => The text of the tweet;
 #         => A list up to 100 elements that have LIKED the tweet;
 #		  => A list up to 100 elements that have RT the tweet;
+#
+#
+#
+# Exit numbers returned by the program:
+# -------------------------------------
+#  0 = everything went ok
+#  1 = user has stopped the script after finishing one day of search
+#  2 = the program has stopped for network connection issues with Curl
 
 
 ########################## AUXILIARY FUNCTIONS ##########################
 checkRateLimit () {
 	if test $callTwitter -eq 300
-		waitingBar=""
 		then 
-			echo "Wait 15min to erase the Rate Limit counter of Twitter"
+			waitingBar=""
 			counter=0
 			while test $counter -le 14
 			do
+				clear
+				echo "Wait 15min to erase the Rate Limit counter of Twitter"
+				echo ""
+				echo ""
 				sleep 1m
-				waitingBar+="#"
-				echo $waitingBar
+				waitingBar+="###"
+				echo "Timer:"
+				echo "$waitingBar"
+				echo "|-------------------------------------------| t=$counter"
+				echo "0                   7min                    15min"
 				counter=$((counter+1))
 			done
 	fi
@@ -58,6 +72,7 @@ searchThroughoutPagination() {
 
 	if test -z "$1"
 	then
+		clear
 		echo ""
 		echo "Searching at day $2 is now complete!"
 		echo "------------------------------------------------"
@@ -67,11 +82,22 @@ searchThroughoutPagination() {
 		echo "    Amount of Tweets Found = $amountOfTweetsFound"
 		echo ""
 		echo ""
+		echo ""
+		echo ""
+		echo ""
+		checkAnswer=0
+		echo "Would you like to stop the script here? [y/n]"
+		echo "(Obs: You have 30s to answer. In case nothing is said,"
+		echo "the programme will carry on)"
+		read -t 30 checkAnswer
+		test "$checkAnswer" = "y" && exit 1
+		
 	else
 		### Printing usefull info
 		barOfProgress=$((pagination%8))
+		clear
 		echo ""
-		echo "Search at day $3 is being performed!"
+		echo "Search at day $2 is being performed!"
 		echo "------------------------------------------------"
 		echo ""
 		echo "Statistics:"
@@ -114,9 +140,26 @@ searchThroughoutPagination() {
 
 		saveAtThisFile="$2""_pagination""$pagination"".txt"
 
+		# call function checkRateLimit
 		checkRateLimit 
 		curl -X GET -H "$authentication" "$url" >> "$saveAtThisFile"
 
+		# check if everything went fine with curl
+		curlProblem=$?
+		if test $curlProblem -ne 0
+		then	
+			curlAtempts=1
+			while test $curlAtempts -le 5
+			do
+				curl -X GET -H "$authentication" "$twitterAPI" >> "$saveAtThisFile"
+				curlProblem=$?
+				test $curlProblem -eq 0 && break
+				$((curlAtempts+1))
+			done
+			test $curlProblem -ne 0 && exit 2
+		fi
+
+		# sum one more valid connection with Twitter
 		callTwitter=$((callTwitter+1))
 		sleep 1
 
@@ -199,6 +242,21 @@ do
 	authentication="Authorization: Bearer $bearer_token"
 	curl -X GET -H "$authentication" "$twitterAPI" >> "$saveAtThisFile"
 
+	# check if everything went fine with curl
+	curlProblem=$?
+	if test $curlProblem -ne 0
+	then	
+		curlAtempts=1
+		while test $curlAtempts -le 5
+		do
+			curl -X GET -H "$authentication" "$twitterAPI" >> "$saveAtThisFile"
+			curlProblem=$?
+			test $curlProblem -eq 0 && break
+			$((curlAtempts+1))
+		done
+		test $curlProblem -ne 0 && exit 2
+	fi
+
 	# Variable below will count how many times we have called of the program
 	# curl. Reaching 300 we have to wait a while to reset this variable
 	callTwitter=1
@@ -216,6 +274,8 @@ do
 
 
 	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
+	# Let's test the first day
+	break 
 done	
 #cat 2021-01-01.txt |grep -o -E "\"next_token\":\".*\""
 
