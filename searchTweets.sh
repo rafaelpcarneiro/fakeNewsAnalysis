@@ -133,30 +133,34 @@ searchThroughoutPagination() {
 		esac
 
 		### Now seacrh again	
-		next_token=`echo $1 |grep -o -E "\"next_token\":\".*\""|cut -c14-`
+		#next_token=`echo $1 |grep -o -E "\"next_token\":\".*\""|cut -c14-\
+		#grep -o -E "[^\"].*[^\"]"`
+		next_token=`echo $1 |cut -c14-| grep -o -E "[^\"].*[^\"]"`
 		pagination=$((pagination+1))
 
-		url=$3"&next_token="$next_token
+		url=$twitterAPI"&next_token="$next_token
 
 		saveAtThisFile="$2""_pagination""$pagination"".txt"
 
 		# call function checkRateLimit
 		checkRateLimit 
-		curl -X GET -H "$authentication" "$url" >> "$saveAtThisFile"
+		curl -s -X GET -H "$authentication" "$url" > "$saveAtThisFile"
 
 		# check if everything went fine with curl
 		curlProblem=$?
 		if test $curlProblem -ne 0
 		then	
+			echo "Problems with curl"
 			curlAtempts=1
 			while test $curlAtempts -le 5
 			do
-				curl -X GET -H "$authentication" "$twitterAPI" >> "$saveAtThisFile"
+				curl -s -X GET -H "$authentication" "$url" > "$saveAtThisFile"
 				curlProblem=$?
-				test $curlProblem -eq 0 && break
+				test $curlProblem -eq 0 && curlAtempts=5
 				$((curlAtempts+1))
 			done
 			test $curlProblem -ne 0 && exit 2
+			echo "Problem with curl solved"
 		fi
 
 		# sum one more valid connection with Twitter
@@ -202,7 +206,16 @@ startSearch=2021-01-01
 endSearch=2021-03-31
 
 dayToSearch=$startSearch
-echo $dayToSearch
+
+clear
+echo "Script made by Rafael"
+echo "Shall the search begin \m/"
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+sleep 5
 
 while test "$dayToSearch" != "$endSearch" 
 do
@@ -235,26 +248,27 @@ do
 	twitterAPI=$twitterLink$timeToLook"&query="$myQuery
 	twitterAPI+="&tweet.fields="$tweetFields$maxResults
 
-	echo "$twitterAPI"
 	######################################################################
 
 	saveAtThisFile="$dayToSearch""_pagination""$pagination"".txt"
 	authentication="Authorization: Bearer $bearer_token"
-	curl -X GET -H "$authentication" "$twitterAPI" >> "$saveAtThisFile"
+	curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
 
 	# check if everything went fine with curl
 	curlProblem=$?
 	if test $curlProblem -ne 0
 	then	
 		curlAtempts=1
+		echo "Problems with curl"
 		while test $curlAtempts -le 5
 		do
-			curl -X GET -H "$authentication" "$twitterAPI" >> "$saveAtThisFile"
+			curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
 			curlProblem=$?
 			test $curlProblem -eq 0 && break
 			$((curlAtempts+1))
 		done
 		test $curlProblem -ne 0 && exit 2
+		echo "Problem with curl solved"
 	fi
 
 	# Variable below will count how many times we have called of the program
@@ -262,7 +276,9 @@ do
 	callTwitter=1
 
 	# Wait one second before next search
-	sleep 1
+	clear
+	echo "We have started searching at day: $dayToSearch"
+	sleep 10
 
 	#curl -X GET -H "Authorization: Bearer $bearer_token" "$twitterAPI" >>\
 	#"$dayToSearch""pagination""$pagination"".txt"
