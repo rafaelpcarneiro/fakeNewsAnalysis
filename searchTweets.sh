@@ -44,23 +44,28 @@
 ########################## AUXILIARY FUNCTIONS ##########################
 checkRateLimit () {
 	if test $callTwitter -eq 300
-		then 
-			waitingBar=""
-			counter=0
-			while test $counter -le 14
-			do
-				clear
-				echo "Wait 15min to erase the Rate Limit counter of Twitter"
-				echo ""
-				echo ""
-				sleep 1m
-				waitingBar+="###"
-				echo "Timer:"
-				echo "$waitingBar"
-				echo "|-------------------------------------------| t=$counter"
-				echo "0                   7min                    15min"
-				counter=$((counter+1))
-			done
+	then 
+		waitingBar="###"
+		counter=0
+		clear
+		echo "Wait 15min to erase the Rate Limit counter of Twitter"
+		sleep 1m
+		clear
+		while test $counter -le 13
+		do
+			echo "Wait 15min to erase the Rate Limit counter of Twitter"
+			echo ""
+			echo ""
+			echo "Timer:"
+			echo "$waitingBar"
+			echo "|-------------------------------------------| t=$counter"
+			echo "0                   7min                    15min"
+			sleep 1m
+			clear
+			counter=$((counter+1))
+			waitingBar+="###"
+		done
+		callTwitter=0
 	fi
 }
 
