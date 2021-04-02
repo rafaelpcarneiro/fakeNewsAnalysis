@@ -259,8 +259,6 @@ do
 	authentication="Authorization: Bearer $bearer_token"
 	curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
 
-	### TEST ### TEST ### TEST ### TEST BREAK
-	break
 	# check if everything went fine with curl
 	curlProblem=$?
 	if test $curlProblem -ne 0
