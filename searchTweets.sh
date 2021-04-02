@@ -88,14 +88,17 @@ searchThroughoutPagination() {
 		echo ""
 		echo ""
 		checkAnswer=0
-		echo "Would you like to stop the script here? [y/n]"
-		echo "(Obs: You have 30s to answer. In case nothing is said,"
+		echo "Would you like to stop the script here? Press [y] If you want to"
+		echo "to stop it"
+		echo "(Obs: You have 30s to answer. In case nothing is done,"
 		echo "the programme will carry on)"
 		read -t 30 checkAnswer
 		if test "$checkAnswer" = "y"
 		then
 			echo "Ending the search! Bye bye =)"
 			exit 1
+		else
+			echo "Great, lets continue...."
 		fi
 
 		
@@ -212,7 +215,7 @@ myQuery="${myQuery//:/%3A}"
 #azitromicina%20OR%20\
 #lockdown)%20lang%3Apt"
 
-startSearch=2021-01-03
+startSearch=2021-01-07
 endSearch=2021-03-31
 
 dayToSearch=$startSearch
@@ -289,7 +292,8 @@ do
 
 	# Wait one second before next search
 	clear
-	echo "We have started searching at day: $dayToSearch"
+	echo "Searching for tweets from the day: $dayToSearch"
+	echo "Time: 19:30 - 21:30 (UTC -3)"
 	sleep 10
 
 	#curl -X GET -H "Authorization: Bearer $bearer_token" "$twitterAPI" >>\
@@ -302,8 +306,6 @@ do
 
 
 	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
-	# Let's test the first day
-	break 
 done	
 #cat 2021-01-01.txt |grep -o -E "\"next_token\":\".*\""
 
