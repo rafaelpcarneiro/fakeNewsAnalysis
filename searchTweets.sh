@@ -70,7 +70,7 @@ searchThroughoutPagination() {
 	#		$2 = dayToSearch
 	#		$3 = twitterAPI
 
-	if test -z "$1"
+	if test "$1" = "empty_next_token"
 	then
 		mkdir "$2"
 		mv $2*txt $2
@@ -92,7 +92,11 @@ searchThroughoutPagination() {
 		echo "(Obs: You have 30s to answer. In case nothing is said,"
 		echo "the programme will carry on)"
 		read -t 30 checkAnswer
-		test "$checkAnswer" = "y" && exit 1
+		if test "$checkAnswer" = "y"
+		then
+			echo "Ending the search! Bye bye =)"
+			exit 1
+		fi
 
 		
 	else
@@ -176,9 +180,12 @@ searchThroughoutPagination() {
 		amountOfTweetsFound=`cat $saveAtThisFile|grep -o -E "\"id\":"|wc -l`
 		amountOfTweetsFound=$((amountOfTweetsFound+temp))
 
-		searchThroughoutPagination $next_token\
-		 						   $2\
-								   $twitterAPI
+		if test -z "$next_token"
+		then 
+			searchThroughoutPagination "empty_next_token" $2 $twitterAPI
+		else
+			searchThroughoutPagination $next_token $2 $twitterAPI
+		fi
 	fi
 }
 
@@ -205,7 +212,7 @@ myQuery="${myQuery//:/%3A}"
 #azitromicina%20OR%20\
 #lockdown)%20lang%3Apt"
 
-startSearch=2021-01-01
+startSearch=2021-01-03
 endSearch=2021-03-31
 
 dayToSearch=$startSearch
