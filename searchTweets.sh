@@ -220,7 +220,7 @@ myQuery="${myQuery//:/%3A}"
 #azitromicina%20OR%20\
 #lockdown)%20lang%3Apt"
 
-startSearch=2021-01-07
+startSearch=2021-01-08
 endSearch=2021-03-31
 
 dayToSearch=$startSearch
@@ -235,6 +235,7 @@ echo ""
 echo ""
 sleep 5
 
+callTwitter=1
 while test "$dayToSearch" != "$endSearch" 
 do
 	pagination=0
@@ -272,6 +273,8 @@ do
 
 	saveAtThisFile="$dayToSearch""_pagination""$pagination"".txt"
 	authentication="Authorization: Bearer $bearer_token"
+
+	checkRateLimit 
 	curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
 
 	# check if everything went fine with curl
@@ -293,7 +296,7 @@ do
 
 	# Variable below will count how many times we have called of the program
 	# curl. Reaching 300 we have to wait a while to reset this variable
-	callTwitter=1
+	#callTwitter=1
 
 	# Wait one second before next search
 	clear
