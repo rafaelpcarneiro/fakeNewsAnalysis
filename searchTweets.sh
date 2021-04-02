@@ -8,8 +8,8 @@
 # Brief Description
 #       |
 #        `-> This sript	is given the task of searching tweets satisfying the
-#        constraint of having been created between 22:00PM and 01:00 AM at the
-#        UTC time (which is equivalent to the interval time 19:00PM - 22:00PM,
+#        constraint of having been created between 22:30PM and 00:30 AM at the
+#        UTC time (which is equivalent to the interval time 19:30PM - 21:30PM,
 #        brazilian time) AND  one of the following keywords:
 #		   1. Vaccine; 
 #		   2. chloroquine;
@@ -72,6 +72,8 @@ searchThroughoutPagination() {
 
 	if test -z "$1"
 	then
+		mkdir "$2"
+		mv $2*txt $2
 		clear
 		echo ""
 		echo "Searching at day $2 is now complete!"
@@ -91,6 +93,7 @@ searchThroughoutPagination() {
 		echo "the programme will carry on)"
 		read -t 30 checkAnswer
 		test "$checkAnswer" = "y" && exit 1
+
 		
 	else
 		### Printing usefull info
@@ -221,13 +224,15 @@ while test "$dayToSearch" != "$endSearch"
 do
 	pagination=0
     ############### Writing the url to make the requests #################
-	----------------------------------------------------------------------
+	#---------------------------------------------------------------------
 
 	######################### TIME VARIABLES #############################
-	timeToStartSearch="$dayToSearch""T22:00:00Z"
+    # Time: 19:30 in Brazil (UTC -3)
+	timeToStartSearch="$dayToSearch""T22:30:00Z"
 
+    # Time: 21:30 in Brazil (UTC -3)
 	timeToEndSearch=`date -I -d "$dayToSearch + 1 day"` 
-	timeToEndSearch="$timeToEndSearch""T01:00:00Z"
+	timeToEndSearch="$timeToEndSearch""T00:30:00Z"
 
 	timeToLook="start_time="$timeToStartSearch"&end_time="$timeToEndSearch
 
@@ -254,6 +259,8 @@ do
 	authentication="Authorization: Bearer $bearer_token"
 	curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
 
+	### TEST ### TEST ### TEST ### TEST BREAK
+	break
 	# check if everything went fine with curl
 	curlProblem=$?
 	if test $curlProblem -ne 0
