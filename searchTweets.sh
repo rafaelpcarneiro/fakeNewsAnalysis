@@ -368,6 +368,5 @@ do
 	amountOfTweetsFound=`cat $saveAtThisFile|grep -o -E "\"id\":"|wc -l`
 	searchThroughoutPagination $next_token $dayToSearch $twitterAPI
 
-
 	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
 done	
