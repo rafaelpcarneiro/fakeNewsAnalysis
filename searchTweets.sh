@@ -50,8 +50,8 @@ startSearch=2021-03-25
 endSearch=2021-03-26
 #
 # => Time: HH:MM:SS (UTC) 
-t0="20:00:00"
-deltaH=7
+t0="21:00:00"
+deltaH=3
 deltaM=0
 #
 # The script will look for every tweet published in the 
@@ -91,7 +91,7 @@ maxResults="&max_results=10"
 # maxresults tells Twitter API how many tweets to return at each request.
 #
 # => tweet fields:
-tweetFields="author_id,id,text,lang,public_metrics,geo,created_at,entities,\
+tweetFields="author_id,id,text,lang,public_metrics,geo,created_at,\
 referenced_tweets"	
 #
 # tweetFields will tell Twitter's API which fields of a tweet we 
@@ -343,7 +343,6 @@ do
 
 	checkRateLimit 
 	curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
-	break
 	sleep 1
 
 	# check if everything went fine with curl
