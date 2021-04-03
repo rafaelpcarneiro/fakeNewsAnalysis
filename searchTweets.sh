@@ -220,7 +220,7 @@ myQuery="${myQuery//:/%3A}"
 #azitromicina%20OR%20\
 #lockdown)%20lang%3Apt"
 
-startSearch=2021-01-08
+startSearch=2021-01-09
 endSearch=2021-03-31
 
 dayToSearch=$startSearch
