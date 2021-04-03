@@ -41,6 +41,70 @@
 #  2 = the program has stopped for network connection issues with Curl
 
 
+####################### PARAMETERS OF THE SCRIPT ########################
+#------------------------------------------------------------------------
+#-> Here are the main parameters responsible for searching tweets
+#
+# => Date: YYYY-MM-DD
+startSearch=2021-01-08
+endSearch=2021-03-31
+#
+# => Time: HH:MM:SS (UTC-3) 
+t0="18:00:00"
+t1="24:00:00"
+#
+# The script will look for every tweet published in the 
+# time interval [t0,t1] of a day ranging through startSearch
+# to endSearch. This can be seen at table below:
+#
+#			Date				initial time	end time
+#			--------------------------------------------
+#			startSearch	 		t0				t1
+#			startSearch + 1 	t0				t1
+#			startSearch + 2 	t0				t1
+#			startSearch + 3 	t0				t1
+#				.				.				.
+#				.				.				.
+#				.				.				.
+#			endSearch 		 	t0				t1
+#
+# If you want to search for tweets published at a one specifc day, just
+# set: startSearch=endSearch. (Note that later the script will correct
+# the date and times to UTC, which is the time used for Twitter.
+#
+# => Query:
+myQuery="(vacina OR \
+cloroquina OR \
+covid OR corona OR covid-19 \
+\"tratamento antecipado\" OR \"tratamento precoce\" \
+azitromicina OR \
+lockdown) lang:pt"
+#
+# myquery will set the keywords contained at the tweets we wish to find.
+# Later the script will substitute white spaces by and colons (:)
+# by %3A.
+# 
+# => maximum Results per pagination:
+maxResults="&max_results=100"	
+#
+# maxresults tells Twitter API how many tweets to return at each request.
+#
+# => tweet fields:
+tweetFields="author_id,id,text,lang,public_metrics,geo,created_at"	
+#
+# tweetFields will tell Twitter's API which fields of a tweet we 
+# wish to receive
+#
+twitterLink="https://api.twitter.com/2/tweets/search/all?"
+#
+# twitterLink is exactly the url where the API responsible for searching
+# tweets is at.
+#########################################################################
+
+
+
+
+
 ########################## AUXILIARY FUNCTIONS ##########################
 checkRateLimit () {
 	if test $callTwitter -eq 300
@@ -200,30 +264,12 @@ searchThroughoutPagination() {
 
 
 ########################### MAIN SCRIPT ##################################
-myQuery="(vacina OR \
-cloroquina OR \
-covid OR corona OR covid-19 \
-\"tratamento antecipado\" OR \"tratamento precoce\" \
-azitromicina OR \
-lockdown) lang:pt"
 
 # Remove white spaces from myQuery
 myQuery="${myQuery// /%20}"
 
 # Remove colon char from myQuery
 myQuery="${myQuery//:/%3A}"
-
-#myQuery="(vacina%20OR%20\
-#cloroquina%20OR%20\
-#covid%20OR%20%20corona%20OR%20%20covid-19\
-#\"tratamento%20antecipado\"%20OR%20%20\"tratamento%20precoce\"\
-#azitromicina%20OR%20\
-#lockdown)%20lang%3Apt"
-
-startSearch=2021-01-08
-endSearch=2021-03-31
-
-dayToSearch=$startSearch
 
 clear
 echo "Script made by Rafael"
@@ -235,12 +281,17 @@ echo ""
 echo ""
 sleep 5
 
+# Variable below will count how many times we have called of the program
+# curl. Reaching 300 we have to wait a while to reset this variable
 callTwitter=1
+
+# We start our loop with dayToSearch
+dayToSearch=$startSearch
 while test "$dayToSearch" != "$endSearch" 
 do
 	pagination=0
-    ############### Writing the url to make the requests #################
-	#---------------------------------------------------------------------
+
+    ############### WRITING THE URL TO MAKE THE REQUESTS #################
 
 	######################### TIME VARIABLES #############################
     # Time: 19:30 in Brazil (UTC -3)
@@ -252,18 +303,7 @@ do
 
 	timeToLook="start_time="$timeToStartSearch"&end_time="$timeToEndSearch
 
-
 	######################### TWITTER API ################################
-	twitterLink="https://api.twitter.com/2/tweets/search/all?"
-
-
-	######################## TWEET FIELDS ################################
-	tweetFields="author_id,id,text,lang,public_metrics,geo,created_at"	
-
-
-	######################## MAX TWEETS SEARCHED #########################
-	maxResults="&max_results=100"	
-
 
 	#the whole url to make the request
 	twitterAPI=$twitterLink$timeToLook"&query="$myQuery
@@ -271,11 +311,19 @@ do
 
 	######################################################################
 
+
+	clear
+	echo "Searching for tweets from the day: $dayToSearch"
+	echo "Time: 19:30 - 21:30 (UTC -3)"
+	sleep 10
+
+
 	saveAtThisFile="$dayToSearch""_pagination""$pagination"".txt"
 	authentication="Authorization: Bearer $bearer_token"
 
 	checkRateLimit 
 	curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
+	sleep 1
 
 	# check if everything went fine with curl
 	curlProblem=$?
@@ -294,18 +342,6 @@ do
 		echo "Problem with curl solved"
 	fi
 
-	# Variable below will count how many times we have called of the program
-	# curl. Reaching 300 we have to wait a while to reset this variable
-	#callTwitter=1
-
-	# Wait one second before next search
-	clear
-	echo "Searching for tweets from the day: $dayToSearch"
-	echo "Time: 19:30 - 21:30 (UTC -3)"
-	sleep 10
-
-	#curl -X GET -H "Authorization: Bearer $bearer_token" "$twitterAPI" >>\
-	#"$dayToSearch""pagination""$pagination"".txt"
 
 	##### looping throughout pagination
 	next_token=`cat "$saveAtThisFile" |grep -o -E "\"next_token\":\".*\""`
@@ -315,7 +351,3 @@ do
 
 	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
 done	
-#cat 2021-01-01.txt |grep -o -E "\"next_token\":\".*\""
-
-
-#curl -X GET -H "Authorization: Bearer $bearer_token" "https://api.twitter.com/2/tweets/2/tweets/1374909220584370178?tweet.fields=author_id,text,lang,referenced_tweets" >> tweets.json
