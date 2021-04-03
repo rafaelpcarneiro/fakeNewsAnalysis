@@ -46,30 +46,31 @@
 #-> Here are the main parameters responsible for searching tweets
 #
 # => Date: YYYY-MM-DD
-startSearch=2021-01-08
-endSearch=2021-03-31
+startSearch=2021-03-25
+endSearch=2021-03-26
 #
-# => Time: HH:MM:SS (UTC-3) 
-t0="18:00:00"
-t1="24:00:00"
+# => Time: HH:MM:SS (UTC) 
+t0="20:00:00"
+deltaH=7
+deltaM=0
 #
 # The script will look for every tweet published in the 
-# time interval [t0,t1] of a day ranging through startSearch
+# time interval [t0,t0 + deltaH:deltaM] of a day ranging through startSearch
 # to endSearch. This can be seen at table below:
 #
 #			Date				initial time	end time
 #			--------------------------------------------
-#			startSearch	 		t0				t1
-#			startSearch + 1 	t0				t1
-#			startSearch + 2 	t0				t1
-#			startSearch + 3 	t0				t1
+#			startSearch	 		t0				t0 + deltaH:deltaM
+#			startSearch + 1 	t0				t0 + deltaH:deltaM
+#			startSearch + 2 	t0				t0 + deltaH:deltaM
+#			startSearch + 3 	t0				t0 + deltaH:deltaM
 #				.				.				.
 #				.				.				.
 #				.				.				.
-#			endSearch 		 	t0				t1
+#			endSearch 		 	t0				t0 + deltaH:deltaM
 #
 # If you want to search for tweets published at a one specifc day, just
-# set: startSearch=endSearch. (Note that later the script will correct
+# set: startSearch=endSearch-1. (Note that later the script will correct
 # the date and times to UTC, which is the time used for Twitter.
 #
 # => Query:
@@ -85,23 +86,33 @@ lockdown) lang:pt"
 # by %3A.
 # 
 # => maximum Results per pagination:
-maxResults="&max_results=100"	
+maxResults="&max_results=10"	
 #
 # maxresults tells Twitter API how many tweets to return at each request.
 #
 # => tweet fields:
-tweetFields="author_id,id,text,lang,public_metrics,geo,created_at"	
+tweetFields="author_id,id,text,lang,public_metrics,geo,created_at,entities,\
+referenced_tweets"	
 #
 # tweetFields will tell Twitter's API which fields of a tweet we 
 # wish to receive
 #
+# => expansions:
+expansions="author_id,geo.place_id,in_reply_to_user_id,referenced_tweets.id,\
+referenced_tweets.id.author_id"
+#
+# => place.fields:
+placeFields="country,name,full_name"
+#
+# => user.fields
+userFields="location,name,username,public_metrics,id"
+#
+# 
 twitterLink="https://api.twitter.com/2/tweets/search/all?"
 #
 # twitterLink is exactly the url where the API responsible for searching
 # tweets is at.
 #########################################################################
-
-
 
 
 
@@ -235,7 +246,7 @@ searchThroughoutPagination() {
 			do
 				curl -s -X GET -H "$authentication" "$url" > "$saveAtThisFile"
 				curlProblem=$?
-				test $curlProblem -eq 0 && curlAtempts=5
+				test $curlProblem -eq 0 && break
 				$((curlAtempts+1))
 			done
 			test $curlProblem -ne 0 && exit 2
@@ -264,15 +275,8 @@ searchThroughoutPagination() {
 
 
 ########################### MAIN SCRIPT ##################################
-
-# Remove white spaces from myQuery
-myQuery="${myQuery// /%20}"
-
-# Remove colon char from myQuery
-myQuery="${myQuery//:/%3A}"
-
 clear
-echo "Script made by Rafael"
+echo "Script written  by Rafael"
 echo "Shall the search begin \m/"
 echo ""
 echo ""
@@ -280,6 +284,15 @@ echo ""
 echo ""
 echo ""
 sleep 5
+
+
+
+
+# Remove white spaces from myQuery
+myQuery="${myQuery// /%20}"
+
+# Remove colon char from myQuery
+myQuery="${myQuery//:/%3A}"
 
 # Variable below will count how many times we have called of the program
 # curl. Reaching 300 we have to wait a while to reset this variable
@@ -294,12 +307,17 @@ do
     ############### WRITING THE URL TO MAKE THE REQUESTS #################
 
 	######################### TIME VARIABLES #############################
-    # Time: 19:30 in Brazil (UTC -3)
-	timeToStartSearch="$dayToSearch""T22:30:00Z"
+    # Time: t0 (UTC)
+	#timeToStartSearch="$dayToSearch""T22:30:00Z"
+	strDate=$dayToSearch"T"$t0"Z"
+	timeToStartSearch=`date -d "$strDate" -u "+%Y-%m-%dT%H:%M:%SZ"`
 
-    # Time: 21:30 in Brazil (UTC -3)
-	timeToEndSearch=`date -I -d "$dayToSearch + 1 day"` 
-	timeToEndSearch="$timeToEndSearch""T00:30:00Z"
+	timeToEndSearch=`date -d "$timeToStartSearch + $deltaH hours" -u\
+	"+%Y-%m-%dT%H:%M:%SZ"`
+
+
+	#timeToEndSearch=`date -I -d "$dayToSearch + 1 day"` 
+	#timeToEndSearch="$timeToEndSearch""T00:30:00Z"
 
 	timeToLook="start_time="$timeToStartSearch"&end_time="$timeToEndSearch
 
@@ -307,22 +325,25 @@ do
 
 	#the whole url to make the request
 	twitterAPI=$twitterLink$timeToLook"&query="$myQuery
-	twitterAPI+="&tweet.fields="$tweetFields$maxResults
+	twitterAPI+="&tweet.fields="$tweetFields$maxResults"&expansions="
+	twitterAPI+=$expansions"&place.fields="$placeFields"&user.fields="
+	twitterAPI+=$userFields	
 
 	######################################################################
 
 
 	clear
-	echo "Searching for tweets from the day: $dayToSearch"
-	echo "Time: 19:30 - 21:30 (UTC -3)"
+	echo "Searching for tweets"
+	echo "	From: `date -d $timeToStartSearch -u`"
+	echo "	To:   `date -d $timeToEndSearch -u`"
 	sleep 10
-
 
 	saveAtThisFile="$dayToSearch""_pagination""$pagination"".txt"
 	authentication="Authorization: Bearer $bearer_token"
 
 	checkRateLimit 
 	curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
+	break
 	sleep 1
 
 	# check if everything went fine with curl
