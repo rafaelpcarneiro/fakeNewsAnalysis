@@ -86,7 +86,7 @@ lockdown) lang:pt"
 # by %3A.
 # 
 # => maximum Results per pagination:
-maxResults="&max_results=10"	
+maxResults="&max_results=100"	
 #
 # maxresults tells Twitter API how many tweets to return at each request.
 #
