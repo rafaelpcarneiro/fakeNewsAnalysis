@@ -1,0 +1,52 @@
+SCHEMAS:
+=======
+Obs1: keys are represented in the following fashion: __key__; with double 
+underscores before and after the key!
+
+Obs2: foreign keys are enclosed by the char *
+
+* USER:
+
+	USER(__ID__, NAME, USERNAME, LOCATION, FOLLOWERS_COUNT, FOLLOWING_COUNT, TWEET_COUNT);
+
+* TWEET:
+
+	TWEET(__TWEET_ID__, TYPE, RETWEET_COUNT, LIKE_COUNT, REPLY_COUNT, QUOTE_COUNT, LANGUAGE, TEXT, *PARENT_TWEET_ID*, *AUTHOR_TWEET_ID*)
+
+		- *PARENT_TWEET_ID* 	is a foreign key pointing to TWEET;
+		- *AUTHOR_TWEET_ID* 	is a foreign key pointing to USER
+
+* USER_FOLLOWED:
+
+	USER_FOLLOWED(__*USER_X*__, __*USER_WHO_FOLLOWS_X*__)
+
+		- *USER_X*             	is a foreign key pointing to USER;
+		- *USER_WHO_FOLLOWS_X* 	is a foreign key pointing to USER.
+
+* WHO_LIKED_TWEET_Y:
+
+	WHO_LIKED_TWEET_Y(__*TWEET_Y*__, __*USER_WHO_LIKED_Y*__)
+
+		- *TWEET_Y*          	is a foreign key pointing to TWEET;
+		- *USER_WHO_LIKED_Y* 	is a foreign key pointing to USER.
+
+* WHO_RT_TWEET_Y:
+
+	WHO_RT_TWEET_Y(__*TWEET_Y*__, __*USER_WHO_RT_Y*__)
+
+		- *TWEET_Y*       		is a foreign key pointing to TWEET;
+		- *USER_WHO_RT_Y* 		is a foreign key pointing to USER.
+
+* WHO_QUOTED_TWEET_Y:
+
+	WHO_QUOTED_TWEET_Y(__*TWEET_Y*__, __*USER_WHO_QUOTED_Y*__)
+
+		- *TWEET_Y*           	is a foreign key pointing to TWEET;
+		- *USER_WHO_QUOTED_Y* 	is a foreign key pointing to USER.
+
+* WHO_ANSWERED_TWEET_Y:
+
+	WHO_ANSWERED_TWEET_Y(__*TWEET_Y*__, __*USER_WHO_ANSWERED_Y*__)
+
+		- *TWEET_Y*             is a foreign key pointing to TWEET;
+		- *USER_WHO_ANSWERED_Y* is a foreign key pointing to USER.
