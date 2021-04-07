@@ -52,11 +52,10 @@ tweet_count);
 The <b>TWEET</b> schema:
 
 TWEET(<u>tweet_id</u>, type, retweet_count, like_count, reply_count,
-quote_count, language, text, <font color=blue>parent_tweet_id</font>,
-<font color=blue>author_tweet_id</font>)
+quote_count, language, text, <b>parent_tweet_id</b>, <b>author_tweet_id</b>)
 
-- <font color=blue>parent_tweet_id</font> is a foreign key pointing to  TWEET;
-- <font color=blue>author_tweet_id</font> is a foreign key pointing to USER
+- <b>parent_tweet_id</b> is a foreign key pointing to  TWEET;
+- <b>author_tweet_id</b> is a foreign key pointing to USER
 </li>
 </ol>
 
