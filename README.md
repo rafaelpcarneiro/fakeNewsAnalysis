@@ -41,14 +41,16 @@ Down bellow the <i>schemas</i> from our <b>relational model</b>
 are presented.
 
 1.  The *USER* schema:
-> USER(_Id_, name, username, location, followers_count,
-> following_count, tweet_count)
+</br>
+USER(_Id_, name, username, location, followers_count, following_count, 
+tweet_count)
 2. The *TWEET* schema:
-> TWEET(_tweet_id_, type, retweet_count, like_count, reply_count,
-> quote_count, language, text, <font color=blue>parent_tweet_id</font>,
-> <font color=blue>author_tweet_id</font>)
-> - <font color=blue>parent_tweet_id</font> is a foreign key pointing to  TWEET;
-> - <font color=blue>author_tweet_id</font>) is a foreign key pointing to USER
+</br>
+TWEET(_tweet_id_, type, retweet_count, like_count, reply_count,
+quote_count, language, text, <font color=blue>parent_tweet_id</font>,
+<font color=blue>author_tweet_id</font>)
+- <font color=blue>parent_tweet_id</font> is a foreign key pointing to  TWEET;
+- <font color=blue>author_tweet_id</font>) is a foreign key pointing to USER
 
 
 
