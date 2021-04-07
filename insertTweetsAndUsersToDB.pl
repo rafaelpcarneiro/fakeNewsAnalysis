@@ -154,7 +154,7 @@ sub createTweetForm {
 		$i++;
 	}	
 	
-	$Tweet {'text'} = '' if ($text {'type'} eq 'retweeted');
+	$Tweet {'text'} = '' if ($Tweet {'type'} eq 'retweeted');
 	return \%Tweet;
 }
 
@@ -179,25 +179,25 @@ sub createUserForm {
 
 	while ($i < @_) {
 
-		if ($_ eq 'id') {
+		if ($data [$i] eq 'id') {
 			$User {'id'} = $data [++$i];
 		}
-		elsif ($_ eq 'username') {
+		elsif ($data [$i] eq 'username') {
 			$User {'username'} = $data [++$i];
 		}
-		elsif ($_ eq 'name') {
+		elsif ($data [$i] eq 'name') {
 			$User {'name'} = $data [++$i];
 		}
-		elsif ($_ eq 'followers_count') {
+		elsif ($data [$i] eq 'followers_count') {
 			$User {'followers_count'} = $data [++$i];
 		}
-		elsif ($_ eq 'following_count') {
+		elsif ($data [$i] eq 'following_count') {
 			$User {'following_count'} = $data [++$i];
 		}
-		elsif ($_ eq 'tweet_count') {
+		elsif ($data [$i] eq 'tweet_count') {
 			$User {'tweet_count'} = $data [++$i];
 		}
-		elsif ($_ eq 'location') {
+		elsif ($data [$i] eq 'location') {
 			$User {'location'} = $data [++$i];
 		}
 
@@ -271,7 +271,6 @@ sub createTweetForm2 {
 		$i++;
 	}	
 	
-	$Tweet {'text'} = '' if ($text {'type'} eq 'retweeted');
 	return \%Tweet;
 }
 
@@ -325,12 +324,8 @@ $text =~ s/"tweets":\[\{/"tweets":\["\{"/g;
 $text =~ s/}]},"meta"/"}"]},"meta"/g;
 
 
-
-#### Now we will export all data found at the JSON files
-#### to our relational database
-
-
-
+### Storing all info into hashs. Then we export to relational
+### databases.
 my @selected = $text =~ m/"(.*?)"/g;
 
 $i = 0;
@@ -349,32 +344,32 @@ until ($selected [$i] eq 'includes'){
 	++$tweetCounter;
 }
 
-#$i += 2, $userCounter = 0;
-#until ($selected [$i] eq 'tweets'){
-#	if ($selected [$i] eq '{') {
-#		$j = ++$i;
-#		++$j until ($selected[$j] eq '}');
-#		$listOfUsers [$userCounter] =
-#	   					 	createUserForm @selected [$i .. ($j - 1)];
-#		$i = ++$j;
-#	}
-#	++$userCounter;
-#}
+$i += 2, $userCounter = 0;
+until ($selected [$i] eq 'tweets'){
+	if ($selected [$i] eq '{') {
+		$j = ++$i;
+		++$j until ($selected[$j] eq '}');
+		$listOfUsers [$userCounter] =
+	   					 	createUserForm @selected [$i .. ($j - 1)];
+		$i = ++$j;
+	}
+	++$userCounter;
+}
 
 
-#$i += 1;
-#until ($selected [$i] eq 'meta'){
-#	if ($selected [$i] eq '{') {
-#		$j = ++$i;
-#		++$j until ($selected[$j] eq '}');
-#		$listOfTweets [$tweetCounter] =
-#	   					 	createTweetForm2 @selected [$i .. ($j - 1)];
-#		$i = ++$j;
-#	}
-#	++$tweetCounter;
-#}
+$i += 1;
+until ($selected [$i] eq 'meta'){
+	if ($selected [$i] eq '{') {
+		$j = ++$i;
+		++$j until ($selected[$j] eq '}');
+		$listOfTweets [$tweetCounter] =
+	   					 	createTweetForm2 @selected [$i .. ($j - 1)];
+		$i = ++$j;
+	}
+	++$tweetCounter;
+}
 
-### Printing to check
+### Printing to check -- STATUS: WORKING FINE
 #foreach (@listOfTweets) {
 #	my %printTweet = %{$_};
 #	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
@@ -390,3 +385,7 @@ until ($selected [$i] eq 'includes'){
 #	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
 #	print "\n\n";
 #}
+
+
+#### Now we will export all data found at the JSON files
+#### to our relational database
