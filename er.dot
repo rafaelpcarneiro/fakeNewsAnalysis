@@ -1,44 +1,66 @@
 graph ER{
       splines = false;
       /* Entities */
-      user  [shape=rectangle, style="filled,solid", label="twitterUser", width=4];
-      tweet [shape=rectangle, style="filled,solid", label="tweet"];
+      user  [shape=rectangle, style="filled,solid", label="twitterUser",
+	  width=4, height=1];
+      tweet [shape=rectangle, style="filled,solid", label="tweet", width=2];
 
       /* Relationship */
       writes       [shape=diamond, width=2];
-      isFollowedBy [shape=diamond, width=4];
+      isFollowedBy [shape=diamond, width=4, height=1];
       likes        [shape=diamond, width=2];
-      rt           [shape=diamond, width=2];
+      rt           [shape=diamond, width=2, label="retweet"];
+      quotes       [shape=diamond, width=2];
 
       /* Atributes */
 
       /* user's atributes */
-      userAtName [shape=ellipse, label="@Name"]; /* The @name */
-      userId     [shape=ellipse, label=<<u>userId</u>>];
+      username          [shape=ellipse, label="username"]; /* The @name */
+      name 				[shape=ellipse, label="name"]; /* The @name */
+      userId     		[shape=ellipse, label=<<u>Id</u>>];
+      location     		[shape=ellipse, label=location];
+      followersCount    [shape=ellipse, label=followers_count];
+      followingCount    [shape=ellipse, label=following_count];
+      tweetCount     	[shape=ellipse, label=tweet_count];
+
 
       /* tweets' atributes */
-      tweetId      [shape=ellipse, label=<<u>tweetId</u>>];
-      tweetContent [shape=ellipse, label="tweetContent"];
-      tweetDate    [shape=ellipse,  label="tweetDate"];
+      tweetId      [shape=ellipse, label=<<u>tweet_id</u>>];
+      retweetCount [shape=ellipse, label=retweet_count];
+      likeCount    [shape=ellipse, label=like_count];
+      replyCount   [shape=ellipse, label=reply_count];
+      quoteCount   [shape=ellipse, label=quote_count];
+	  language     [shape=ellipse, label=language];
+	  text         [shape=ellipse, label=text];
 
       /* Diagram */
-      isFollowedBy -- userId [color=invis];
 
-      userId     -- user:n;
-      userAtName -- user:n;
+      
+	  username      	-- user:n;
+      name 			    -- user:n;
+      userId     	    -- user:n;
+      location     	    -- user:n;
+      followersCount    -- user:n;
+      followingCount    -- user:n;
+      tweetCount        -- user:n;
 
-      isFollowedBy:w -- user:w [label=n];
-      isFollowedBy:e -- user:e [label=n];
+      isFollowedBy:s -- user:sw [label=n];
+      isFollowedBy:n -- user:nw [label=n];
 
 
-      user:sw -- writes:n [label=1];
+      user:s -- writes:n [label=1];
       user:s  -- likes:n  [label=n];
-      user:se -- rt:n     [label=n];
+      user:s  -- quotes:n  [label=n];
+      user:s -- rt:n     [label=n];
 
-      writes:s -- tweet:nw [label=n];
-      likes:s  -- tweet:n  [label=n];
-      rt:s     -- tweet:ne [label=n];
+      writes:s  -- tweet:nw [label=n];
+      likes:s   -- tweet:n  [label=n];
+      quotes:s  -- tweet:ne  [label=n];
+      rt:s      -- tweet:n [label=n];
 
-      tweet -- {tweetId, tweetContent, tweetDate};
+      tweet -- {tweetId, retweetCount, likeCount, replyCount, quoteCount,
+	  language, text};
+
+	  {rank = same; isFollowedBy; user;}
 
 }
