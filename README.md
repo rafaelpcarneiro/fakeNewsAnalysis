@@ -42,14 +42,14 @@ are presented.
 
 <ol>
 <li>
-The *USER* schema:
+The <b>USER</b> schema:
 
 USER(<u>Id</u>, name, username, location, followers_count, following_count, 
 tweet_count);
 </li>
 
 <li>
-The *TWEET* schema:
+The <b>TWEET</b> schema:
 
 TWEET(<u>tweet_id</u>, type, retweet_count, like_count, reply_count,
 quote_count, language, text, <font color=blue>parent_tweet_id</font>,
