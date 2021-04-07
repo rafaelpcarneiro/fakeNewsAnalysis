@@ -87,24 +87,90 @@ use warnings;
 binmode(STDOUT, ":utf8");
 
 ######################### AUXILIARY FUNCTIONS ##############################
+
 sub createTweetForm {
 # this function will receive as parameter an array and it will return
-# a reference to the hash Tweet.
+# a reference to a hash called Tweet.
+# (Obs: This function must be used for the the JSON element called "data")
 	my %Tweet;
 	%Tweet = (
 		type					 => '',                                  
 		parent_tweet_id 		 => '',                    
-		parent_author_id 		 => '',                   
+		#parent_author_id 		 => '',                   
 		tweet_id 				 => '',                           
 		author_id 				 => '',                          
-		parent_tweet_created_at  => '',            
+		#parent_tweet_created_at  => '',            
 		tweet_created_at 		 => '',                   
-		rt_count 				 => '',                           
+		retweet_count			 => '',                           
 		reply_count 			 => '',                        
 		like_count 				 => '',                         
 		quote_count 			 => '',                        
 		language 				 => '',                           
-		text 					 => '',                               
+		text 					 => ''
+	);
+	
+
+	my $i    = 0;
+	my @data = @_;
+
+	while ($i < @_) {
+
+		if ($data [$i] eq 'id') {
+			$Tweet {'tweet_id'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'referenced_tweets') {
+			$i++;
+			$Tweet {'type'} = $data [++$i];
+
+			$i++;
+			$Tweet {'parent_tweet_id'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'lang') {
+			$Tweet {'language'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'author_id'){
+			$Tweet {'author_id'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'created_at') {
+			$Tweet {'tweet_created_at'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'public_metrics') {
+			$i++;
+			$Tweet {'retweet_count'} = $data [++$i];
+
+			$i++;
+			$Tweet {'reply_count'} = $data [++$i];
+
+			$i++;
+			$Tweet {'like_count'} = $data [++$i];
+
+			$i++;
+			$Tweet {'quote_count'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'text') {
+			$Tweet {'text'} = $data [++$i];
+		}
+
+		$i++;
+	}	
+	
+	$Tweet {'text'} = '' if ($text {'type'} eq 'retweeted');
+	return \%Tweet;
+}
+
+sub createUserForm {
+# this function will receive as parameter an array and it will return
+# a reference to a hash called User.
+	my %User;
+	%User = (
+		id 				 => '',                          
+		username         => '',
+		name             => '',
+		followers_count  => '',
+		following_count  => '',
+		tweet_count      => '',
+		location		 => '',
+		created_at		 => ''
 	);
 	
 
@@ -114,46 +180,109 @@ sub createTweetForm {
 	while ($i < @_) {
 
 		if ($_ eq 'id') {
-			$Tweet{'id'} = $data[ $i ];
+			$User {'id'} = $data [++$i];
 		}
-		elsif ($_ eq 'referenced_tweets') {
-			$i++;
-			$Tweet{'type'} = $data[ $i ];
-
-			$i++;
-			$Tweet{'parent_tweet_id'} = $data[ $i ];
+		elsif ($_ eq 'username') {
+			$User {'username'} = $data [++$i];
 		}
-		elsif ($_ eq 'lang') {
-			$Tweet{'lang'} = $data[ $i ];
+		elsif ($_ eq 'name') {
+			$User {'name'} = $data [++$i];
 		}
-		elsif ($_ eq 'author_id'){
-			$Tweet{'author_id'} = $data[ $i ];
+		elsif ($_ eq 'followers_count') {
+			$User {'followers_count'} = $data [++$i];
 		}
-		elsif ($_ eq 'created_at') {
-			$Tweet{'tweet_created_at'} = $data[ $i ];
+		elsif ($_ eq 'following_count') {
+			$User {'following_count'} = $data [++$i];
 		}
-		elsif ($_ eq 'public_metrics') {
-			$i++;
-			$Tweet{'rt'} = $data[ $i ];
-
-			$i++;
-			$Tweet{'reply_count'} = $data[ $i ];
-
-			$i++;
-			$Tweet{'like_count'} = $data[ $i ];
-
-			$i++;
-			$Tweet{'quote_count'} = $data[ $i ];
+		elsif ($_ eq 'tweet_count') {
+			$User {'tweet_count'} = $data [++$i];
 		}
-		elsif ($_ eq 'text') {
-			$Tweet{'text'} = $data[ $i ];
+		elsif ($_ eq 'location') {
+			$User {'location'} = $data [++$i];
 		}
 
 		$i++;
 	}	
 
+	return \%User;
+}
+
+sub createTweetForm2 {
+# this function will receive as parameter an array and it will return
+# a reference to a hash called Tweet.
+# (Obs: This function must be used for the the JSON element called "tweets")
+	my %Tweet;
+	%Tweet = (
+		type					 => '',
+		tweet_id 				 => '',                           
+		author_id 				 => '',                          
+		parent_tweet_id          => '',
+		tweet_created_at 		 => '',                   
+		retweet_count			 => '',                           
+		reply_count 			 => '',                        
+		like_count 				 => '',                         
+		quote_count 			 => '',                        
+		language 				 => '',                           
+		text 					 => ''
+	);
+	
+
+	my $i    = 0;
+	my @data = @_;
+
+	while ($i < @_) {
+
+		if ($data [$i] eq 'id') {
+			$Tweet {'tweet_id'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'referenced_tweets') {
+			$i++;
+			$Tweet {'type'} = $data [++$i];
+
+			$i++;
+			$Tweet {'parent_tweet_id'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'lang') {
+			$Tweet {'language'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'author_id'){
+			$Tweet {'author_id'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'created_at') {
+			$Tweet {'tweet_created_at'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'public_metrics') {
+			$i++;
+			$Tweet {'retweet_count'} = $data [++$i];
+
+			$i++;
+			$Tweet {'reply_count'} = $data [++$i];
+
+			$i++;
+			$Tweet {'like_count'} = $data [++$i];
+
+			$i++;
+			$Tweet {'quote_count'} = $data [++$i];
+		}
+		elsif ($data [$i] eq 'text') {
+			$Tweet {'text'} = $data [++$i];
+		}
+
+		$i++;
+	}	
+	
+	$Tweet {'text'} = '' if ($text {'type'} eq 'retweeted');
 	return \%Tweet;
 }
+
+
+### Printing function is not working ???
+##sub printTweets {
+##	my $temp = $_[0];
+##	print "$_[0]\n";
+##
+##	print "$_ \t\t\t = $temp->{$_}\n" foreach (keys %{$temp});
+##}
 
 
 ############################### MAIN #######################################
@@ -162,16 +291,21 @@ my @listOfTweets;
 my @listOfUsers;
 
 # iterators
-#my $i, $j;
+my $i,
+my $j,
+my $tweetCounter,
+my $userCounter;
 
 open my $fh , '<:utf8', $ARGV[0] || die "problem to open the file";
 
+
+#### Selecting pairs (keyword:value) from the JSON file.
+#### Regular expressions are used
 my $text = <$fh>;
 close $fh; # the file has only one line.
 
-
 # Make every number not enclosed by quotes to be quoted.
-$text =~ s/:(\d.*?)([,}])/:\"$1\"$2/g;
+$text =~ s/:(\d*?)([,}])/:\"$1\"$2/g;
 
 # Now we select all keywords from the JSON file. Every keyword
 # is quoted. Thus we just need to do a quick search for double
@@ -189,15 +323,70 @@ $text =~ s/}],"tweets"/"}"],"tweets"/g;
 
 $text =~ s/"tweets":\[\{/"tweets":\["\{"/g;
 $text =~ s/}]},"meta"/"}"]},"meta"/g;
-#$i = 0;
+
+
+
+#### Now we will export all data found at the JSON files
+#### to our relational database
+
 
 
 my @selected = $text =~ m/"(.*?)"/g;
-print @selected;
 
-#while ( $i < @selected ){
-#
-#	if ( $selected[i] eq 'data' ) {
-#		$j = 
+$i = 0;
+$tweetCounter = 0;
+++$i until ($selected [$i] eq 'data');
+
+++$i;
+until ($selected [$i] eq 'includes'){
+	if ($selected [$i] eq '{') {
+		$j = ++$i;
+		++$j until ($selected [$j] eq '}');
+		$listOfTweets [$tweetCounter] =
+	   					 	createTweetForm @selected[$i .. ($j - 1)];
+		$i = ++$j;
+	}
+	++$tweetCounter;
+}
+
+#$i += 2, $userCounter = 0;
+#until ($selected [$i] eq 'tweets'){
+#	if ($selected [$i] eq '{') {
+#		$j = ++$i;
+#		++$j until ($selected[$j] eq '}');
+#		$listOfUsers [$userCounter] =
+#	   					 	createUserForm @selected [$i .. ($j - 1)];
+#		$i = ++$j;
 #	}
+#	++$userCounter;
+#}
+
+
+#$i += 1;
+#until ($selected [$i] eq 'meta'){
+#	if ($selected [$i] eq '{') {
+#		$j = ++$i;
+#		++$j until ($selected[$j] eq '}');
+#		$listOfTweets [$tweetCounter] =
+#	   					 	createTweetForm2 @selected [$i .. ($j - 1)];
+#		$i = ++$j;
+#	}
+#	++$tweetCounter;
+#}
+
+### Printing to check
+#foreach (@listOfTweets) {
+#	my %printTweet = %{$_};
+#	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
+#	print "\n\n";
+#}
+#foreach (@listOfUsers) {
+#	my %printUser = %{$_};
+#	print "$_ : $printUser{$_}\n" foreach (keys %printUser);
+#	print "\n\n";
+#}
+#foreach (@listOfTweets) {
+#	my %printTweet = %{$_};
+#	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
+#	print "\n\n";
 #}
