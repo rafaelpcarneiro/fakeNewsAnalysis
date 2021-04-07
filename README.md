@@ -20,7 +20,7 @@ library [sqlite3](https://docs.python.org/3/library/sqlite3.html).
 ### The metodology behind the collection of data
 The info gathered will be based on daily searches
 ranging from 7PM to 10PM (at the brazilian time) and will be based
-on tweets whose content might have one of the following keywords:
+on tweets whose content might have one of the following keywords (portuguese):
 1. *Vaccine*;
 2. *chloroquine*
 3. *Covid* or *corona* or *Covid-19*;
@@ -35,3 +35,28 @@ Down below there is the diagram of my ER model.
 [GRAPHVIZ](https://graphviz.org/)</i>)
 
 <img style="text-align:center;" src="er.png" > 
+
+### The Relational Model.
+Down bellow the <i>schemas</i> from our <b>relational model</b> 
+are presented.
+
+<ol>
+	<li>
+		The <b>USER</b> schema:
+		<blockquote>
+			USER(<i>Id</i>, name, username, location, followers_count,
+				 following_count, tweet_count)
+		</blockquote>
+	</li>
+	<li>
+		The <b>USER</b> schema:
+		<blockquote>
+			USER(<i>tweet_id</i>, retweet_count, like_count, reply_count,
+		       	 quote_count, language, text)
+		</blockquote>
+	</li>
+</ol>
+
+
+
+
