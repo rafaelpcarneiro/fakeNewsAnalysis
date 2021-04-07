@@ -44,14 +44,14 @@ are presented.
 <li>
 The <b>USER</b> schema:
 
-USER(<u>Id</u>, name, username, location, followers_count, following_count, 
+USER(<ins>Id</ins>, name, username, location, followers_count, following_count, 
 tweet_count);
 </li>
 
 <li>
 The <b>TWEET</b> schema:
 
-TWEET(<u>tweet_id</u>, type, retweet_count, like_count, reply_count,
+TWEET(<ins>tweet_id</ins>, type, retweet_count, like_count, reply_count,
 quote_count, language, text, <b>parent_tweet_id</b>, <b>author_tweet_id</b>)
 
 - <b>parent_tweet_id</b> is a foreign key pointing to  TWEET;
