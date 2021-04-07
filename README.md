@@ -40,18 +40,25 @@ Down below there is the diagram of my ER model.
 Down bellow the <i>schemas</i> from our <b>relational model</b> 
 are presented.
 
-1.  The *USER* schema:
+<ol>
+<li>
+The *USER* schema:
 
-USER(<i>Id</i>, name, username, location, followers_count, following_count, 
+USER(<u>Id</u>, name, username, location, followers_count, following_count, 
 tweet_count);
-2. The *TWEET* schema:
+</li>
 
-TWEET(<i>tweet_id</i>, type, retweet_count, like_count, reply_count,
+<li>
+The *TWEET* schema:
+
+TWEET(<u>tweet_id</u>, type, retweet_count, like_count, reply_count,
 quote_count, language, text, <font color=blue>parent_tweet_id</font>,
 <font color=blue>author_tweet_id</font>)
 
 - <font color=blue>parent_tweet_id</font> is a foreign key pointing to  TWEET;
-- <font color=blue>author_tweet_id</font>) is a foreign key pointing to USER
+- <font color=blue>author_tweet_id</font> is a foreign key pointing to USER
+</li>
+</ol>
 
 
 
