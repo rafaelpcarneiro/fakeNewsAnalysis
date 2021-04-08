@@ -39,12 +39,14 @@
 #        ||   text,                               ||
 #        || }                                     ||
 #        ===========================================
-#        ||										  ||
-#        || Obs: 'type' has as values RT, T, Q, A.||
-#        || * RT stands for retweet;              ||
-#        || * T stands for a tweet with no parent ||
-#        || * Q means a quote (RT + message)      ||
-#        || * A means an answer to someone        ||
+#        ||	TODO. Actually all type values are    ||
+#        || represented differently of what is    ||
+#        || said down bellow!!!) 				  ||
+#        || Obs: 'type' has as values:            ||
+#        || * retweeted;                          ||
+#        || * quoted                              ||
+#        || * replied_to                          ||
+#        || * doesnt_have_parents                 ||
 #        ||										  ||
 #        || Obs: If a tweet has no parent then    ||
 #        || parent_tweet_id and parent_author_id  ||
@@ -151,6 +153,7 @@ sub createTweetForm {
 			$Tweet {'text'} = $data [++$i];
 		}
 
+		$Tweet ['type'] = 'doesnt_have_parent' if (!defined ($Tweet ['type']));
 		$i++;
 	}	
 	
@@ -268,6 +271,7 @@ sub createTweetForm2 {
 			$Tweet {'text'} = $data [++$i];
 		}
 
+		$Tweet ['type'] = 'doesnt_have_parent' if (!defined ($Tweet ['type']));
 		$i++;
 	}	
 	
