@@ -18,5 +18,6 @@ do
 	echo "Percentage of scanned files: $perc"
 	iter=$((iter+1))
 	clear
+	break
 done
 

@@ -23,6 +23,7 @@ CREATE TABLE tweet (
 	language 		TEXT NOT NULL,
 	text 			TEXT NULL,
 	created_at      TEXT NOT NULL,
+	place_id		TEXT NULL,
 	parent_tweet_id INT  NULL,
 	author_tweet_id INT  NOT NULL,
 

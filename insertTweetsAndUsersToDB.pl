@@ -94,19 +94,20 @@ sub createTweetForm {
 # (Obs: This function must be used for the the JSON element called "data")
 	my %Tweet;
 	%Tweet = (
-		type					 => '',                                  
-		parent_tweet_id 		 => '',                    
-		#parent_author_id 		 => '',                   
-		tweet_id 				 => '',                           
-		author_id 				 => '',                          
+		type					 => undef,                                  
+		parent_tweet_id 		 => undef,                    
+		#parent_author_id 		 => undef,                   
+		tweet_id 				 => undef,                           
+		author_id 				 => undef,                          
 		#parent_tweet_created_at  => '',            
-		tweet_created_at 		 => '',                   
-		retweet_count			 => '',                           
-		reply_count 			 => '',                        
-		like_count 				 => '',                         
-		quote_count 			 => '',                        
-		language 				 => '',                           
-		text 					 => ''
+		tweet_created_at 		 => undef,                   
+		retweet_count			 => undef,                           
+		reply_count 			 => undef,                        
+		like_count 				 => undef,                         
+		quote_count 			 => undef,                        
+		language 				 => undef,                           
+		text 					 => undef,
+		place_id				 => undef
 	);
 	
 
@@ -150,11 +151,14 @@ sub createTweetForm {
 		elsif ($data [$i] eq 'text') {
 			$Tweet {'text'} = $data [++$i];
 		}
+		elsif ($data [$i] eq 'place_id') {
+			$Tweet {'place_id'} = $data [++$i];
+		}
 
-		$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 		$i++;
 	}	
 	
+	$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 	$Tweet {'text'} = undef if ($Tweet {'type'} eq 'retweeted');
 	return \%Tweet;
 }
@@ -164,14 +168,14 @@ sub createUserForm {
 # a reference to a hash called User.
 	my %User;
 	%User = (
-		id 				 => '',                          
-		username         => '',
-		name             => '',
-		followers_count  => '',
-		following_count  => '',
-		tweet_count      => '',
-		location		 => '',
-		created_at		 => ''
+		id 				 => undef,                          
+		username         => undef,
+		name             => undef,
+		followers_count  => undef,
+		following_count  => undef,
+		tweet_count      => undef,
+		location		 => undef,
+		created_at		 => undef
 	);
 	
 
@@ -214,17 +218,18 @@ sub createTweetForm2 {
 # (Obs: This function must be used for the the JSON element called "tweets")
 	my %Tweet;
 	%Tweet = (
-		type					 => '',
-		tweet_id 				 => '',                           
-		author_id 				 => '',                          
-		parent_tweet_id          => '',
-		tweet_created_at 		 => '',                   
-		retweet_count			 => '',                           
-		reply_count 			 => '',                        
-		like_count 				 => '',                         
-		quote_count 			 => '',                        
-		language 				 => '',                           
-		text 					 => ''
+		type					 => undef,
+		tweet_id 				 => undef,                           
+		author_id 				 => undef,                          
+		parent_tweet_id          => undef,
+		tweet_created_at 		 => undef,                   
+		retweet_count			 => undef,                           
+		reply_count 			 => undef,                        
+		like_count 				 => undef,                         
+		quote_count 			 => undef,                        
+		language 				 => undef,                           
+		text 					 => undef,
+		place_id				 => undef
 	);
 	
 
@@ -268,11 +273,14 @@ sub createTweetForm2 {
 		elsif ($data [$i] eq 'text') {
 			$Tweet {'text'} = $data [++$i];
 		}
+		elsif ($data [$i] eq 'place_id') {
+			$Tweet {'place_id'} = $data [++$i];
+		}
 
-		$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 		$i++;
 	}	
 	
+	$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 	return \%Tweet;
 }
 
@@ -308,6 +316,9 @@ close $fh; # the file has only one line.
 # Make every number not enclosed by quotes to be quoted.
 $text =~ s/:(\d*?)([,}])/:\"$1\"$2/g;
 
+# Make sure that double quotation inside text is done with single quotes
+$text =~ s/\\"/'/g;
+
 # Now we select all keywords from the JSON file. Every keyword
 # is quoted. Thus we just need to do a quick search for double
 # quotes
@@ -324,11 +335,15 @@ $text =~ s/}],"tweets"/"}"],"tweets"/g;
 
 $text =~ s/"tweets":\[\{/"tweets":\["\{"/g;
 $text =~ s/}]},"meta"/"}"]},"meta"/g;
+$text =~ s/}]},"errors"/"}"]},"errors"/g;
+$text =~ s/}],"places"/"}"],"places"/g;
+
 
 
 ### Storing all info into hashs. Then we will export it to relational
 ### databases.
 my @selected = $text =~ m/"(.*?)"/g;
+#print @selected;
 
 $i = 0;
 $tweetCounter = 0;
@@ -360,7 +375,7 @@ until ($selected [$i] eq 'tweets'){
 
 
 $i += 1;
-until ($selected [$i] eq 'meta'){
+until ($selected [$i] eq 'meta' || $selected [$i] eq 'errors' || $selected [$i] eq 'places'){
 	if ($selected [$i] eq '{') {
 		$j = ++$i;
 		++$j until ($selected[$j] eq '}');
@@ -406,7 +421,8 @@ my $dbh = DBI->connect ($dsn, $user, $password, {
 my %Tweet;
 foreach (@listOfTweets){
 	%Tweet = %{ $_ };
-	$dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+
+	$dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
 		undef,
 		$Tweet {'tweet_id'},
 		$Tweet {'type'},
@@ -417,9 +433,10 @@ foreach (@listOfTweets){
 		$Tweet {'language'},
 		$Tweet {'text'},
 		$Tweet {'tweet_created_at'},
+		$Tweet {'place_id'},
 		$Tweet {'parent_tweet_id'},
 		$Tweet {'author_id'}
-		);
+	);
 }
 
 my %User;
@@ -433,7 +450,7 @@ foreach (@listOfUsers) {
 		$User {'location'},
 		$User {'followers_count'},
 		$User {'following_count'},
-		$User {'tweet_count'},
+		$User {'tweet_count'}
 		);
 }
 $dbh->disconnect;
