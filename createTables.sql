@@ -27,8 +27,16 @@ CREATE TABLE tweet (
 	author_tweet_id INT  NOT NULL,
 
 	PRIMARY KEY (tweet_id),
-	FOREIGN KEY (parent_tweet_id) REFERENCES tweet (tweet_id),
-	FOREIGN KEY (author_tweet_id) REFERENCES twitter_user (id)
+
+	FOREIGN KEY (parent_tweet_id) 
+	REFERENCES tweet (tweet_id)
+	ON UPDATE CASCADE
+	ON DELETE NO ACTION,
+
+	FOREIGN KEY (author_tweet_id)
+	REFERENCES twitter_user (id)
+	ON UPDATE CASCADE
+	ON DELETE NO ACTION,
 );
 
 CREATE TABLE user_followed (

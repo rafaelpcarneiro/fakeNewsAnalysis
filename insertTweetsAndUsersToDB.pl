@@ -422,18 +422,18 @@ foreach (@listOfTweets){
 		);
 }
 
-#my %User;
-#foreach (@listOfUsers) {
-#	%User = %{ $_ };
-#	$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
-#		undef,
-#		$User {'id'},
-#		$User {'name'},
-#		$User {'username'},
-#		$User {'location'},
-#		$User {'follower_count'},
-#		$User {'following_count'},
-#		$User {'tweet_count'},
-#		);
-#}
+my %User;
+foreach (@listOfUsers) {
+	%User = %{ $_ };
+	$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
+		undef,
+		$User {'id'},
+		$User {'name'},
+		$User {'username'},
+		$User {'location'},
+		$User {'followers_count'},
+		$User {'following_count'},
+		$User {'tweet_count'},
+		);
+}
 $dbh->disconnect;
