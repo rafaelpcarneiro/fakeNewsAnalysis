@@ -36,7 +36,7 @@ CREATE TABLE tweet (
 	FOREIGN KEY (author_tweet_id)
 	REFERENCES twitter_user (id)
 	ON UPDATE CASCADE
-	ON DELETE NO ACTION,
+	ON DELETE NO ACTION
 );
 
 CREATE TABLE user_followed (
