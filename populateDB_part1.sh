@@ -13,11 +13,11 @@ do
 	echo ""
 	echo ""
 
-	./insertTweetsAndUsersToDB.pl $file
+	./insertTweetsAndUsersToDB.pl "2021-03-25/$file"
+	echo "$file log-> $?" >> log.txt
 	perc=`bc <<< "$iter * 100 / $total"`
 	echo "Percentage of scanned files: $perc"
 	iter=$((iter+1))
 	clear
-	break
 done
 

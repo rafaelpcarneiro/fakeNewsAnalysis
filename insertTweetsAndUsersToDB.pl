@@ -311,6 +311,7 @@ open my $fh , '<:utf8', $ARGV[0] || die "problem to open the file";
 #### Selecting pairs (keyword:value) from the JSON file.
 #### Regular expressions are used
 my $text = <$fh>;
+
 close $fh; # the file has only one line.
 
 # Make every number not enclosed by quotes to be quoted.
@@ -344,6 +345,7 @@ $text =~ s/}],"places"/"}"],"places"/g;
 ### databases.
 my @selected = $text =~ m/"(.*?)"/g;
 #print @selected;
+#exit;
 
 $i = 0;
 $tweetCounter = 0;
