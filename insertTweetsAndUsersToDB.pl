@@ -39,9 +39,6 @@
 #        ||   text,                               ||
 #        || }                                     ||
 #        ===========================================
-#        ||	TODO. Actually all type values are    ||
-#        || represented differently of what is    ||
-#        || said down bellow!!!) 				  ||
 #        || Obs: 'type' has as values:            ||
 #        || * retweeted;                          ||
 #        || * quoted                              ||
@@ -83,6 +80,7 @@
 
 use strict;
 use warnings;
+use DBI;
 
 
 #print utf8 encoding at terminal!!!
@@ -153,11 +151,11 @@ sub createTweetForm {
 			$Tweet {'text'} = $data [++$i];
 		}
 
-		$Tweet ['type'] = 'doesnt_have_parent' if (!defined ($Tweet ['type']));
+		$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 		$i++;
 	}	
 	
-	$Tweet {'text'} = '' if ($Tweet {'type'} eq 'retweeted');
+	$Tweet {'text'} = undef if ($Tweet {'type'} eq 'retweeted');
 	return \%Tweet;
 }
 
@@ -271,7 +269,7 @@ sub createTweetForm2 {
 			$Tweet {'text'} = $data [++$i];
 		}
 
-		$Tweet ['type'] = 'doesnt_have_parent' if (!defined ($Tweet ['type']));
+		$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 		$i++;
 	}	
 	
@@ -328,7 +326,7 @@ $text =~ s/"tweets":\[\{/"tweets":\["\{"/g;
 $text =~ s/}]},"meta"/"}"]},"meta"/g;
 
 
-### Storing all info into hashs. Then we export to relational
+### Storing all info into hashs. Then we will export it to relational
 ### databases.
 my @selected = $text =~ m/"(.*?)"/g;
 
@@ -342,7 +340,7 @@ until ($selected [$i] eq 'includes'){
 		$j = ++$i;
 		++$j until ($selected [$j] eq '}');
 		$listOfTweets [$tweetCounter] =
-	   					 	createTweetForm @selected[$i .. ($j - 1)];
+			createTweetForm @selected[$i .. ($j - 1)];
 		$i = ++$j;
 	}
 	++$tweetCounter;
@@ -354,7 +352,7 @@ until ($selected [$i] eq 'tweets'){
 		$j = ++$i;
 		++$j until ($selected[$j] eq '}');
 		$listOfUsers [$userCounter] =
-	   					 	createUserForm @selected [$i .. ($j - 1)];
+			createUserForm @selected [$i .. ($j - 1)];
 		$i = ++$j;
 	}
 	++$userCounter;
@@ -367,7 +365,7 @@ until ($selected [$i] eq 'meta'){
 		$j = ++$i;
 		++$j until ($selected[$j] eq '}');
 		$listOfTweets [$tweetCounter] =
-	   					 	createTweetForm2 @selected [$i .. ($j - 1)];
+			createTweetForm2 @selected [$i .. ($j - 1)];
 		$i = ++$j;
 	}
 	++$tweetCounter;
@@ -390,6 +388,52 @@ until ($selected [$i] eq 'meta'){
 #	print "\n\n";
 #}
 
-
+################## INSERTING VALUES AT THE DATABASE #######################
 #### Now we will export all data found at the JSON files
 #### to our relational database
+my $dbfile = 'twitter.db';
+
+my $dsn = "dbi:SQLite:dbname=$dbfile";
+my $user = '';
+my $password ='';
+my $dbh = DBI->connect ($dsn, $user, $password, {
+	PrintError		 => 0,
+	RaiseError		 => 1,
+	AutoCommit		 => 1,
+	FetchHashKeyName => 'NAME_lc',
+});
+
+my %Tweet;
+foreach (@listOfTweets){
+	%Tweet = %{ $_ };
+	$dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+		undef,
+		$Tweet {'tweet_id'},
+		$Tweet {'type'},
+		$Tweet {'retweet_count'},
+		$Tweet {'like_count'},
+		$Tweet {'reply_count'},
+		$Tweet {'quote_count'},
+		$Tweet {'language'},
+		$Tweet {'text'},
+		$Tweet {'tweet_created_at'},
+		$Tweet {'parent_tweet_id'},
+		$Tweet {'author_id'}
+		);
+}
+
+#my %User;
+#foreach (@listOfUsers) {
+#	%User = %{ $_ };
+#	$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
+#		undef,
+#		$User {'id'},
+#		$User {'name'},
+#		$User {'username'},
+#		$User {'location'},
+#		$User {'follower_count'},
+#		$User {'following_count'},
+#		$User {'tweet_count'},
+#		);
+#}
+$dbh->disconnect;
