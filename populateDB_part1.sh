@@ -2,7 +2,7 @@
 # Here I will populate the relational database, called twitter.db, with all tweets
 # that I have stored in the folder 2021-03-25. 
 
-touch log.txt
+rm log.txt
 echo "Populating the database."
 echo "Please do not turn off the laptop until the operation has finished"
 

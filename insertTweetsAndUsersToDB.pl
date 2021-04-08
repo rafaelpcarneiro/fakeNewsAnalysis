@@ -429,38 +429,75 @@ my $dbh = DBI->connect ($dsn, $user, $password, {
 
 my %Tweet;
 my $errorHandle;
+my $sqlComand =  $dbh->prepare('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
 foreach (@listOfTweets){
 	%Tweet = %{ $_ };
 
-	$errorHandle = $dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
-		undef,
-		$Tweet {'tweet_id'},
-		$Tweet {'type'},
-		$Tweet {'retweet_count'},
-		$Tweet {'like_count'},
-		$Tweet {'reply_count'},
-		$Tweet {'quote_count'},
-		$Tweet {'language'},
-		$Tweet {'text'},
-		$Tweet {'tweet_created_at'},
-		$Tweet {'place_id'},
-		$Tweet {'parent_tweet_id'},
-		$Tweet {'author_id'}
-	);
+	$sqlComand->execute($Tweet {'tweet_id'},
+						$Tweet {'type'},
+						$Tweet {'retweet_count'},
+						$Tweet {'like_count'},
+						$Tweet {'reply_count'},
+						$Tweet {'quote_count'},
+						$Tweet {'language'},
+						$Tweet {'text'},
+						$Tweet {'tweet_created_at'},
+						$Tweet {'place_id'},
+						$Tweet {'parent_tweet_id'},
+						$Tweet {'author_id'} );
+
+	if ( $sqlComand->err ){
+		print "Problem with tweet: $Tweet {'tweet_id'}\n";
+		print "Type:               $Tweet {'type'}\n";
+		print "Author:             $Tweet {'author_id'}\n";
+		print "Parent_tweet_id     $Tweet {'parent_tweet_id'}\n";
+		print "\n";
+		print "DBI ERROR! : $sth->err : $sth->errstr \n";
+	}
+	#$errorHandle = $dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+	#	undef,
+	#	$Tweet {'tweet_id'},
+	#	$Tweet {'type'},
+	#	$Tweet {'retweet_count'},
+	#	$Tweet {'like_count'},
+	#	$Tweet {'reply_count'},
+	#	$Tweet {'quote_count'},
+	#	$Tweet {'language'},
+	#	$Tweet {'text'},
+	#	$Tweet {'tweet_created_at'},
+	#	$Tweet {'place_id'},
+	#	$Tweet {'parent_tweet_id'},
+	#	$Tweet {'author_id'}
+	#);
 }
 
 my %User;
+my $sqlComand =  $dbh->prepare('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)');
 foreach (@listOfUsers) {
 	%User = %{ $_ };
-	$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
-		undef,
-		$User {'id'},
-		$User {'name'},
-		$User {'username'},
-		$User {'location'},
-		$User {'followers_count'},
-		$User {'following_count'},
-		$User {'tweet_count'}
-	);
+
+	$sqlComand->execute($User {'id'},
+						$User {'name'},
+						$User {'username'},
+						$User {'location'},
+						$User {'followers_count'},
+						$User {'following_count'},
+						$User {'tweet_count'});
+
+	if ( $sqlComand->err ){
+		print "Problem with user: $User {'id'}\n";
+		print "\n";
+		print "DBI ERROR! : $sth->err : $sth->errstr \n";
+	}
+	#$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
+	#	undef,
+	#	$User {'id'},
+	#	$User {'name'},
+	#	$User {'username'},
+	#	$User {'location'},
+	#	$User {'followers_count'},
+	#	$User {'following_count'},
+	#	$User {'tweet_count'}
+	#);
 }
 $dbh->disconnect;
