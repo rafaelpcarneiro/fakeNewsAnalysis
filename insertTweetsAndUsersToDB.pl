@@ -409,7 +409,7 @@ until ($selected [$i] eq 'meta' || $selected [$i] eq 'errors' || $selected [$i] 
 #	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
 #	print "\n\n";
 #}
-exit;
+     
 ################## INSERTING VALUES AT THE DATABASE #######################
 #### Now we will export all data found at the JSON files
 #### to our relational database
