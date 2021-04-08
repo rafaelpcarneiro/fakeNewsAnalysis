@@ -429,11 +429,11 @@ my $dbh = DBI->connect ($dsn, $user, $password, {
 
 my %Tweet;
 my $errorHandle;
-my $sqlComand =  $dbh->prepare('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
+my $sqlCommand =  $dbh->prepare('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
 foreach (@listOfTweets){
 	%Tweet = %{ $_ };
 
-	$sqlComand->execute($Tweet {'tweet_id'},
+	$sqlCommand->execute($Tweet {'tweet_id'},
 						$Tweet {'type'},
 						$Tweet {'retweet_count'},
 						$Tweet {'like_count'},
@@ -446,13 +446,18 @@ foreach (@listOfTweets){
 						$Tweet {'parent_tweet_id'},
 						$Tweet {'author_id'} );
 
-	if ( $sqlComand->err ){
-		print "Problem with tweet: $Tweet {'tweet_id'}\n";
-		print "Type:               $Tweet {'type'}\n";
-		print "Author:             $Tweet {'author_id'}\n";
-		print "Parent_tweet_id     $Tweet {'parent_tweet_id'}\n";
+	if ( $sqlCommand->err ){
+		print "Problem with tweet: $Tweet{'tweet_id'}\n";
+		print "Type:               $Tweet{'type'}\n";
+		print "Author:             $Tweet{'author_id'}\n";
+		if ( defined($Tweet{parent_tweet_id}) ) {
+			print "Parent_tweet_id:     $Tweet{parent_tweet_id}\n";
+		}
+		else {
+			print "Parent_tweet_id:     null\n";
+		}
 		print "\n";
-		print "DBI ERROR! : $sth->err : $sth->errstr \n";
+		print "DBI ERROR! : $sqlCommand->err : $sqlCommand->errstr \n";
 	}
 	#$errorHandle = $dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
 	#	undef,
@@ -472,11 +477,11 @@ foreach (@listOfTweets){
 }
 
 my %User;
-my $sqlComand =  $dbh->prepare('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)');
+$sqlCommand =  $dbh->prepare('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)');
 foreach (@listOfUsers) {
 	%User = %{ $_ };
 
-	$sqlComand->execute($User {'id'},
+	$sqlCommand->execute($User {'id'},
 						$User {'name'},
 						$User {'username'},
 						$User {'location'},
@@ -484,10 +489,10 @@ foreach (@listOfUsers) {
 						$User {'following_count'},
 						$User {'tweet_count'});
 
-	if ( $sqlComand->err ){
-		print "Problem with user: $User {'id'}\n";
+	if ( $sqlCommand->err ){
+		print "Problem with user: $User{'id'}\n";
 		print "\n";
-		print "DBI ERROR! : $sth->err : $sth->errstr \n";
+		print "DBI ERROR! : $sqlCommand->err : $sqlCommand->errstr \n";
 	}
 	#$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
 	#	undef,
