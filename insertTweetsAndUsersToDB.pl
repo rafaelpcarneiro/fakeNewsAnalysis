@@ -311,8 +311,6 @@ open my $fh , '<:utf8', $ARGV[0] || die "problem to open the file";
 #### Selecting pairs (keyword:value) from the JSON file.
 #### Regular expressions are used
 my $text = <$fh>;
-print $text;
-exit;
 
 close $fh; # the file has only one line.
 
@@ -342,7 +340,6 @@ $text =~ s/}]},"errors"/"}"]},"errors"/g;
 $text =~ s/}],"places"/"}"],"places"/g;
 
 
-
 ### Storing all info into hashs. Then we will export it to relational
 ### databases.
 my @selected = $text =~ m/"(.*?)"/g;
@@ -350,11 +347,10 @@ my @selected = $text =~ m/"(.*?)"/g;
 #exit;
 
 $i = 0;
-$tweetCounter = 0;
 ++$i until ($selected [$i] eq 'data');
 
-++$i;
-until ($selected [$i] eq 'includes'){
+++$i, $tweetCounter = 0;
+until ($selected [$i] eq 'includes'|| $selected [$i] eq 'errors' || $selected [$i] eq 'places'){
 	if ($selected [$i] eq '{') {
 		$j = ++$i;
 		++$j until ($selected [$j] eq '}');
@@ -365,8 +361,10 @@ until ($selected [$i] eq 'includes'){
 	++$tweetCounter;
 }
 
-$i += 2, $userCounter = 0;
-until ($selected [$i] eq 'tweets'){
+++$i until ($selected [$i] eq 'users');
+#$i += 2, 
+++$i, $userCounter = 0;
+until ($selected [$i] eq 'tweets'|| $selected [$i] eq 'errors' || $selected [$i] eq 'places'){
 	if ($selected [$i] eq '{') {
 		$j = ++$i;
 		++$j until ($selected[$j] eq '}');
@@ -378,6 +376,7 @@ until ($selected [$i] eq 'tweets'){
 }
 
 
+++$i until ($selected [$i] eq 'tweets');
 $i += 1;
 until ($selected [$i] eq 'meta' || $selected [$i] eq 'errors' || $selected [$i] eq 'places'){
 	if ($selected [$i] eq '{') {
@@ -406,55 +405,55 @@ until ($selected [$i] eq 'meta' || $selected [$i] eq 'errors' || $selected [$i] 
 #	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
 #	print "\n\n";
 #}
-
+exit;
 ################## INSERTING VALUES AT THE DATABASE #######################
 #### Now we will export all data found at the JSON files
 #### to our relational database
-#my $dbfile = 'twitter.db';
-#
-#my $dsn = "dbi:SQLite:dbname=$dbfile";
-#my $user = '';
-#my $password ='';
-#my $dbh = DBI->connect ($dsn, $user, $password, {
-#	PrintError		 => 0,
-#	RaiseError		 => 1,
-#	AutoCommit		 => 1,
-#	FetchHashKeyName => 'NAME_lc',
-#});
-#
-#my %Tweet;
-#foreach (@listOfTweets){
-#	%Tweet = %{ $_ };
-#
-#	$dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
-#		undef,
-#		$Tweet {'tweet_id'},
-#		$Tweet {'type'},
-#		$Tweet {'retweet_count'},
-#		$Tweet {'like_count'},
-#		$Tweet {'reply_count'},
-#		$Tweet {'quote_count'},
-#		$Tweet {'language'},
-#		$Tweet {'text'},
-#		$Tweet {'tweet_created_at'},
-#		$Tweet {'place_id'},
-#		$Tweet {'parent_tweet_id'},
-#		$Tweet {'author_id'}
-#	);
-#}
-#
-#my %User;
-#foreach (@listOfUsers) {
-#	%User = %{ $_ };
-#	$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
-#		undef,
-#		$User {'id'},
-#		$User {'name'},
-#		$User {'username'},
-#		$User {'location'},
-#		$User {'followers_count'},
-#		$User {'following_count'},
-#		$User {'tweet_count'}
-#		);
-#}
-#$dbh->disconnect;
+my $dbfile = 'twitter.db';
+
+my $dsn = "dbi:SQLite:dbname=$dbfile";
+my $user = '';
+my $password ='';
+my $dbh = DBI->connect ($dsn, $user, $password, {
+	PrintError		 => 0,
+	RaiseError		 => 1,
+	AutoCommit		 => 1,
+	FetchHashKeyName => 'NAME_lc',
+});
+
+my %Tweet;
+foreach (@listOfTweets){
+	%Tweet = %{ $_ };
+
+	$dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+		undef,
+		$Tweet {'tweet_id'},
+		$Tweet {'type'},
+		$Tweet {'retweet_count'},
+		$Tweet {'like_count'},
+		$Tweet {'reply_count'},
+		$Tweet {'quote_count'},
+		$Tweet {'language'},
+		$Tweet {'text'},
+		$Tweet {'tweet_created_at'},
+		$Tweet {'place_id'},
+		$Tweet {'parent_tweet_id'},
+		$Tweet {'author_id'}
+	);
+}
+
+my %User;
+foreach (@listOfUsers) {
+	%User = %{ $_ };
+	$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
+		undef,
+		$User {'id'},
+		$User {'name'},
+		$User {'username'},
+		$User {'location'},
+		$User {'followers_count'},
+		$User {'following_count'},
+		$User {'tweet_count'}
+		);
+}
+$dbh->disconnect;

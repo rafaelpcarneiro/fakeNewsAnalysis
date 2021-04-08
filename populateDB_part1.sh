@@ -9,9 +9,16 @@ do
 	
 	echo ""
 	echo ""
+	sleep 5
+	echo "Starting now..."
+	sleep 3
 
-	echo "$file log-> $?" >> log.txt
-	echo "$file log-> $?"
 	./insertTweetsAndUsersToDB.pl "2021-03-25/$file"
+	echo "$file log-> $?" >> log.txt
+	echo "Scaning fole $file?"
 done
+
+echo "All files have been scanned. Check check the log file to see if"
+echo "everything went fine. 0 means that the nothing wrong occurred during"
+echo "the scanning."
 
