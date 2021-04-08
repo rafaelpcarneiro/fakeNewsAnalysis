@@ -80,7 +80,9 @@
 
 use strict;
 use warnings;
+
 use DBI;
+#use Try::Tiny;
 
 
 #print utf8 encoding at terminal!!!
@@ -420,16 +422,17 @@ my $user = '';
 my $password ='';
 my $dbh = DBI->connect ($dsn, $user, $password, {
 	PrintError		 => 0,
-	RaiseError		 => 1,
+	RaiseError		 => 0,
 	AutoCommit		 => 1,
 	FetchHashKeyName => 'NAME_lc',
 });
 
 my %Tweet;
+my $errorHandle;
 foreach (@listOfTweets){
 	%Tweet = %{ $_ };
 
-	$dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+	$errorHandle = $dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
 		undef,
 		$Tweet {'tweet_id'},
 		$Tweet {'type'},
@@ -458,6 +461,6 @@ foreach (@listOfUsers) {
 		$User {'followers_count'},
 		$User {'following_count'},
 		$User {'tweet_count'}
-		);
+	);
 }
 $dbh->disconnect;
