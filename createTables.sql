@@ -9,7 +9,7 @@ CREATE TABLE tweet_user (
 	followers_count INT  NOT NULL,
 	following_count INT  NOT NULL,
 	tweet_count 	INT  NOT NULL,
-		
+
 	PRIMARY KEY (id)
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE tweet (
 	parent_tweet_id INT  NULL,
 	author_tweet_id INT  NOT NULL,
 
-	PRIMARY KEY (tweet_key),
+	PRIMARY KEY (tweet_id),
 	FOREIGN KEY (parent_tweet_id) REFERENCES tweet (tweet_id),
 	FOREIGN KEY (author_tweet_id) REFERENCES tweet_user (id)
 );
@@ -64,13 +64,14 @@ CREATE TABLE who_quoted_tweet_Y (
 
 	PRIMARY KEY (tweet_Y, user_who_quoted_tweet_Y),
 	FOREIGN KEY (tweet_Y) REFERENCES tweet (tweet_id),
-	FOREIGN KEY (user_who_quoted_tweet_Y) REFERENCES tweet_user (id),
+	FOREIGN KEY (user_who_quoted_tweet_Y) REFERENCES tweet_user (id)
 );
+
 CREATE TABLE who_answered_tweet_Y (
-	tweet_Y INT NOT NULL,
+	tweet_Y             INT NOT NULL,
 	user_who_answered_Y INT NOT NULL,
 
-	PRIMARY KEY (tweet_Y, user_who_answered_tweet_Y),
+	PRIMARY KEY (tweet_Y, user_who_answered_Y),
 	FOREIGN KEY (tweet_Y) REFERENCES tweet (tweet_id),
-	FOREIGN KEY (user_who_answered_tweet_Y) REFERENCES tweet_user (id),
+	FOREIGN KEY (user_who_answered_Y) REFERENCES tweet_user (id)
 );
