@@ -317,7 +317,11 @@ close $fh; # the file has only one line.
 # Make every number not enclosed by quotes to be quoted.
 $text =~ s/:(\d*?)([,}])/:\"$1\"$2/g;
 
-# Make sure that double quotation inside text is done with single quotes
+# Making sure that the string "\\"" doesn't break my program.
+# It happened when somebody wrote :-\\"
+$text =~ s/\\\\"/\\\\ "/g;
+
+# Making sure that double quotation inside text is done with single quotes
 $text =~ s/\\"/'/g;
 
 # Now we select all keywords from the JSON file. Every keyword
