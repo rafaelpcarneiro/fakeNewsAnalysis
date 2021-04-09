@@ -41,10 +41,11 @@
 #        ===========================================
 #        || Obs: 'type' has as values:            ||
 #        || * retweeted;                          ||
-#        || * quoted                              ||
 #        || * replied_to                          ||
-#        || * doesnt_have_parents                 ||
-#        ||										  ||
+#        || * quoted_plus_replied_to              ||
+#        || * simple_message                      ||
+#        ||	* quoted_plus_simple_message 		  ||
+#        ||                                       ||
 #        || Obs: If a tweet has no parent then    ||
 #        || parent_tweet_id and parent_author_id  ||
 #        || will have the value undef.            ||
@@ -97,6 +98,7 @@ sub createTweetForm {
 	my %Tweet;
 	%Tweet = (
 		type					 => undef,                                  
+		quote_id				 => undef,
 		parent_tweet_id 		 => undef,                    
 		#parent_author_id 		 => undef,                   
 		tweet_id 				 => undef,                           
@@ -115,18 +117,32 @@ sub createTweetForm {
 
 	my $i    = 0;
 	my @data = @_;
+	my $temp1    = undef, my $temp2    = undef; # variables to handle type values
+	my $temp1_id = undef, my $temp2_id = undef; # variables to handle type values
 
 	while ($i < @_) {
 
 		if ($data [$i] eq 'id') {
 			$Tweet {'tweet_id'} = $data [++$i];
 		}
-		elsif ($data [$i] eq 'referenced_tweets') {
-			$i++;
-			$Tweet {'type'} = $data [++$i];
+		#elsif ($data [$i] eq 'referenced_tweets') {
+		#	$i++;
+		#	$Tweet {'type'} = $data [++$i];
 
-			$i++;
-			$Tweet {'parent_tweet_id'} = $data [++$i];
+		#	$i++;
+		#	$Tweet {'parent_tweet_id'} = $data [++$i];
+		#}
+		elsif ($data [$i] eq 'type' && !defined($temp1)){
+			$temp1 = $data [++$i];
+
+			++$i;
+			$temp1_id = $data [++$i];
+		}
+		elsif ($data [$i] eq 'type' && defined($temp1)){
+			$temp2 = $data [++$i];
+
+			++$i;
+			$temp2_id = $data [++$i];
 		}
 		elsif ($data [$i] eq 'lang') {
 			$Tweet {'language'} = $data [++$i];
@@ -160,7 +176,32 @@ sub createTweetForm {
 		$i++;
 	}	
 	
-	$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
+	if ( !defined($temp1) && !defined($temp2) ){
+		$Tweet {'type'} = 'simple_message';
+	}
+	elsif ( defined($temp1) && !defined($temp2) ){
+		if ($temp1 eq 'quoted') {
+			$Tweet {'type'} 	       = 'quoted_plus_simple_message';
+			$Tweet {'quote_id'}        = $temp1_id; 
+		}
+		elsif ($temp1 eq 'replied_to') {
+			$Tweet {'type'}        	   = 'replied_to';
+			$Tweet {'parent_tweet_id'} = $temp1_id;
+		}
+		else {
+			$Tweet {'type'} 	       = 'retweeted';
+			$Tweet {'parent_tweet_id'} = $temp1_id;
+		}
+	}
+	else {
+		$Tweet {'type'}     = 'quoted_plus_replied_to';
+		$Tweet {'quote_id'} = $temp1_id if ($temp1 eq 'quoted');
+		$Tweet {'quote_id'} = $temp1_id if ($temp2 eq 'quoted');
+
+		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp1 eq 'replied_to');
+		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
+	}
+	#$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 	$Tweet {'text'} = undef if ($Tweet {'type'} eq 'retweeted');
 	return \%Tweet;
 }
@@ -214,6 +255,8 @@ sub createUserForm {
 	return \%User;
 }
 
+## TODO Incorporate a flag to the createTweetForm so
+## the function below won't be necessary anymore.(CreateTweetForm2 is redundant)
 sub createTweetForm2 {
 # this function will receive as parameter an array and it will return
 # a reference to a hash called Tweet.
@@ -221,6 +264,7 @@ sub createTweetForm2 {
 	my %Tweet;
 	%Tweet = (
 		type					 => undef,
+		quote_id				 => undef,
 		tweet_id 				 => undef,                           
 		author_id 				 => undef,                          
 		parent_tweet_id          => undef,
@@ -237,18 +281,32 @@ sub createTweetForm2 {
 
 	my $i    = 0;
 	my @data = @_;
+	my $temp1    = undef, my $temp2    = undef; # variables to handle type values
+	my $temp1_id = undef, my $temp2_id = undef; # variables to handle type values
 
 	while ($i < @_) {
 
 		if ($data [$i] eq 'id') {
 			$Tweet {'tweet_id'} = $data [++$i];
 		}
-		elsif ($data [$i] eq 'referenced_tweets') {
-			$i++;
-			$Tweet {'type'} = $data [++$i];
+		#elsif ($data [$i] eq 'referenced_tweets') {
+		#	$i++;
+		#	$Tweet {'type'} = $data [++$i];
 
-			$i++;
-			$Tweet {'parent_tweet_id'} = $data [++$i];
+		#	$i++;
+		#	$Tweet {'parent_tweet_id'} = $data [++$i];
+		#}
+		elsif ($data [$i] eq 'type' && !defined($temp1)){
+			$temp1 = $data [++$i];
+
+			++$i;
+			$temp1_id = $data [++$i];
+		}
+		elsif ($data [$i] eq 'type' && defined($temp1)){
+			$temp2 = $data [++$i];
+
+			++$i;
+			$temp2_id = $data [++$i];
 		}
 		elsif ($data [$i] eq 'lang') {
 			$Tweet {'language'} = $data [++$i];
@@ -282,7 +340,32 @@ sub createTweetForm2 {
 		$i++;
 	}	
 	
-	$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
+	if ( !defined($temp1) && !defined($temp2) ){
+		$Tweet {'type'} = 'simple_message';
+	}
+	elsif ( defined($temp1) && !defined($temp2) ){
+		if ($temp1 eq 'quoted') {
+			$Tweet {'type'} 	       = 'quoted_plus_simple_message';
+			$Tweet {'quote_id'}        = $temp1_id;
+		}
+		elsif ($temp1 eq 'replied_to') {
+			$Tweet {'type'}        	   = 'replied_to';
+			$Tweet {'parent_tweet_id'} = $temp1_id;
+		}
+		else {
+			$Tweet {'type'} 	       = 'retweeted';
+			$Tweet {'parent_tweet_id'} = $temp1_id;
+		}
+	}
+	else {
+		$Tweet {'type'}     = 'quoted_plus_replied_to';
+		$Tweet {'quote_id'} = $temp1_id if ($temp1 eq 'quoted');
+		$Tweet {'quote_id'} = $temp1_id if ($temp2 eq 'quoted');
+
+		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp1 eq 'replied_to');
+		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
+	}
+	#$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 	return \%Tweet;
 }
 
@@ -326,13 +409,19 @@ $text =~ s/\\\\"/\\\\ "/g;
 # Making sure that double quotation inside text is done with single quotes
 $text =~ s/\\"/'/g;
 
-# Now we select all keywords from the JSON file. Every keyword
+# Making sure that coordinate types won't ruin the program
+$text =~ s/\"coordinates\":\{\"type\"/\"coordinates\":\{\"coordinates_type\"/g;
+
+# Now we just need toselect all keywords from the JSON file. Every keyword
 # is quoted. Thus we just need to do a quick search for double
 # quotes
 
-# Now we need to wisely select {} such that all individuals and
-# tweets can be splited.
+# But before, we need to wisely select {} such that all individuals and
+# tweets can be selected separetedely.
+$text =~ s/referenced_tweets\":\[([^}]*?)},\{(.*?)]/referenced_tweets\":\[$1,$2,/g;
+
 $text =~ s/},\{/"}","\{"/g;
+
 
 $text =~ s/"data":\[\{/"data":\["\{"/g;
 $text =~ s/}],"includes"/"}"],"includes"/g;
@@ -345,6 +434,8 @@ $text =~ s/}]},"meta"/"}"]},"meta"/g;
 $text =~ s/}]},"errors"/"}"]},"errors"/g;
 $text =~ s/}],"places"/"}"],"places"/g;
 
+#print $text;
+#exit;
 
 ### Storing all info into hashs. Then we will export it to relational
 ### databases.
@@ -428,7 +519,6 @@ my $dbh = DBI->connect ($dsn, $user, $password, {
 });
 
 my %Tweet;
-my $errorHandle;
 my $sqlCommand =  $dbh->prepare('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
 foreach (@listOfTweets){
 	%Tweet = %{ $_ };
@@ -446,34 +536,17 @@ foreach (@listOfTweets){
 						$Tweet {'parent_tweet_id'},
 						$Tweet {'author_id'} );
 
-	if ( $sqlCommand->err ){
+	if ( $sqlCommand->{err} ){
+		print "\n";
 		print "Problem with tweet: $Tweet{'tweet_id'}\n";
 		print "Type:               $Tweet{'type'}\n";
 		print "Author:             $Tweet{'author_id'}\n";
-		if ( defined($Tweet{parent_tweet_id}) ) {
-			print "Parent_tweet_id:     $Tweet{parent_tweet_id}\n";
-		}
-		else {
-			print "Parent_tweet_id:     null\n";
-		}
+
 		print "\n";
-		print "DBI ERROR! : $sqlCommand->err : $sqlCommand->errstr \n";
+		print "DBI ERROR! : $sqlCommand->{err} : $sqlCommand->{errstr} \n";
+		print "\n";
+		print "\n";
 	}
-	#$errorHandle = $dbh->do('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
-	#	undef,
-	#	$Tweet {'tweet_id'},
-	#	$Tweet {'type'},
-	#	$Tweet {'retweet_count'},
-	#	$Tweet {'like_count'},
-	#	$Tweet {'reply_count'},
-	#	$Tweet {'quote_count'},
-	#	$Tweet {'language'},
-	#	$Tweet {'text'},
-	#	$Tweet {'tweet_created_at'},
-	#	$Tweet {'place_id'},
-	#	$Tweet {'parent_tweet_id'},
-	#	$Tweet {'author_id'}
-	#);
 }
 
 my %User;
@@ -489,20 +562,11 @@ foreach (@listOfUsers) {
 						$User {'following_count'},
 						$User {'tweet_count'});
 
-	if ( $sqlCommand->err ){
+	if ( $sqlCommand->{err} ){
+		print "\n";
 		print "Problem with user: $User{'id'}\n";
 		print "\n";
-		print "DBI ERROR! : $sqlCommand->err : $sqlCommand->errstr \n";
+		print "DBI ERROR! : $sqlCommand->{err} : $sqlCommand->{errstr} \n";
 	}
-	#$dbh->do('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)',
-	#	undef,
-	#	$User {'id'},
-	#	$User {'name'},
-	#	$User {'username'},
-	#	$User {'location'},
-	#	$User {'followers_count'},
-	#	$User {'following_count'},
-	#	$User {'tweet_count'}
-	#);
 }
 $dbh->disconnect;
