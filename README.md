@@ -40,7 +40,3 @@ Down below there is the diagram of my ER model.
 At the file <a href=./db.relationalmodel>Relational Model</a> it is possible
 to read the schemas that compose my database!
 
-
-
-
-
