@@ -29,7 +29,7 @@
 # 		  => The tweet ID;
 #		  => The ID of the owner who wrote it;
 #		  => The text of the tweet;
-#         => A list up to 100 elements that have LIKED the tweet;
+#	          => A list up to 100 elements that have LIKED the tweet;
 #		  => A list up to 100 elements that have RT the tweet;
 #
 #
@@ -58,16 +58,16 @@ deltaM=0
 # time interval [t0,t0 + deltaH:deltaM] of a day ranging through startSearch
 # to endSearch. This can be seen at table below:
 #
-#			Date				initial time	end time
+#			Date		initial time	end time
 #			--------------------------------------------
-#			startSearch	 		t0				t0 + deltaH:deltaM
-#			startSearch + 1 	t0				t0 + deltaH:deltaM
-#			startSearch + 2 	t0				t0 + deltaH:deltaM
-#			startSearch + 3 	t0				t0 + deltaH:deltaM
-#				.				.				.
-#				.				.				.
-#				.				.				.
-#			endSearch 		 	t0				t0 + deltaH:deltaM
+#			startSearch 		t0	t0 + deltaH:deltaM
+#			startSearch + 1 	t0	t0 + deltaH:deltaM
+#			startSearch + 2 	t0	t0 + deltaH:deltaM
+#			startSearch + 3 	t0	t0 + deltaH:deltaM
+#				.		.		.
+#				.		.		.
+#				.		.		.
+#			endSearch 	 	t0	t0 + deltaH:deltaM
 #
 # If you want to search for tweets published at a one specifc day, just
 # set: startSearch=endSearch-1. (Note that later the script will correct
@@ -307,7 +307,7 @@ do
     ############### WRITING THE URL TO MAKE THE REQUESTS #################
 
 	######################### TIME VARIABLES #############################
-    # Time: t0 (UTC)
+    	# Time: t0 (UTC)
 	#timeToStartSearch="$dayToSearch""T22:30:00Z"
 	strDate=$dayToSearch"T"$t0"Z"
 	timeToStartSearch=`date -d "$strDate" -u "+%Y-%m-%dT%H:%M:%SZ"`
@@ -369,4 +369,5 @@ do
 	searchThroughoutPagination $next_token $dayToSearch $twitterAPI
 
 	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
+
 done	

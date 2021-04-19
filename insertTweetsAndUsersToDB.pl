@@ -1,5 +1,7 @@
 #!/usr/bin/perl
+# vim: foldmethod=marker:
 #
+#|--- Documentation {{{
 # A tweet can be seen as as a set X which satisfies one of the following
 # conditions (a) or (b):
 #
@@ -44,7 +46,7 @@
 #        || * replied_to                          ||
 #        || * quoted_plus_replied_to              ||
 #        || * simple_message                      ||
-#        ||	* quoted_plus_simple_message 		  ||
+#        ||	* quoted_plus_simple_message 	  ||
 #        ||                                       ||
 #        || Obs: If a tweet has no parent then    ||
 #        || parent_tweet_id and parent_author_id  ||
@@ -78,40 +80,40 @@
 # (Obs: Our database has its representation by an Entity-Relationship diagram.
 # 		The diagram can be found here: 'er.png')
 #
+# }}}
 
 use strict;
 use warnings;
 
 use DBI;
-#use Try::Tiny;
-
 
 #print utf8 encoding at terminal!!!
 binmode(STDOUT, ":utf8");
 
 ######################### AUXILIARY FUNCTIONS ##############################
 
-sub createTweetForm {
+#|--- Function: createTweetForm {{{
+sub createTweetForm { 
 # this function will receive as parameter an array and it will return
 # a reference to a hash called Tweet.
 # (Obs: This function must be used for the the JSON element called "data")
 	my %Tweet;
 	%Tweet = (
-		type					 => undef,                                  
-		quote_id				 => undef,
+		type				 => undef,                                  
+		quote_id			 => undef,
 		parent_tweet_id 		 => undef,                    
 		#parent_author_id 		 => undef,                   
-		tweet_id 				 => undef,                           
-		author_id 				 => undef,                          
+		tweet_id 			 => undef,                           
+		author_id 			 => undef,                          
 		#parent_tweet_created_at  => '',            
 		tweet_created_at 		 => undef,                   
 		retweet_count			 => undef,                           
 		reply_count 			 => undef,                        
-		like_count 				 => undef,                         
+		like_count 			 => undef,                         
 		quote_count 			 => undef,                        
-		language 				 => undef,                           
-		text 					 => undef,
-		place_id				 => undef
+		language 			 => undef,                           
+		text 				 => undef,
+		place_id			 => undef
 	);
 	
 
@@ -181,7 +183,7 @@ sub createTweetForm {
 	}
 	elsif ( defined($temp1) && !defined($temp2) ){
 		if ($temp1 eq 'quoted') {
-			$Tweet {'type'} 	       = 'quoted_plus_simple_message';
+			$Tweet {'type'}            = 'quoted_plus_simple_message';
 			$Tweet {'quote_id'}        = $temp1_id; 
 		}
 		elsif ($temp1 eq 'replied_to') {
@@ -189,7 +191,7 @@ sub createTweetForm {
 			$Tweet {'parent_tweet_id'} = $temp1_id;
 		}
 		else {
-			$Tweet {'type'} 	       = 'retweeted';
+			$Tweet {'type'}            = 'retweeted';
 			$Tweet {'parent_tweet_id'} = $temp1_id;
 		}
 	}
@@ -204,21 +206,22 @@ sub createTweetForm {
 	#$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 	$Tweet {'text'} = undef if ($Tweet {'type'} eq 'retweeted');
 	return \%Tweet;
-}
+} # }}}
 
+#|--- Function createUserForm {{{
 sub createUserForm {
 # this function will receive as parameter an array and it will return
 # a reference to a hash called User.
 	my %User;
 	%User = (
-		id 				 => undef,                          
+		id 		 => undef,                          
 		username         => undef,
 		name             => undef,
 		followers_count  => undef,
 		following_count  => undef,
 		tweet_count      => undef,
-		location		 => undef,
-		created_at		 => undef
+		location	 => undef,
+		created_at	 => undef
 	);
 	
 
@@ -253,29 +256,30 @@ sub createUserForm {
 	}	
 
 	return \%User;
-}
+} # }}}
 
 ## TODO Incorporate a flag to the createTweetForm so
 ## the function below won't be necessary anymore.(CreateTweetForm2 is redundant)
+#|--- Function createTweetForm2 {{{
 sub createTweetForm2 {
 # this function will receive as parameter an array and it will return
 # a reference to a hash called Tweet.
 # (Obs: This function must be used for the the JSON element called "tweets")
 	my %Tweet;
 	%Tweet = (
-		type					 => undef,
-		quote_id				 => undef,
-		tweet_id 				 => undef,                           
-		author_id 				 => undef,                          
+		type			 => undef,
+		quote_id		 => undef,
+		tweet_id 		 => undef,                           
+		author_id 		 => undef,                          
 		parent_tweet_id          => undef,
-		tweet_created_at 		 => undef,                   
-		retweet_count			 => undef,                           
-		reply_count 			 => undef,                        
-		like_count 				 => undef,                         
-		quote_count 			 => undef,                        
-		language 				 => undef,                           
-		text 					 => undef,
-		place_id				 => undef
+		tweet_created_at	 => undef,                   
+		retweet_count		 => undef,                           
+		reply_count 		 => undef,                        
+		like_count 		 => undef,                         
+		quote_count 		 => undef,                        
+		language 		 => undef,                           
+		text 			 => undef,
+		place_id		 => undef
 	);
 	
 
@@ -345,7 +349,7 @@ sub createTweetForm2 {
 	}
 	elsif ( defined($temp1) && !defined($temp2) ){
 		if ($temp1 eq 'quoted') {
-			$Tweet {'type'} 	       = 'quoted_plus_simple_message';
+			$Tweet {'type'} 	   = 'quoted_plus_simple_message';
 			$Tweet {'quote_id'}        = $temp1_id;
 		}
 		elsif ($temp1 eq 'replied_to') {
@@ -353,7 +357,7 @@ sub createTweetForm2 {
 			$Tweet {'parent_tweet_id'} = $temp1_id;
 		}
 		else {
-			$Tweet {'type'} 	       = 'retweeted';
+			$Tweet {'type'} 	   = 'retweeted';
 			$Tweet {'parent_tweet_id'} = $temp1_id;
 		}
 	}
@@ -367,7 +371,7 @@ sub createTweetForm2 {
 	}
 	#$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
 	return \%Tweet;
-}
+} # }}}
 
 
 ### Printing function is not working ???
@@ -380,7 +384,7 @@ sub createTweetForm2 {
 
 
 ############################### MAIN #######################################
-# important variables
+#|--- Important variables {{{
 my @listOfTweets;
 my @listOfUsers;
 
@@ -389,7 +393,9 @@ my $i,
 my $j,
 my $tweetCounter,
 my $userCounter;
+# }}}
 
+#|--- Storing all JSON entries into two hashes {{{
 open my $fh , '<:utf8', $ARGV[0] || die "problem to open the file";
 
 
@@ -485,8 +491,9 @@ until ($selected [$i] eq 'meta' || $selected [$i] eq 'errors' || $selected [$i] 
 	}
 	++$tweetCounter;
 }
+# }}}
 
-### Printing to check -- STATUS: WORKING FINE
+#|--- Debuging. STATUS: WORKING FINE {{{
 #foreach (@listOfTweets) {
 #	my %printTweet = %{$_};
 #	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
@@ -502,8 +509,9 @@ until ($selected [$i] eq 'meta' || $selected [$i] eq 'errors' || $selected [$i] 
 #	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
 #	print "\n\n";
 #}
+# }}}
      
-################## INSERTING VALUES AT THE DATABASE #######################
+#|--- INSERTING THE VALUES AT THE DATABASE {{{
 #### Now we will export all data found at the JSON files
 #### to our relational database
 my $dbfile = 'twitter.db';
@@ -570,3 +578,4 @@ foreach (@listOfUsers) {
 	}
 }
 $dbh->disconnect;
+# }}}
