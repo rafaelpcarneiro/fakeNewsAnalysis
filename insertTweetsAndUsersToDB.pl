@@ -46,7 +46,7 @@
 #        || * replied_to                          ||
 #        || * quoted_plus_replied_to              ||
 #        || * simple_message                      ||
-#        ||	* quoted_plus_simple_message 	  ||
+#        || * quoted_plus_simple_message 	  ||
 #        ||                                       ||
 #        || Obs: If a tweet has no parent then    ||
 #        || parent_tweet_id and parent_author_id  ||
@@ -532,17 +532,17 @@ foreach (@listOfTweets){
 	%Tweet = %{ $_ };
 
 	$sqlCommand->execute($Tweet {'tweet_id'},
-						$Tweet {'type'},
-						$Tweet {'retweet_count'},
-						$Tweet {'like_count'},
-						$Tweet {'reply_count'},
-						$Tweet {'quote_count'},
-						$Tweet {'language'},
-						$Tweet {'text'},
-						$Tweet {'tweet_created_at'},
-						$Tweet {'place_id'},
-						$Tweet {'parent_tweet_id'},
-						$Tweet {'author_id'} );
+			     $Tweet {'type'},
+			     $Tweet {'retweet_count'},
+			     $Tweet {'like_count'},
+			     $Tweet {'reply_count'},
+			     $Tweet {'quote_count'},
+			     $Tweet {'language'},
+			     $Tweet {'text'},
+			     $Tweet {'tweet_created_at'},
+			     $Tweet {'place_id'},
+			     $Tweet {'parent_tweet_id'},
+			     $Tweet {'author_id'} );
 
 	if ( $sqlCommand->{err} ){
 		print "\n";
@@ -563,12 +563,12 @@ foreach (@listOfUsers) {
 	%User = %{ $_ };
 
 	$sqlCommand->execute($User {'id'},
-						$User {'name'},
-						$User {'username'},
-						$User {'location'},
-						$User {'followers_count'},
-						$User {'following_count'},
-						$User {'tweet_count'});
+			     $User {'name'},
+			     $User {'username'},
+			     $User {'location'},
+			     $User {'followers_count'},
+			     $User {'following_count'},
+			     $User {'tweet_count'});
 
 	if ( $sqlCommand->{err} ){
 		print "\n";
