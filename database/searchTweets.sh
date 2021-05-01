@@ -304,7 +304,7 @@ while test "$dayToSearch" != "$endSearch"
 do
 	pagination=0
 
-    ############### WRITING THE URL TO MAKE THE REQUESTS #################
+        ############### WRITING THE URL TO MAKE THE REQUESTS #################
 
 	######################### TIME VARIABLES #############################
     	# Time: t0 (UTC)

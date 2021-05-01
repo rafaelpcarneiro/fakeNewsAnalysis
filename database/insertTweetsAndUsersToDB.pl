@@ -523,7 +523,7 @@ my $dbh = DBI->connect ($dsn, $user, $password, {
 	PrintError		 => 0,
 	RaiseError		 => 0,
 	AutoCommit		 => 1,
-	FetchHashKeyName => 'NAME_lc',
+	FetchHashKeyName    	 => 'NAME_lc',
 });
 
 my %Tweet;
@@ -532,6 +532,7 @@ foreach (@listOfTweets){
 	%Tweet = %{ $_ };
 
 	$sqlCommand->execute($Tweet {'tweet_id'},
+			     $Tweet {'author_id'} 
 			     $Tweet {'type'},
 			     $Tweet {'retweet_count'},
 			     $Tweet {'like_count'},
@@ -541,8 +542,7 @@ foreach (@listOfTweets){
 			     $Tweet {'text'},
 			     $Tweet {'tweet_created_at'},
 			     $Tweet {'place_id'},
-			     $Tweet {'parent_tweet_id'},
-			     $Tweet {'author_id'} );
+			     $Tweet {'parent_tweet_id'});
 
 	if ( $sqlCommand->{err} ){
 		print "\n";

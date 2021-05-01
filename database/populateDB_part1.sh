@@ -20,7 +20,7 @@ do
 	echo "Scaning file $file"
 done
 
-echo "All files have been scanned. Check check the log file to see if"
-echo "everything went fine. 0 means that the nothing wrong occurred during"
+echo "All files have been scanned. Check the log file to see if"
+echo "everything went fine. 0 means that nothing wrong occurred during"
 echo "the scanning."
 
