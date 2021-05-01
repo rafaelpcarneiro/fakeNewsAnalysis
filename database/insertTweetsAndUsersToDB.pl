@@ -532,7 +532,7 @@ foreach (@listOfTweets){
 	%Tweet = %{ $_ };
 
 	$sqlCommand->execute($Tweet {'tweet_id'},
-			     $Tweet {'author_id'} 
+			     $Tweet {'author_id'},
 			     $Tweet {'type'},
 			     $Tweet {'retweet_count'},
 			     $Tweet {'like_count'},
