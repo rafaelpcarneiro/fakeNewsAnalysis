@@ -2,7 +2,7 @@
 # vim: foldmethod=marker:
 
 #|--- Documentation {{{1
-#1}}}
+# 1}}}
 
 #|--- Modules {{{1
 use warnings;
