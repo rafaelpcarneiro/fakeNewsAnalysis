@@ -77,18 +77,20 @@ $sql_sonsOfGenerationX    =  $dbh->prepare ("SELECT tweet_id
 								       WHERE nodes.generation_of_tweet_id = ?)"
 			     );
 
-$sql_maxSonsOfGenerationX = $dbh->prepare ("SELECT MAX(*)
+$sql_maxSonsOfGenerationX = $dbh->prepare ("SELECT MAX(amount_of_sons)
 					    FROM nodes
-					    WHERE generation = ?"
+					    WHERE generation_of_tweet_id = ?"
 			    );
 
-$sql_insert_0             = $dbh->prepare ("INSERT INTO nodes(tweet_id, generation) VALUES (?,?)");
+$sql_insert_0             = $dbh->prepare ("INSERT INTO nodes(tweet_id, generation_of_tweet_id) VALUES (?,?)");
 $sql_insert_1             = $dbh->prepare ("INSERT INTO nodes VALUES (?,?,?)");
 # 3}}}
 
 #|--- Executing SQL commands at each generation {{{3
 $generation = 0;
 do {
+	print "Generation = $generation\n";
+
 	if ($generation == 0) {
 		$sql_amountOfSons_root_tt->execute ();
 		while (@sql_output = $sql_amountOfSons_root_tt->fetchrow_array) {
@@ -122,6 +124,7 @@ do {
 	$sql_maxSonsOfGenerationX->execute ($generation);
 
 	($maxSonsOfGenerationX) = $sql_maxSonsOfGenerationX->fetchrow_array;
+	print "max -> $maxSonsOfGenerationX\n";
 	last if ($maxSonsOfGenerationX == 0);
 
 	++$generation;
