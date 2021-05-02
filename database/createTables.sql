@@ -44,13 +44,13 @@ CREATE TABLE tweet (
 	ON DELETE NO ACTION
 );
 
--- The table root_tweet is build only for convenience,
--- for further searches!!! Thus, it won't be declared 
--- on the relational model.
-CREATE TABLE root_tweet (
-	tweet_id	INT NOT NULL,
-	author_id	INT NOT NULL,
-	amount_of_sons	INT,
+-- The table nodes is build only for convenience,
+-- for further searches!!!
+CREATE TABLE nodes (
+	tweet_id		INT NOT NULL,
+
+	generation_of_tweet_id  INT DEFAULT 0,
+	amount_of_sons		INT DEFAULT 0,
 
 	PRIMARY KEY (tweet_id),
 
