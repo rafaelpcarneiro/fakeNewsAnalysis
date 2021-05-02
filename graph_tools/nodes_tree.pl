@@ -41,6 +41,7 @@ my $sql_sonsOfGenerationX;
 
 my $sql_insert_0;
 my $sql_insert_1;
+my $sql_update_1;
 
 my $sql_maxSonsOfGenerationX;
 my $maxSonsOfGenerationX;
@@ -84,6 +85,9 @@ $sql_maxSonsOfGenerationX = $dbh->prepare ("SELECT MAX(amount_of_sons)
 
 $sql_insert_0             = $dbh->prepare ("INSERT INTO nodes(tweet_id, generation_of_tweet_id) VALUES (?,?)");
 $sql_insert_1             = $dbh->prepare ("INSERT INTO nodes VALUES (?,?,?)");
+$sql_update_1             = $dbh->prepare ("UPDATE nodes
+					    SET amount_of_sons = ?
+					    WHERE tweet_id  = ?");
 # 3}}}
 
 #|--- Executing SQL commands at each generation {{{3
@@ -101,21 +105,21 @@ do {
 		$sql_sonsOfGenerationX->execute ($generation);
 
 		while (($sql_output_0) = $sql_sonsOfGenerationX->fetchrow_array) {
-			$sql_insert_0->execute ($sql_output_0, $generation+1) 
+			$sql_insert_0->execute ($sql_output_0, $generation+1);
 		}
 	}
 	else {
 		$sql_amountOfSonsGenX->execute ($generation);
 
 		while (@sql_output = $sql_amountOfSonsGenX->fetchrow_array) {
-			$sql_insert_1->execute ($sql_output[0], $generation, $sql_output[1]);
+			$sql_update_1->execute ($sql_output[1], $sql_output[0]);
 		}
 
 		# Now store the next generation of nodes for the next iteration of the loop
 		$sql_sonsOfGenerationX->execute ($generation);
 
 		while (($sql_output_0) = $sql_sonsOfGenerationX->fetchrow_array) {
-			$sql_insert_0->execute ($sql_output_0, $generation+1) 
+			$sql_insert_0->execute ($sql_output_0, $generation+1); 
 		}
 	}
 
@@ -124,11 +128,9 @@ do {
 	$sql_maxSonsOfGenerationX->execute ($generation);
 
 	($maxSonsOfGenerationX) = $sql_maxSonsOfGenerationX->fetchrow_array;
-	print "max -> $maxSonsOfGenerationX\n";
-	last if ($maxSonsOfGenerationX == 0);
 
 	++$generation;
-} while (1);
+} while ($maxSonsOfGenerationX > 0);
 # 3}}}
 
 # 2}}}
