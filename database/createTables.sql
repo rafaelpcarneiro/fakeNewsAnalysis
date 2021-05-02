@@ -57,11 +57,6 @@ CREATE TABLE nodes (
 	FOREIGN KEY (tweet_id)
 	REFERENCES tweet (tweet_id)
 	ON UPDATE CASCADE
-	ON DELETE NO ACTION,
-
-	FOREIGN KEY (author_id)
-	REFERENCES twitter_user (id)
-	ON UPDATE CASCADE
 	ON DELETE NO ACTION
 );
 
