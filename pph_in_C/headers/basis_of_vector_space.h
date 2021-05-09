@@ -34,10 +34,18 @@ typedef struct{
 /*  FUNCTIONS OPERATING ON THESE STRUCTS  */
 collection_of_basis *alloc_all_basis (unsigned int, unsigned int, double**);
 
+/* Note that the way generating_all_regular_paths_dim_p was constructed is not 
+ * ideal for LARGE data. Hence, its version2 down below try to run it better 
+ */
 void generating_all_regular_paths_dim_p (collection_of_basis*,
                                          dim_path,
                                          unsigned int,
                                          double**);
+
+void generating_all_regular_paths_dim_p_version2 (collection_of_basis*,
+                                              	  dim_path,
+                                              	  unsigned int,
+                                              	  double**);
 
 
 void Basis_of_the_vector_spaces_spanned_by_regular_paths (collection_of_basis*,

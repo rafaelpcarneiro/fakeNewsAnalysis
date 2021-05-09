@@ -33,10 +33,10 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
                                       unsigned int network_set_size,
                                       double **network_weight) {
     
-	/* since the index for arrays start from 0, number_of_basis_to_allocate_minus_one
-	 * represents properly the amount of basis we want to calculate. Just remember
-	 * to stop looping when <= number_of_basis_to_allocate_minus_one
-	 */
+    /* since the index for arrays start from 0, number_of_basis_to_allocate_minus_one
+     * represents properly the amount of basis we want to calculate. Just remember
+     * to stop looping when <= number_of_basis_to_allocate_minus_one
+     */
 
     collection_of_basis       *B = malloc (sizeof (collection_of_basis));
     base_index                i;
@@ -102,6 +102,41 @@ void generating_all_regular_paths_dim_p (collection_of_basis *B,
             temp_dim_p->allow_time = allow_time_regular_path (network_weight, temp_dim_p->ith_base, dim_p);
         }
     }
+} /*  Tested Ok */
+
+int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B,
+                                         	  dim_path dim_p,
+                                         	  unsigned int network_set_size,
+                                         	  double **network_weight){
+
+    /* This function is going to open a txt files containing all regular,
+     * contrary to its ancestor which would build all combinations possible. 
+     * The purpose of this function is to build bases of regular paths up to dimension 2.
+     */
+    base *B_dim_p           = (B->basis) + dim_p;
+
+    tuple_regular_path_double *temp_dim_p;
+
+    unsigned int i, j, k, l;
+
+    dim_vector_space size;
+
+    FILE *paths_xy, *paths_xyz;
+
+    paths_xy = fopen ("paths_xy.txt", "r");
+    if (paths_xy == NULL) {
+        printf ("problem opening the file paths_xy.txt. STOP HERE")
+	return 1;
+    }
+
+
+
+    set_dim_path_of_ith_base (B, dim_p);
+    set_dimVS_of_ith_base (B, dim_p, get_dimVS_of_ith_base (B, dim_p - 1) * (network_set_size - 1));
+
+    B_dim_p->base_matrix = malloc ( get_dimVS_of_ith_base (B, dim_p) * sizeof (tuple_regular_path_double) );
+
+    l = 0;
 } /*  Tested Ok */
 
 
