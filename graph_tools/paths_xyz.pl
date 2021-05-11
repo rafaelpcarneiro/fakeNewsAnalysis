@@ -67,7 +67,7 @@ $sql_query03 = $dbh->prepare ("SELECT x, y
 			       FROM   paths_xy
 			       WHERE  y = ?");
 
-$sql_insert  = $dbh->prepare ("INSERT INTO paths_xy VALUES (?,?,?,?,?,?)");
+$sql_insert  = $dbh->prepare ("INSERT INTO paths_xyz VALUES (?,?,?,?,?,?)");
 # 3}}}
 
 #|--- Executing SQL commands at each generation {{{3
