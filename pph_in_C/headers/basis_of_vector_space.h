@@ -43,11 +43,10 @@ void generating_all_regular_paths_dim_p (collection_of_basis*,
                                          double**);
 
 void generating_all_regular_paths_dim_p_version2 (collection_of_basis*,
-                                              	  dim_path,
-                                              	  unsigned int,
                                               	  double**);
 
 
+/* TODO: check if this function is necessary. */
 void Basis_of_the_vector_spaces_spanned_by_regular_paths (collection_of_basis*,
                                                           unsigned int,
                                                           unsigned int);

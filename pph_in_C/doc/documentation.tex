@@ -303,7 +303,7 @@ With these operators in mind we start by the following data types:
 \end{itemize}
 
 %|--- fig:data_type_basis_of_vs {{{5
-\begin{figure}[h]
+\begin{figure}[H]
 	\begin{tikzpicture}
 		\def \x {3}
 		\def \xb {-1}
@@ -347,7 +347,8 @@ With these operators in mind we start by the following data types:
 
 %|--- Functions {{{4
 \subsubsection{Functions}
-Now the functions operating with these data types:
+We start with the two functions responsible for allocating all possible 
+regular paths into their respectively basis:
 \begin{description}
 	\item [\textit{alloc\_all\_basis}] \hfill \\[-0.5cm]
 		\begin{description}
@@ -357,23 +358,133 @@ Now the functions operating with these data types:
 				the graph and its network weight matrix.\\
 				(Obs: the function
 				\texttt{generating\_all\_regular\_paths\_dim\_p} is used)
+				Also, regular paths of dimension 0 are stored by this function.
 			\item [Return]: \texttt{collection\_of\_basis*}.
 		\end{description}
 
-	\item [\textit{generating\_all\_regular\_paths\_dim\_p}] \hfill \\[-0.5cm]
+	\item [\textit{generating\_all\_regular\_paths\_dim\_p\_version2}] \hfill \\[-0.5cm]
 		\begin{description}
-			\item [Parameters]: \texttt{collection\_of\_basis*}, \texttt{dim\_path}, \texttt{unsigned\_int},
-				\texttt{double**}.
+			\item [Parameters]: \texttt{collection\_of\_basis*}, \texttt{double**}.
 			\item [Objective]: Given a \texttt{collection\_of\_basis*} this function
-				will allocate the base of all regular paths of dimension
-				$p$, using the properties of the network.\\
-				\textit{generating\_all\_regular\_paths\_dim\_p}
-				will be used by the function above, in a loop
-				throughout the path dimensions.
+				will all regular paths of dimension $1$ and $2$
+				into the structures which represent the basis of the 
+				vector spaces spanned by such regular paths.
+				\textit{generating\_all\_regular\_paths\_dim\_p\_version2}
+				will be used by the function above.
 			\item [Return]: \texttt{void}.
 		\end{description}
 \end{description}
-Now we need to describe how both functions work before we carry on.
+
+Now, in order to the main algorithm to work we need to be able to ``mark'' a vector
+basis. The first thing that I do is to initialize arrays where their index are in correspondence
+with the index of the \texttt{base\_matrix}. Then, a function is definined so, in the runtime,
+it is possible to mark a given vector basis.
+\begin{description}
+	\item [\textit{initialize\_Marking\_basis\_vectors}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis}
+			\item [Objective]: For each dimension of regular paths up to
+				\texttt{max\_of\_basis}, an array, namely \texttt{marks},
+				of size \texttt{dimension\_of\_the\_vs\_spanned\_by\_base}
+				is created so we will be able to say if a vector basis
+				is marked or not
+			\item [Return]: void
+		\end{description}
+	\item [\textit{marking\_basis\_vectors}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis}, \texttt{dim\_path},
+				\texttt{base\_index}
+			\item [Objective]: Mark a vector of a basis where all regular paths
+				have dimension equal to a \texttt{dim\_path}.
+			\item [Return]: void
+		\end{description}
+\end{description}
+
+When we have all basis of regular paths allocated in memory we need to sort each base
+by the allow time of its elements. In other words, let $\beta = \{a_o, a_1, a_2, \ldots, a_p\}$
+be the base of the vector space spanned by regular paths of dimension $N$. Then we need
+to ensure that
+\[
+	\allowtime(a_0) \leq \allowtime(a_1) \leq \allowtime(a_2) \leq \cdots.
+\]
+This is done by the function
+\begin{description}
+	\item [\textit{sorting\_the\_basis\_by\_their\_allow\_times}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis}
+			\item [Objective]: Sort each element of a \texttt{base\_matrix} by
+				the allow time of each \texttt{tuple\_regular\_path\_double}.
+			\item [Return]: void
+		\end{description}
+\end{description}
+which uses the function:
+\begin{description}
+	\item [\textit{compareTuple}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{tuple\_regular\_path\_double},
+				\texttt{tuple\_regular\_path\_double}
+			\item [Objective]: This function induces a partial order into the space of
+				regular paths by compairing allow times.
+			\item [Return]: \texttt{int}
+		\end{description}
+\end{description}
+to induce a partial order in the space of regular paths of same dimension.
+
+Another important function is the one resposible to calculate the allow time of any
+regular:
+\begin{description}
+	\item [\textit{allow\_time\_regular\_path}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{network\_weight**},
+				\texttt{regular\_path}, \texttt{dim\_path}
+			\item [Objective]: It calculates the allow time of a \texttt{regular\_path} with
+				dimension \texttt{dim\_path}.
+			\item [Return]: \texttt{double}
+		\end{description}
+\end{description}
+
+Last but not least, the getters and setters! Their meaning are straightforward.
+\begin{description}
+	\item [\textit{get\_dimVS\_of\_ith\_base}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis**}, \texttt{dim\_path}
+			\item [Objective]: It returns the dimension of the vector space
+				spanned by regular paths of dimension \texttt{dim\_path}
+			\item [Return]: \texttt{dim\_vector\_space}
+		\end{description}
+	\item [\textit{set\_dim\_path\_of\_ith\_base}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis**}, \texttt{dim\_path}
+			\item [Objective]: It sets the dimension of the regular paths that are going
+				to be used
+			\item [Return]: \texttt{void}
+		\end{description}
+	\item [\textit{set\_dimVS\_of\_ith\_base}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis**}, \texttt{dim\_path},
+				\texttt{dim\_vector\_space}
+			\item [Objective]: It sets the dimension of the vector space
+				spanned by regular paths of dimension \texttt{dim\_path} to the
+				values of \texttt{dim\_vector\_space}
+			\item [Return]: \texttt{void}
+		\end{description}
+	\item [\textit{get\_path\_of\_base\_i\_index\_j}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis**}, \texttt{dim\_path},
+				\texttt{base\_index}
+			\item [Objective]: It returns a regular path of dimension 
+				\texttt{dim\_path} which has the index of \texttt{base\_index}
+			\item [Return]: \texttt{regular\_path}
+		\end{description}
+	\item [\textit{is\_path\_of\_dimPath\_p\_index\_j\_marked}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis**}, \texttt{dim\_path},
+				\texttt{base\_index}
+			\item [Objective]: It returns true if a regular path of dimension 
+				\texttt{dim\_path} is marked and false otherwise 
+			\item [Return]: \texttt{boolean}
+		\end{description}
+\end{description}
 % END functions 4}}}
 
 % END basis_of_vector_space.h 3}}}
