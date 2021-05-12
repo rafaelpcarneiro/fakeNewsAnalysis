@@ -4,8 +4,8 @@
 #include "definitions.h"
 
 /*================================================================
- * SETTING THE DATA TYPE TO DEAL WITH THE VECTOR SPACES,
- * REPRESENTED BY THEIR BASIS
+ * DOCUMENTATION> please read the file doc.pdf (inside the folder
+ * pph_in_C), it explains everething that you will find here.
  *
  * ---------------------------------------------------------------
  *================================================================*/

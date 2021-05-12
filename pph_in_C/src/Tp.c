@@ -1,3 +1,4 @@
+/* vim: set ts=4 expandtab: */
 #include <stdlib.h>
 #include "Tp.h"
 
@@ -11,11 +12,16 @@ T_p *alloc_T_p (collection_of_basis *B) {
     T_p_tuple            *Tp_i_j;
 
     unsigned int i, j, k;
+	
+    /* I will loook for diagrams of dimension 0 and 1. Thus, I just need the
+     * T_p structure of dimension 0 and 1. The code will have this changes in mind
+     */
+    /*Tp->all_Tp    = malloc (B->max_of_basis * sizeof (T_p_tuple_collection));*/
+    /*Tp->max_of_Tp = B->max_of_basis;*/
+    Tp->all_Tp    = malloc (2 * sizeof (T_p_tuple_collection));
+    Tp->max_of_Tp = 1;
 
-    Tp->all_Tp    = malloc (B->max_of_basis * sizeof (T_p_tuple_collection));
-    Tp->max_of_Tp = B->max_of_basis;
-
-    for (i = 0; i <= B->max_of_basis; ++i) {
+    for (i = 0; i <= Tp->max_of_Tp; ++i) {
         Tp_i = Tp->all_Tp + i;
 
         Tp_i->array_of_T_p_tuple = malloc (get_dimVS_of_ith_base (B, i) * sizeof (T_p_tuple));
@@ -23,7 +29,7 @@ T_p *alloc_T_p (collection_of_basis *B) {
 
         for (j = 0; j < Tp_i->size; ++j) {
             Tp_i_j              = Tp_i->array_of_T_p_tuple + j;
-            Tp_i_j->path_vector = malloc (Tp_i->size * sizeof (boolean));
+            Tp_i_j->path_vector = malloc (Tp_i->size * sizeof (boolean)); /* DANGER TOO BIG */
             Tp_i_j->is_empty    = EMPTY;
         }
     }

@@ -58,21 +58,6 @@
 %\DeclareMathOperator {\Imagem}{ Im }
 % 1}}}
 
-%|--- Theorems {{{1
-%
-%\theoremstyle{remark}
-%\newtheorem{exemplo}{Exemplo}[section]
-%
-%\theoremstyle{definition}
-%\newtheorem{observacao}{Observação}[section]
-%\newtheorem{definicao}{Definição}[section]
-%\newtheorem*{notacao}{Notação}
-%
-%\theoremstyle{plain}
-%\newtheorem{teorema}{Teorema}[section]
-%\newtheorem{proposicao}{Proposição}[section]
-% 1}}}
-
 %|--- Begin Document {{{1
 \begin{document}
 \maketitle
@@ -144,10 +129,13 @@ The data types are:
 		as its base, with $\beta = \{v_0, v_1, \ldots, v_N\}$, we say that
 		$0, 1, 2, \ldots$ will be elements of the \texttt{base\_index};
 
-	\item \texttt{vector\_index}. Any element of a vector space $V$, i.e., a vector, can be written
-		as coordinates, given a fixed basis. Thus, let's say that $V \ni u = (0, 1, 1, 0, 1)$.
-		Then the non-negative integers $0, 1, 2, 3, 4$ are elements of the data type 
-		\texttt{vector\_index}, with $u_0 = 0, u_1 = 1, u_2 = 1, u_3 = 0, u_4 = 1$;
+	\item \texttt{vector\_index}. Given a enumeration of vectors, \texttt{vector\_index} stores
+		the indexes of such enumeration. For instance, let the vectors $v_0, v_1, v_2, \ldots$.
+		Then the indexes $0,1,2,\ldots$ are elements of \texttt{vector\_index}.
+%	\item \texttt{vector\_index}. Any element of a vector space $V$, i.e., a vector, can be written
+%		as coordinates, given a fixed basis. Thus, let's say that $V \ni u = (0, 1, 1, 0, 1)$.
+%		Then the non-negative integers $0, 1, 2, 3, 4$ are elements of the data type 
+%		\texttt{vector\_index}, with $u_0 = 0, u_1 = 1, u_2 = 1, u_3 = 0, u_4 = 1$;
 
 	\item \texttt{dim\_path}. Let $(G,A)$ be a graph. Then $w = [a_0, a_1, \ldots, a_N]$
 		is called a regular path in $G$ if $\forall i \in \{0, 1, \ldots, N\}$ the following holds
@@ -488,6 +476,120 @@ Last but not least, the getters and setters! Their meaning are straightforward.
 % END functions 4}}}
 
 % END basis_of_vector_space.h 3}}}
+
+%|--- Tp.h {{{3
+\subsection{\texttt{Tp.h}}
+Here we have the main structure responsible to take care with the 
+gaussian elimination.
+
+%|--- Data types {{{4
+\subsubsection{Data Types}
+The data types in here are going to be something equal to the ones found
+to allocate the basis above.
+\begin{itemize}
+	\item \texttt{T\_p\_tuple}. A structure rpresenting a tuple $(v,e,m)$
+		where $v$ is a \texttt{vector} whose coordinates represent
+		the regular paths that decomposes $v$. Also, $e$
+		is the \texttt{double} storing an entry time
+		and $m$ is a \texttt{boolean} which informs
+		if this tuple is empty or not.
+
+	\item \texttt{T\_p\_tuple\_collection}. A collection of \texttt{T\_p\_tuple} which
+		are indexed by a base of regular paths of the same dimension
+		that spans a vector space of dimension \texttt{size}
+
+	\item \texttt{T\_p}. A collection of all \texttt{T\_p\_tuple\_collection} up to \texttt{max\_of\_Tp},
+		which will be equal to $1$.
+\end{itemize}
+Check Figure~\ref{fig:Tp} to understand these data types and notice that 
+they follow the same pattern of the Figure~\ref{fig:data_type_basis_of_vs}.
+%|--- fig:Tp {{{5
+\begin{figure}[H]
+	\begin{tikzpicture}
+		\def \x {3}
+		\def \xb {-1}
+
+		\draw (2.6,6.2) node[anchor=west] {\texttt{T\_p\_tuple}:};
+		\foreach \y in {0, 1, ..., 5} {
+			\draw (\x,  \y) rectangle (\x+4,  \y+1) node[midway] {\texttt{path\_vector}};
+			\draw (\x+4,\y) rectangle (\x+4+3,\y+1) node[midway] {\texttt{entry\_time}};
+			\draw (\x+4+3,\y) rectangle (\x+4+3+3,\y+1) node[midway] {\texttt{is\_empty}};
+		}
+
+		\draw (\xb+1.8,-0.8) node {\texttt{T\_p\_tuple\_collection}};
+		\foreach \y in {0} {
+			\draw (\xb,  -2-\y) rectangle (\xb+3.5,  -1-\y) node[midway] {\texttt{array\_of\_T\_p\_tuple}};
+			\draw (\xb+3.5,-2-\y) rectangle (\xb+2+3.5,-1-\y) node[midway] {size};
+		}
+		
+		\draw[->, thick] (\xb+1, -1.2) .. controls (\xb+1, 5.5) and (\xb+1, 5.5) .. (\x, 5.5);
+
+		\draw (\x+1, -5) rectangle (\x+1+3,-4) node[midway] {\texttt{all\_Tp}};
+		\draw (\x+1+3, -5) rectangle (\x+1+3+3,-4) node[midway] {\texttt{max\_of\_Tp}};
+
+		\draw[->,thick] (\x+2.5, -4.25) .. controls (\x+2.5,-1.5) and (\x+2.5,-1.5) .. (\xb+2+3.5, -1.5);
+		\draw (\x+6.8, -3.85) node {\texttt{T\_p}};
+	\end{tikzpicture}
+	\caption{Visual reresentation of the data types defined at the file \texttt{Tp.h}.}
+	\label{fig:Tp}
+\end{figure}
+% END fig:Tp 5}}}
+%|--- END Data types 4}}}
+
+%|--- Functions {{{4
+\subsubsection{Functions}
+\begin{description}
+	\item [\textit{alloc\_T\_p}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis}.
+			\item [Objective]: Function responsible to allocate all \texttt{T\_p} 
+				structure into memory
+			\item [Return]: \texttt{T\_p*}.
+		\end{description}
+\end{description}
+
+Setters and getters.
+\begin{description}
+	\item [\textit{set\_T\_p\_pathdim\_i\_vector\_j}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{T\_p*}, \texttt{dim\_path}, \texttt{vector\_index},
+				\texttt{vector}, \texttt{double}.
+			\item [Objective]: Allocate the \texttt{vector} at position 
+				\texttt{(T\_p->all\_Tp)->array\_of\_T\_p\_tuple + vector\_index}
+				as well it stores an entry time. Whenever this function
+				is called this \texttt{vector\_index} is set as not empty.
+			\item [Return]: \texttt{void}.
+		\end{description}
+
+	\item [\textit{is\_T\_p\_pathdim\_i\_vector\_j\_empty}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{T\_p*}, \texttt{dim\_path}, \texttt{vector\_index}.
+			\item [Objective]: It checks if
+				\texttt{(T\_p->all\_Tp)->array\_of\_T\_p\_tuple + vector\_index}
+				is empty
+			\item [Return]: \texttt{boolean}.
+		\end{description}
+
+	\item [\textit{get\_Tp\_vector\_of\_pathdim\_i\_index\_j}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{T\_p*}, \texttt{dim\_path}, \texttt{vector\_index}.
+			\item [Objective]: It returns the \texttt{vector} at
+				\texttt{(T\_p->all\_Tp)->array\_of\_T\_p\_tuple + vector\_index}
+			\item [Return]: \texttt{vector}.
+		\end{description}
+
+	\item [\textit{get\_Tp\_et\_of\_pathdim\_i\_index\_j}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{T\_p*}, \texttt{dim\_path}, \texttt{vector\_index}.
+			\item [Objective]: It returns the entry time of
+				\texttt{(T\_p->all\_Tp)->array\_of\_T\_p\_tuple + vector\_index}
+			\item [Return]: \texttt{double}.
+		\end{description}
+\end{description}
+
+% END Functions 4}}}
+
+%END Tp.h 3}}}
 
 % END HEADERS 2}}}
 

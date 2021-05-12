@@ -5,44 +5,10 @@
 #include "basis_of_vector_space.h"
 
 /*================================================================
- * SETTING THE DATA TYPE TO DEAL WITH THE T_P STRUCTURE
+ * DOCUMENTATION> please read the file doc.pdf (inside the folder
+ * pph_in_C), it explains everething that you will find here.
+ *
  * ---------------------------------------------------------------
- *
- * Explanation of each of these data types.
- *
- *================================================================
- * T_P_tuple := a struct storing the tuple (path_vector,
- *   |           entry_time, is_empty, dim).
- *   |
- *   --> path_vector:= an array of booleans representing a vactor
- *   |                  in a given base.
- *   |
- *   --> entry_time := the moment when a regular path w is feasible
- *   |              at the filtration.
- *   |
- *   --> is_empty   := checking if this tuple is empty or not;
- *   |
- *   |
- *   --> dim        := the dimension of the regular paths that span
- *                     the vector spach which path_vector is element
- *
- * T_p_tuple_collection := a struct with all T_p_tuple of same dim.
- *   |
- *   |
- *   --> array_of_T_p_tuple := an array with all tuples  sharing
- *   |                         the condition that path_vectors have
- *   |                         same dimension
- *   |
- *   --> size               := the size of the array above
- *
- * T_p := a struct which finnaly assembly all T_p ranging from all
- *   |    dimensions
- *   |
- *   --> all_Tp := an array containing all T_p_tuple_collection
- *   |
- *   |
- *   --> dim    := maximum number of T_p_tuple_collection to
- *                 store;
  *================================================================*/
 typedef struct{
     vector  path_vector;
