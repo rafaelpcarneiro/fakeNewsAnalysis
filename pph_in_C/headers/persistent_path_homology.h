@@ -7,11 +7,10 @@
 #include <stdlib.h>
 
 /*================================================================
- * SETTING THE DATA TYPE TO STORE THE PERSISTENT PATH HOMOLOGY
- * DIAGRAMS
- * ---------------------------------------------------------------
+ * DOCUMENTATION> please read the file doc.pdf (inside the folder
+ * pph_in_C), it explains everething that you will find here.
  *
- *================================================================
+ * ---------------------------------------------------------------
  *================================================================*/
 
 /*  a stack is introduced down bellow  */
@@ -48,7 +47,7 @@ double entry_time_vector (double **network_weight, collection_of_basis *B,
                           vector path_vector, unsigned int path_dim, unsigned int base_dim);
 
 
-vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, vector path_vector, unsigned int path_dim,
+vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, vector path_vector, dim_path path_dim,
                     double *return_et, unsigned int *return_max_index);
 
 

@@ -591,8 +591,110 @@ Setters and getters.
 
 %END Tp.h 3}}}
 
-% END HEADERS 2}}}
+%|--- persistent_path_homology.h {{{3
+\subsection{\texttt{persistent\_path\_homology.h}}
+This can be considered as the main file inside this folder. It contains, finally,
+the algorithm we wish to run.
 
+%|--- Data types {{{4
+\subsubsection{Data Types}
+The data types in here are the ones responsible to store the intervals of the path persistent homology.
+All this info will be kept in a list.
+
+First we have the list
+\begin{itemize}
+	\item \texttt{\_Pers\_interval\_p}. A structure containing the interval of
+		the path persistent homology and a pointer to the next element of 
+		the list
+
+	\item \texttt{root}. The root of the list.
+\end{itemize}
+Now the structure that has many lists.
+\begin{itemize}
+	\item \texttt{Pers}. A collection of lists
+\end{itemize}
+%|--- END Data types 4}}}
+
+%|--- Functions {{{4
+\subsubsection{Functions}
+First we start by the functions operating with lists. Here the points of the diagrams,
+the intervals, are stored.
+\begin{description}
+	\item [\textit{alloc\_Pers}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{dim\_path}
+			\item [Objective]: Function responsible to allocate all path persistent diagrams
+				up to dimension $1$
+			\item [Return]: \texttt{Per*}.
+		\end{description}
+
+	\item [\textit{add\_interval\_of\_pathDim\_p}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{Pers}, \texttt{dim\_path}, \texttt{double},
+				\texttt{double}.
+			\item [Objective]: Store the path persistent interval of dimension
+				\texttt{dim\_path} into \texttt{Pers}
+			\item [Return]: \texttt{void}.
+		\end{description}
+
+	\item [\textit{print\_all\_persistent\_diagrams}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{Pers}
+			\item [Objective]: Print all intervals of all diagrams of persistence
+			\item [Return]: \texttt{void}.
+		\end{description}
+\end{description}
+
+Two functions to calculate the allow time and the entry time of any vector:
+\begin{description}
+	\item [\textit{allow\_time\_vector}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{double**}, \texttt{collection\_of\_basis},
+				\texttt{vector}, \texttt{dim\_path}, \texttt{dim\_vector\_space}
+			\item [Objective]: It calculates the allow time of a vector. The 
+				vector is an element of the vector space spanned by regular 
+				paths of dimension \texttt{dim\_path}
+			\item [Return]: \texttt{double}.
+		\end{description}
+
+	\item [\textit{entry\_time\_vector}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{double**}, \texttt{collection\_of\_basis},
+				\texttt{vector}, \texttt{dim\_path}, \texttt{dim\_vector\_space}
+			\item [Objective]: It calculates the entry time of a vector. The 
+				vector is an element of the vector space spanned by regular 
+				paths of dimension \texttt{dim\_path}
+			\item [Return]: \texttt{double}.
+		\end{description}
+\end{description}
+
+Finally, the main functions:
+\begin{description}
+	\item [\textit{BasisChange}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{collection\_of\_basis}, \texttt{T\_p*}, \texttt{double**},
+				\texttt{vector}, \texttt{dim\_path}, \texttt{double*}, \texttt{unsigned int*}
+			\item [Objective]: It calculates the gaussian elimination
+				interactively
+			\item [Return]: It returns a \texttt{vector} and, by reference,
+				it returns the entry time and the maximum index by the
+				two last pointers on the parameters
+		\end{description}
+
+	\item [\textit{ComputePPH}] \hfill \\[-0.5cm]
+		\begin{description}
+			\item [Parameters]: \texttt{unsigned int}, \texttt{double**}, \texttt{unsigned int}.
+			\item [Objective]: It calculates the path persistent homology
+				and it returns the respectivelly collection of lists that
+				store the intervals
+			\item [Return]: \texttt{Per*}.
+		\end{description}
+\end{description}
+
+% END Functions 4}}}
+
+%END persistent_path_homology.h 3}}}
+% END HEADERS 2}}}
 
 \end{document}
 % 1}}}
