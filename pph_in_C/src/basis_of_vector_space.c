@@ -1,3 +1,4 @@
+/* vim: set ts=4: set expandtab: */
 #include <stdlib.h>
 #include "basis_of_vector_space.h"
 
@@ -59,10 +60,15 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
         ith_tuple.allow_time  = 0.0;
     }
 
-    for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
-        /*Base referent to regular paths of dimension > 0*/
-        generating_all_regular_paths_dim_p (B, i, network_set_size, network_weight);
-    }
+	/*Base referent to regular paths of dimension > 0*/
+	/* I won't use the loop below. Instead, I will make usage of the version 2
+	 * of the function: generating_all_regular_paths_dim_p.
+	 *
+     * for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
+     *     generating_all_regular_paths_dim_p (B, i, network_set_size, network_weight);
+     * }
+	 */
+	generating_all_regular_paths_dim_p_version2 (B, network_weight);
 
     return B;
 } /*  Tested Ok */
@@ -104,39 +110,85 @@ void generating_all_regular_paths_dim_p (collection_of_basis *B,
     }
 } /*  Tested Ok */
 
-int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B,
-                                         	  dim_path dim_p,
-                                         	  unsigned int network_set_size,
-                                         	  double **network_weight){
+int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B, double **network_weight){
 
-    /* This function is going to open a txt files containing all regular,
-     * contrary to its ancestor which would build all combinations possible. 
+    /* This function is going to open a txt files containing all regular paths,
+     * contrary to its ancestor which would build all possible combinations. 
      * The purpose of this function is to build bases of regular paths up to dimension 2.
      */
-    base *B_dim_p           = (B->basis) + dim_p;
-
     tuple_regular_path_double *temp_dim_p;
 
-    unsigned int i, j, k, l;
+    unsigned int x, y, z, i;
+
+	dim_path dim_p;
 
     dim_vector_space size;
 
     FILE *paths_xy, *paths_xyz;
 
+	/* regular paths of dimension 1 */
+	dim_path = 1;
+
     paths_xy = fopen ("paths_xy.txt", "r");
     if (paths_xy == NULL) {
-        printf ("problem opening the file paths_xy.txt. STOP HERE")
-	return 1;
+        printf ("problems trying to open the file paths_xy.txt. STOP HERE")
     }
 
 
+    /* First line of paths_xy.txt is a description of how many regular
+     * paths the file has.
+     */
+    fscanf (paths_xy, "%d", &size);
+    ((B->basis) + dim_p)->base_matrix				          = malloc (size * sizeof (tuple_regular_path_double));
+	((B->basis) + dim_p)->dimension_of_the_regular_path       = 1;
+	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
 
-    set_dim_path_of_ith_base (B, dim_p);
-    set_dimVS_of_ith_base (B, dim_p, get_dimVS_of_ith_base (B, dim_p - 1) * (network_set_size - 1));
+    i = 0;
+    while (fscanf (paths_xy, "%d ; %d", &x, &y)) {
+		temp_dim_p           = ((((B->basis) + dim_p)->base_matrix) + i);
+		temp_dim_p->ith_base = malloc (2 * sizeof (vertex_index));
 
-    B_dim_p->base_matrix = malloc ( get_dimVS_of_ith_base (B, dim_p) * sizeof (tuple_regular_path_double) );
+		temp_dim_p->ith_base[0] = x;
+		temp_dim_p->ith_base[1] = y;
 
-    l = 0;
+		temp_dim_p->allow_time  = network_weight[x][y];
+
+		++i;
+    }
+	fclose (paths_xy);
+
+	/* regular paths of dimension 2 */
+	dim_path = 2;
+
+    paths_xyz = fopen ("paths_xyz.txt", "r");
+    if (paths_xyz == NULL) {
+        printf ("problems opening the file paths_xyz.txt. STOP HERE")
+    }
+
+
+    /* First line of paths_xyz.txt is a description of how many regular
+     * paths the file has.
+     */
+    fscanf (paths_xyz, "%d", &size);
+    ((B->basis) + dim_p)->base_matrix				          = malloc (size * sizeof (tuple_regular_path_double));
+	((B->basis) + dim_p)->dimension_of_the_regular_path       = 2;
+	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
+
+	i = 0;
+    while (fscanf (paths_xyz, "%d ; %d ; %d", &x, &y, &z)) {
+		temp_dim_p           = ((((B->basis) + dim_p)->base_matrix) + i);
+		temp_dim_p->ith_base = malloc (3 * sizeof (vertex_index));
+
+		temp_dim_p->ith_base[0] = x;
+		temp_dim_p->ith_base[1] = y;
+		temp_dim_p->ith_base[2] = z;
+
+		temp_dim_p->allow_time  = network_weight[x][y] < network_weight[y][z] ?
+						network_weight[y][z]:network_weight[x][y];
+
+		++i;
+    }
+	fclose (paths_xyz);
 } /*  Tested Ok */
 
 
