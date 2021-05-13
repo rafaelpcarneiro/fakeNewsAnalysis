@@ -4,12 +4,11 @@
 /*|--- Includes and defines {{{1*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-#define STOP 	  -1
-#define CONTINUES 1
-
-#define TAIL_MARKED     0
-#define TAIL_NOT_MARKED 1
+/* EOF == end of branch */
+#define EOB 	  -1
 /*END Includes and defines 1}}}*/
 
 /*|--- Data Types {{{1 */
@@ -23,7 +22,7 @@ typedef structure {
 	generation   gen;
 	unsigned int amount_sons;
 
-} vertex_generation_amount_sons;
+} vertex_generation;
 
 typedef structure {
 	node 	     from;
@@ -44,8 +43,13 @@ typedef structure {
 /* END Data Types 1}}} */
 
 /*|--- FUNCTIONS {{{1 */
+
+/* add_all_branches down bellow doens't handle the problem as I wanted. 
+ * The version2 is better and solve it nicely
+ */
+/*|--- add_all_branches {{{2 */
 iterator add_all_branches (branch 	                 *_branches,
-		               vertex_generation_amount_sons *_nodes,
+		               vertex_generation *_nodes,
 		               edge_generation 		         *_edges,
 		               iterator 		             from_node,
 					   iterator						 from_edge,
@@ -97,6 +101,76 @@ iterator add_all_branches (branch 	                 *_branches,
 	} /*END OF ELSE */
 	return start_branch;
 }
+/* END add_all_branches 2}}} */
+
+/*|--- add_all_branches_version2 {{{2 */
+branch *add_all_branches (vertex_generation *look_at_these_nodes,
+				          edge_generation   *look_at_these_edges,
+						  iterator          from) {
+
+	iterator count_sons;
+	iterator k, j;
+
+	pid_t child_pid;
+
+	branch *branch_found;
+
+	if ((look_at_these_nodes + from)->amount_sons == 0  ) {
+
+		branch_found = malloc (sizeof (branch));
+
+		branch_found[ (look_at_these_nodes + from)->gen ]    = (look_at_these_nodes + from)->vertex;
+		branch_found[ (look_at_these_nodes + from)->gen + 1] = EOB;
+			
+		return branch_found;
+	}
+	else {
+		for (j = 0, count_sons = 0; count_sons < (look_at_these_nodes + from)->amount_sons; ++j) {
+			
+			if ( (look_at_these_edges + j)->from == (look_at_these_nodes + from)->vertex ) {
+				++count_sons;
+				k = 0;
+				while (1) {
+					if ((look_at_these_edges + j)->to == (look_at_these_nodes + k)->vertex) break;
+					++k;
+				}
+				
+				child_pid = fork ();
+				if (child_pid == 0) {
+					branch_found = add_all_branches (look_at_these_nodes, look_at_these_edges, k);
+
+					if (branch_found != NULL) {
+						branch_found[ (look_at_these_nodes + from)->gen ] = (look_at_these_nodes + from)->vertex;
+					}
+					return branch_found;
+				}
+			}
+		}
+	}
+	return NULL;
+}
+/* END add_all_branches_version2 2}}} */
+ 
+/*|--- fprintf_branches {{{2*/
+void fprintf_branches (branch *a_branch) {
+	
+	FILE     *file;
+	char     *file_name;
+	pid_t    the_pid;
+	iterator i;
+
+	the_pid = getpid ();
+	sprintf (file_name, "branches/%d.txt", the_pid);
+
+	file = fopen (file_name, "w");
+	if (file == NULL) printf ("problems to write the branch in a txt file\n\n");
+
+	for (i = 0; a_branch[i] != EOB; ++i ) fprintf (file, "%d   ", a_branch[i];
+
+	fclose (file);
+}
+/* END fprintf_branches 2}}}
+ *
 /*|--- END FUNCTIONS 1}}} */
 
 /*|--- MAIN {{{1*/
@@ -105,13 +179,15 @@ int main() {
 	/*|--- Variable Declaration {{{2*/
 	FILE              	      *file_nodes, *file_edges;
 
-	vertex_generation_amount_sons *nodes;
+	pid_t					  root_pid;
+
+	vertex_generation 		  *nodes;
 	edge_generation	  	      *edges
-	branch            	      *branches;
+	branch            	      *my_branch;
 
-	size              	      MAX_BRANCHES, MAX_NODES, MAX_EDGES;
+	size              	      MAX_NODES, MAX_EDGES;
 
-	iterators         	      i, j;
+	iterators         	      i;
 
 	node	          	      node_tmp, from_node_A, to_node_B;
 	generation        	      generation_tmp, from_gen_X, to_gen_Y;
@@ -145,7 +221,7 @@ int main() {
 	i = 0;
 	while (fscanf (file_edges, "%d %d %d %d", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y)) {
 		(edges + i)->from     = from_node_A;
-		(edges + i)->to       = to;
+		(edges + i)->to       = to_node_B;
 		(edges + i)->from_gen = from_gen_X;
 		(edges + i)->to_gen   = to_gen_Y;
 
@@ -155,17 +231,22 @@ int main() {
 	/*END Reading all nodes and edges 2}}}*/
 
 	/*|--- Storing all branches {{{2*/
-	MAX_BRANCHES   = MAX_NODES; /* worst scenario */
-	branches       = malloc (MAX_BRANCHES * sizeof (branch));
-
 	i              = 0;
 	generation_tmp = 0;
+	root_pid	   = getpid ();
 	while ((nodes+i)->gen == 0) {
-		if ((nodes+i)->amount_sons !=0) add_all_branches ();
+		if ((nodes+i)->amount_sons !=0) {
+			fork ();
+			if (root_pid != getpid ()) {
+				my_branch = add_all_branches_version2 ();
+				if (my_branch != NULL ) fprintf_branches (my_branch);
+				break;
+			}
+		}
 		++i;
 	}
-
 	/*END Storing all branches 2}}}*/
 
+	return 0;
 }
 /*END MAIN 1}}}*/
