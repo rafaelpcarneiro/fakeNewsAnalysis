@@ -30,13 +30,10 @@ typedef structure {
 	generation   from_gen;
 	generation   to_gen;
 
-	char         flag;
-
 } edge_generation;
 
 typedef structure {
 	node 	     a_branch[15];
-	int 	     flag;
 
 } branch;
 
@@ -169,8 +166,8 @@ void fprintf_branches (branch *a_branch) {
 
 	fclose (file);
 }
-/* END fprintf_branches 2}}}
- *
+/* END fprintf_branches 2}}} */
+ 
 /*|--- END FUNCTIONS 1}}} */
 
 /*|--- MAIN {{{1*/

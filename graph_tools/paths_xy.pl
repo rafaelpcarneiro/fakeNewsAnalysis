@@ -70,7 +70,7 @@ do {
 	$sql_query01->execute ($generation);
 	while (($from_generation, $to_generation) = $sql_query01->fetchrow_array) {
 		$sql_insert->execute ($from_generation, $to_generation, $generation - 1, $generation);
-		print "$from_generation, $to_generation, $generation - 1, $generation\n";
+		print "[$from_generation, $to_generation]", "   ",  $generation - 1, "  ", $generation, "\n";
 	}
 
 	$sql_query02->execute ($generation);
@@ -80,7 +80,7 @@ do {
 } while ($iterator);
 # 3}}}
 
-$dbh->disconnect;
+#$dbh->disconnect;
 
 # 2}}}
 
