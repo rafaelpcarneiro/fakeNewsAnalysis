@@ -248,7 +248,10 @@ int main() {
 			fork ();
 			if (root_pid != getpid ()) {
 				my_branch = add_all_branches_version2 (nodes, edges, i);
-				if (my_branch != NULL ) fprintf_branches (my_branch);
+				if (my_branch != NULL ) {
+						fprintf_branches (my_branch);
+						printf_branches (my_branch);
+				}
 				break;
 			}
 		}
