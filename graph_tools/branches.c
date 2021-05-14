@@ -8,19 +8,19 @@
 #include <unistd.h>
 
 /* EOF == end of branch */
-#define EOB 	  -1
+#define EOB 	  0
 /*END Includes and defines 1}}}*/
 
 /*|--- Data Types {{{1 */
-typedef int node;
-typedef int size;
-typedef int iterator;
-typedef int generation;
+typedef unsigned int node;
+typedef unsigned int size;
+typedef unsigned int iterator;
+typedef unsigned int generation;
 
 typedef struct {
 	node         vertex;
 	generation   gen;
-	int amount_sons;
+	unsigned int amount_sons;
 
 } vertex_generation;
 
@@ -164,7 +164,7 @@ void fprintf_branches (branch *print_branch) {
 	file = fopen (file_name, "w");
 	if (file == NULL) printf ("problems to write the branch in a txt file\n\n");
 
-	for (i = 0; print_branch->a_branch[i] != EOB; ++i ) fprintf (file, "%d   ", print_branch->a_branch[i]);
+	for (i = 0; print_branch->a_branch[i] != EOB; ++i ) fprintf (file, "%u   ", print_branch->a_branch[i]);
 
 	fclose (file);
 }
@@ -174,7 +174,7 @@ void fprintf_branches (branch *print_branch) {
 void printf_branches (branch *print_branch) {
 	iterator i;
 	printf("[");
-	for (i = 0; print_branch->a_branch[i] != EOB; ++i ) printf ("%d   ", print_branch->a_branch[i]);
+	for (i = 0; print_branch->a_branch[i] != EOB; ++i ) printf ("%u   ", print_branch->a_branch[i]);
 	printf("]\n");
 	
 }
@@ -201,7 +201,7 @@ int main() {
 	node	          	      node_tmp, from_node_A, to_node_B;
 	generation        	      generation_tmp, from_gen_X, to_gen_Y;
 	
-	int 		      amount_of_sons;
+	unsigned int 		      amount_of_sons;
 
 	/*END Variable Declaration 2}}}*/
 
@@ -211,11 +211,11 @@ int main() {
 
 	if (file_nodes == NULL || file_edges == NULL ) printf("Problems to open the files\n");
 
-	fscanf (file_nodes, "%d", &MAX_NODES);
+	fscanf (file_nodes, "%u", &MAX_NODES);
 	nodes = malloc (MAX_NODES * sizeof (vertex_generation));
 
 	i = 0;
-	while (fscanf (file_nodes, "%d %d %d", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
+	while (fscanf (file_nodes, "%u %u %u", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
 		(nodes + i)->vertex      = node_tmp;
 		(nodes + i)->gen         = generation_tmp;
 		(nodes + i)->amount_sons = amount_of_sons;
@@ -224,11 +224,11 @@ int main() {
 	}
 	fclose (file_nodes);
 
-	fscanf (file_edges, "%d", &MAX_EDGES);
+	fscanf (file_edges, "%u", &MAX_EDGES);
 	edges = malloc (MAX_EDGES * sizeof (edge_generation));
 
 	i = 0;
-	while (fscanf (file_edges, "%d %d %d %d", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
+	while (fscanf (file_edges, "%u %u %u %u", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
 		(edges + i)->from     = from_node_A;
 		(edges + i)->to       = to_node_B;
 		(edges + i)->from_gen = from_gen_X;
