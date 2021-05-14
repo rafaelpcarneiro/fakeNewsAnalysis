@@ -57,11 +57,11 @@ int main() {
 
 	if (file_nodes == NULL || file_edges == NULL ) printf("Problems to open the files\n");
 
-	fscanf (file_nodes, "%d", &MAX_NODES);
+	fscanf (file_nodes, "%u", &MAX_NODES);
 	nodes = malloc (MAX_NODES * sizeof (vertex_generation));
 
 	i = 0;
-	while (fscanf (file_nodes, "%d %d %d", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
+	while (fscanf (file_nodes, "%u %u %u", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
 		(nodes + i)->vertex      = node_tmp;
 		(nodes + i)->gen         = generation_tmp;
 		(nodes + i)->amount_sons = amount_of_sons;
@@ -70,11 +70,11 @@ int main() {
 	}
 	fclose (file_nodes);
 
-	fscanf (file_edges, "%d", &MAX_EDGES);
+	fscanf (file_edges, "%u", &MAX_EDGES);
 	edges = malloc (MAX_EDGES * sizeof (edge_generation));
 
 	i = 0;
-	while (fscanf (file_edges, "%d %d %d %d", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
+	while (fscanf (file_edges, "%u %u %u %u", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
 		(edges + i)->from     = from_node_A;
 		(edges + i)->to       = to_node_B;
 		(edges + i)->from_gen = from_gen_X;
@@ -92,7 +92,7 @@ int main() {
 	if (file_nodes_enumerated == NULL || file_edges_enumerated == NULL ) printf("Problems to write the files\n");
 
 	for (i = 0; i < MAX_NODES; ++i)
-		fprintf (file_nodes_enumerated, "%d\t%d\t%d\n", i, (nodes+i)->gen, (nodes+i)->amount_sons);
+		fprintf (file_nodes_enumerated, "%u\t%u\t%u\n", i, (nodes+i)->gen, (nodes+i)->amount_sons);
 
 	fclose (file_nodes_enumerated);
 
@@ -104,7 +104,7 @@ int main() {
 		for (to = 0; to < MAX_NODES; ++to)
 			if ((edges+i)->to == (nodes+to)->vertex) break;
 		
-		fprintf (file_edges_enumerated, "%d\t%d\t%d\t%d\n", from, to, (edges+i)->from_gen, (edges+i)->to_gen);
+		fprintf (file_edges_enumerated, "%u\t%u\t%u\t%u\n", from, to, (edges+i)->from_gen, (edges+i)->to_gen);
 	}
 	fclose (file_edges_enumerated);
 

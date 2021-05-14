@@ -12,15 +12,15 @@
 /*END Includes and defines 1}}}*/
 
 /*|--- Data Types {{{1 */
-typedef unsigned int node;
-typedef unsigned int size;
-typedef unsigned int iterator;
-typedef unsigned int generation;
+typedef int node;
+typedef int size;
+typedef int iterator;
+typedef int generation;
 
 typedef struct {
 	node         vertex;
 	generation   gen;
-	unsigned int amount_sons;
+	int amount_sons;
 
 } vertex_generation;
 
@@ -157,7 +157,6 @@ void fprintf_branches (branch *print_branch) {
 	char     file_name[50];
 	pid_t    the_pid;
 	iterator i;
-	int res;
 
 	the_pid = getpid ();
 	sprintf (file_name, "branches/%d.txt", (int) the_pid);
@@ -202,7 +201,7 @@ int main() {
 	node	          	      node_tmp, from_node_A, to_node_B;
 	generation        	      generation_tmp, from_gen_X, to_gen_Y;
 	
-	unsigned int 		      amount_of_sons;
+	int 		      amount_of_sons;
 
 	/*END Variable Declaration 2}}}*/
 
