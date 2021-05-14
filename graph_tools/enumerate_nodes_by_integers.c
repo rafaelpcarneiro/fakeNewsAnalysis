@@ -9,17 +9,17 @@
 /*|--- Data Types {{{1 */
 typedef unsigned int node;
 typedef unsigned int size;
-typedef unsigned int iterators;
+typedef unsigned int iterator;
 typedef unsigned int generation;
 
-typedef structure {
+typedef struct {
 	node         vertex;
 	generation   gen;
 	unsigned int amount_sons;
 
 } vertex_generation;
 
-typedef structure {
+typedef struct {
 	node 	     from;
 	node 	     to;
 	generation   from_gen;
@@ -38,11 +38,11 @@ int main() {
 	FILE              	      *file_nodes_enumerated, *file_edges_enumerated;
 
 	vertex_generation 		  *nodes;
-	edge_generation	  	      *edges
+	edge_generation	  	      *edges;
 
 	size              	      MAX_NODES, MAX_EDGES;
 
-	iterators         	      i, from, to;
+	iterator         	      i, from, to;
 
 	node	          	      node_tmp, from_node_A, to_node_B;
 	generation        	      generation_tmp, from_gen_X, to_gen_Y;
@@ -61,7 +61,7 @@ int main() {
 	nodes = malloc (MAX_NODES * sizeof (vertex_generation));
 
 	i = 0;
-	while (fscanf (file_nodes, "%d %d %d", &node_tmp, &generation_tmp, &amount_of_sons)) {
+	while (fscanf (file_nodes, "%d %d %d", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
 		(nodes + i)->vertex      = node_tmp;
 		(nodes + i)->gen         = generation_tmp;
 		(nodes + i)->amount_sons = amount_of_sons;
@@ -74,7 +74,7 @@ int main() {
 	edges = malloc (MAX_EDGES * sizeof (edge_generation));
 
 	i = 0;
-	while (fscanf (file_edges, "%d %d %d %d", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y)) {
+	while (fscanf (file_edges, "%d %d %d %d", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
 		(edges + i)->from     = from_node_A;
 		(edges + i)->to       = to_node_B;
 		(edges + i)->from_gen = from_gen_X;
@@ -92,7 +92,7 @@ int main() {
 	if (file_nodes_enumerated == NULL || file_edges_enumerated == NULL ) printf("Problems to write the files\n");
 
 	for (i = 0; i < MAX_NODES; ++i)
-		fprintf (file_nodes_enumerated, "%d\t%d\t%d\n", i, (nodes+i)->gen, (nodes+i)->amount_of_sons);
+		fprintf (file_nodes_enumerated, "%d\t%d\t%d\n", i, (nodes+i)->gen, (nodes+i)->amount_sons);
 
 	fclose (file_nodes_enumerated);
 

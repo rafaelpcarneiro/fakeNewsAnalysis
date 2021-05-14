@@ -14,17 +14,17 @@
 /*|--- Data Types {{{1 */
 typedef unsigned int node;
 typedef unsigned int size;
-typedef unsigned int iterators;
+typedef unsigned int iterator;
 typedef unsigned int generation;
 
-typedef structure {
+typedef struct {
 	node         vertex;
 	generation   gen;
 	unsigned int amount_sons;
 
 } vertex_generation;
 
-typedef structure {
+typedef struct {
 	node 	     from;
 	node 	     to;
 	generation   from_gen;
@@ -32,7 +32,7 @@ typedef structure {
 
 } edge_generation;
 
-typedef structure {
+typedef struct {
 	node 	     a_branch[15];
 
 } branch;
@@ -45,6 +45,7 @@ typedef structure {
  * The version2 is better and solve it nicely
  */
 /*|--- add_all_branches {{{2 */
+/*
 iterator add_all_branches (branch 	                 *_branches,
 		               vertex_generation *_nodes,
 		               edge_generation 		         *_edges,
@@ -95,15 +96,16 @@ iterator add_all_branches (branch 	                 *_branches,
 			}
 		}
 
-	} /*END OF ELSE */
+	} 
 	return start_branch;
 }
+*/
 /* END add_all_branches 2}}} */
 
 /*|--- add_all_branches_version2 {{{2 */
-branch *add_all_branches (vertex_generation *look_at_these_nodes,
-				          edge_generation   *look_at_these_edges,
-						  iterator          from) {
+branch *add_all_branches_version2 (vertex_generation *look_at_these_nodes,
+				          		   edge_generation   *look_at_these_edges,
+						  		   iterator          from) {
 
 	iterator count_sons;
 	iterator k, j;
@@ -116,8 +118,8 @@ branch *add_all_branches (vertex_generation *look_at_these_nodes,
 
 		branch_found = malloc (sizeof (branch));
 
-		branch_found[ (look_at_these_nodes + from)->gen ]    = (look_at_these_nodes + from)->vertex;
-		branch_found[ (look_at_these_nodes + from)->gen + 1] = EOB;
+		branch_found->a_branch[ (look_at_these_nodes + from)->gen ]    = (look_at_these_nodes + from)->vertex;
+		branch_found->a_branch[ (look_at_these_nodes + from)->gen + 1] = EOB;
 			
 		return branch_found;
 	}
@@ -134,10 +136,10 @@ branch *add_all_branches (vertex_generation *look_at_these_nodes,
 				
 				child_pid = fork ();
 				if (child_pid == 0) {
-					branch_found = add_all_branches (look_at_these_nodes, look_at_these_edges, k);
+					branch_found = add_all_branches_version2 (look_at_these_nodes, look_at_these_edges, k);
 
 					if (branch_found != NULL) {
-						branch_found[ (look_at_these_nodes + from)->gen ] = (look_at_these_nodes + from)->vertex;
+						branch_found->a_branch[(look_at_these_nodes + from)->gen] = (look_at_these_nodes + from)->vertex;
 					}
 					return branch_found;
 				}
@@ -149,22 +151,33 @@ branch *add_all_branches (vertex_generation *look_at_these_nodes,
 /* END add_all_branches_version2 2}}} */
  
 /*|--- fprintf_branches {{{2*/
-void fprintf_branches (branch *a_branch) {
+void fprintf_branches (branch *print_branch) {
 	
 	FILE     *file;
-	char     *file_name;
+	char     file_name[50];
 	pid_t    the_pid;
 	iterator i;
+	int res;
 
 	the_pid = getpid ();
-	sprintf (file_name, "branches/%d.txt", the_pid);
+	sprintf (file_name, "branches/%d.txt", (int) the_pid);
 
 	file = fopen (file_name, "w");
 	if (file == NULL) printf ("problems to write the branch in a txt file\n\n");
 
-	for (i = 0; a_branch[i] != EOB; ++i ) fprintf (file, "%d   ", a_branch[i];
+	for (i = 0; print_branch->a_branch[i] != EOB; ++i ) fprintf (file, "%d   ", print_branch->a_branch[i]);
 
 	fclose (file);
+}
+/* END fprintf_branches 2}}} */
+
+/*|--- printf_branches {{{2*/
+void printf_branches (branch *print_branch) {
+	iterator i;
+	printf("[");
+	for (i = 0; print_branch->a_branch[i] != EOB; ++i ) printf ("%d   ", print_branch->a_branch[i]);
+	printf("]\n");
+	
 }
 /* END fprintf_branches 2}}} */
  
@@ -179,12 +192,12 @@ int main() {
 	pid_t					  root_pid;
 
 	vertex_generation 		  *nodes;
-	edge_generation	  	      *edges
+	edge_generation	  	      *edges;
 	branch            	      *my_branch;
 
 	size              	      MAX_NODES, MAX_EDGES;
 
-	iterators         	      i;
+	iterator         	      i;
 
 	node	          	      node_tmp, from_node_A, to_node_B;
 	generation        	      generation_tmp, from_gen_X, to_gen_Y;
@@ -203,7 +216,7 @@ int main() {
 	nodes = malloc (MAX_NODES * sizeof (vertex_generation));
 
 	i = 0;
-	while (fscanf (file_nodes, "%d %d %d", &node_tmp, &generation_tmp, &amount_of_sons)) {
+	while (fscanf (file_nodes, "%d %d %d", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
 		(nodes + i)->vertex      = node_tmp;
 		(nodes + i)->gen         = generation_tmp;
 		(nodes + i)->amount_sons = amount_of_sons;
@@ -216,7 +229,7 @@ int main() {
 	edges = malloc (MAX_EDGES * sizeof (edge_generation));
 
 	i = 0;
-	while (fscanf (file_edges, "%d %d %d %d", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y)) {
+	while (fscanf (file_edges, "%d %d %d %d", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
 		(edges + i)->from     = from_node_A;
 		(edges + i)->to       = to_node_B;
 		(edges + i)->from_gen = from_gen_X;
@@ -229,13 +242,12 @@ int main() {
 
 	/*|--- Storing all branches {{{2*/
 	i              = 0;
-	generation_tmp = 0;
 	root_pid	   = getpid ();
 	while ((nodes+i)->gen == 0) {
 		if ((nodes+i)->amount_sons !=0) {
 			fork ();
 			if (root_pid != getpid ()) {
-				my_branch = add_all_branches_version2 ();
+				my_branch = add_all_branches_version2 (nodes, edges, i);
 				if (my_branch != NULL ) fprintf_branches (my_branch);
 				break;
 			}
