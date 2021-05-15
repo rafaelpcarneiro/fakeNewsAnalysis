@@ -7,15 +7,15 @@
 /*END Includes and defines 1}}}*/
 
 /*|--- Data Types {{{1 */
-typedef unsigned int node;
-typedef unsigned int size;
-typedef unsigned int iterator;
-typedef unsigned int generation;
+typedef unsigned long int node;
+typedef unsigned long int size;
+typedef unsigned long int iterator;
+typedef unsigned long int generation;
 
 typedef struct {
 	node         vertex;
 	generation   gen;
-	unsigned int amount_sons;
+	unsigned long int amount_sons;
 
 } vertex_generation;
 
@@ -47,7 +47,7 @@ int main() {
 	node	          	      node_tmp, from_node_A, to_node_B;
 	generation        	      generation_tmp, from_gen_X, to_gen_Y;
 	
-	unsigned int 		      amount_of_sons;
+	unsigned long int 		  amount_of_sons;
 
 	/*END Variable Declaration 2}}}*/
 
@@ -57,11 +57,11 @@ int main() {
 
 	if (file_nodes == NULL || file_edges == NULL ) printf("Problems to open the files\n");
 
-	fscanf (file_nodes, "%u", &MAX_NODES);
+	fscanf (file_nodes, "%lu", &MAX_NODES);
 	nodes = malloc (MAX_NODES * sizeof (vertex_generation));
 
 	i = 0;
-	while (fscanf (file_nodes, "%u %u %u", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
+	while (fscanf (file_nodes, "%lu %lu %lu", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
 		(nodes + i)->vertex      = node_tmp;
 		(nodes + i)->gen         = generation_tmp;
 		(nodes + i)->amount_sons = amount_of_sons;
@@ -70,11 +70,11 @@ int main() {
 	}
 	fclose (file_nodes);
 
-	fscanf (file_edges, "%u", &MAX_EDGES);
+	fscanf (file_edges, "%lu", &MAX_EDGES);
 	edges = malloc (MAX_EDGES * sizeof (edge_generation));
 
 	i = 0;
-	while (fscanf (file_edges, "%u %u %u %u", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
+	while (fscanf (file_edges, "%lu %lu %lu %lu", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
 		(edges + i)->from     = from_node_A;
 		(edges + i)->to       = to_node_B;
 		(edges + i)->from_gen = from_gen_X;
@@ -91,12 +91,14 @@ int main() {
 
 	if (file_nodes_enumerated == NULL || file_edges_enumerated == NULL ) printf("Problems to write the files\n");
 
+	fprintf (file_nodes_enumerated, "%lu\n", MAX_NODES);
 	for (i = 0; i < MAX_NODES; ++i)
-		fprintf (file_nodes_enumerated, "%u\t%u\t%u\n", i, (nodes+i)->gen, (nodes+i)->amount_sons);
+		fprintf (file_nodes_enumerated, "%lu\t%lu\t%lu\n", i, (nodes+i)->gen, (nodes+i)->amount_sons);
 
 	fclose (file_nodes_enumerated);
 
 
+	fprintf (file_edges_enumerated, "%lu\n", MAX_EDGES);
 	for (i = 0; i < MAX_EDGES; ++i) {
 		for (from = 0; from < MAX_NODES; ++from)
 			if ((edges+i)->from == (nodes+from)->vertex) break;
@@ -104,7 +106,7 @@ int main() {
 		for (to = 0; to < MAX_NODES; ++to)
 			if ((edges+i)->to == (nodes+to)->vertex) break;
 		
-		fprintf (file_edges_enumerated, "%u\t%u\t%u\t%u\n", from, to, (edges+i)->from_gen, (edges+i)->to_gen);
+		fprintf (file_edges_enumerated, "%lu\t%lu\t%lu\t%lu\n", from, to, (edges+i)->from_gen, (edges+i)->to_gen);
 	}
 	fclose (file_edges_enumerated);
 
