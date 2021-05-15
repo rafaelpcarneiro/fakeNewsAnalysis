@@ -6,9 +6,10 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
-/* EOF == end of branch */
-#define EOB 	  0
+/* EOF == end of ~~~ branch NOT NECESSARY ANY MORE */
+/*#define EOB 	  0*/
 /*END Includes and defines 1}}}*/
 
 /*|--- Data Types {{{1 */
@@ -34,6 +35,7 @@ typedef struct {
 
 typedef struct {
 	node 	     a_branch[15];
+	unsigned int end_of_branch;
 
 } branch;
 
@@ -119,7 +121,7 @@ branch *add_all_branches_version2 (vertex_generation *look_at_these_nodes,
 		branch_found = malloc (sizeof (branch));
 
 		branch_found->a_branch[ (look_at_these_nodes + from)->gen ]    = (look_at_these_nodes + from)->vertex;
-		branch_found->a_branch[ (look_at_these_nodes + from)->gen + 1] = EOB;
+		branch_found->end_of_branch                                    = (look_at_these_nodes + from)->gen;
 			
 		return branch_found;
 	}
@@ -143,6 +145,7 @@ branch *add_all_branches_version2 (vertex_generation *look_at_these_nodes,
 					}
 					return branch_found;
 				}
+				while (wait(NULL) > 0);
 			}
 		}
 	}
@@ -174,7 +177,7 @@ void fprintf_branches (branch *print_branch) {
 void printf_branches (branch *print_branch) {
 	iterator i;
 	printf("[");
-	for (i = 0; print_branch->a_branch[i] != EOB; ++i ) printf ("%u   ", print_branch->a_branch[i]);
+	for (i = 0; i <= print_branch->end_of_branch; ++i ) printf ("%u   ", print_branch->a_branch[i]);
 	printf("]\n");
 	
 }
@@ -247,12 +250,10 @@ int main() {
 			fork ();
 			if (root_pid != getpid ()) {
 				my_branch = add_all_branches_version2 (nodes, edges, i);
-				if (my_branch != NULL ) {
-						fprintf_branches (my_branch);
-						printf_branches (my_branch);
-				}
-				break;
+				if (my_branch != NULL ) printf_branches (my_branch);
+				return 0;
 			}
+			while (wait(NULL) > 0);
 		}
 		++i;
 	}
