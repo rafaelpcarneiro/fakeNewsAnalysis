@@ -154,6 +154,7 @@ branch *add_all_branches_version2 (vertex_generation *look_at_these_nodes,
 /* END add_all_branches_version2 2}}} */
  
 /*|--- fprintf_branches {{{2*/
+/* I AM NOT USING THIS FUNCTION
 void fprintf_branches (branch *print_branch) {
 	
 	FILE     *file;
@@ -171,6 +172,7 @@ void fprintf_branches (branch *print_branch) {
 
 	fclose (file);
 }
+*/
 /* END fprintf_branches 2}}} */
 
 /*|--- printf_branches {{{2*/
