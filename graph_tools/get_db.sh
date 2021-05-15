@@ -18,3 +18,5 @@ rm nodes.txt edges.txt
 
 mv nodes_enumerated.txt nodes.txt
 mv edges_enumerated.txt edges.txt
+
+./my_branch > all_branches.txt
