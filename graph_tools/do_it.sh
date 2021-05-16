@@ -33,6 +33,11 @@ echo "Now it is time to check for all branches of our tree"
 echo ""
 ./my_branch > all_branches.txt
 
+wc -l|grep -o -P "\d*\s" > all_branches_tmp.txt
+cat all_branches.txt >> all_branches_tmp.txt
+cat all_branches_tmp.txt > all_branches.txt
+rm all_branches_tmp.txt
+
 echo "Now we check for all regular paths of dimension 2"
 echo ""
 ./create_paths_dim_2_and_3 2 > all_regular_paths_dimension_2.txt
