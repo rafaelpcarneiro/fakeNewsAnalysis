@@ -15,17 +15,17 @@ boolean check_if_path_i_is_a_repetition (path *regular_paths, unsigned int i, un
     unsigned int j;
     if (dim == 2)
         for (j = 0; j < i; ++j) {
-            if ( ((regular_paths+j)->a_path[0] = (regular_paths+i)->a_path[0]) &&
-                 ((regular_paths+j)->a_path[1] = (regular_paths+i)->a_path[1]) ) {
+            if ( ((regular_paths+j)->a_path[0] == (regular_paths+i)->a_path[0]) &&
+                 ((regular_paths+j)->a_path[1] == (regular_paths+i)->a_path[1]) ) {
 
                  return TRUE;
             }
         }
     else
         for (j = 0; j < i; ++j) {
-            if ( ((regular_paths+j)->a_path[0] = (regular_paths+i)->a_path[0]) &&
-                 ((regular_paths+j)->a_path[1] = (regular_paths+i)->a_path[1]) &&
-                 ((regular_paths+j)->a_path[2] = (regular_paths+i)->a_path[2]) ) {
+            if ( ((regular_paths+j)->a_path[0] == (regular_paths+i)->a_path[0]) &&
+                 ((regular_paths+j)->a_path[1] == (regular_paths+i)->a_path[1]) &&
+                 ((regular_paths+j)->a_path[2] == (regular_paths+i)->a_path[2]) ) {
 
                  return TRUE;
             }
