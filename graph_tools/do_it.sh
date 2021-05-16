@@ -65,7 +65,8 @@ check_diff=`diff -q all_regular_paths_dimension_2.txt all_regular_paths_dimensio
 if [ -n $check_diff ]
 then
 	echo "There are repetitions and we need to purge them from the file all_regular_paths_dimension_2.txt"
-	cat all_regular_paths_dimension_2_w_rep.txt > all_regular_paths_dimension_2.txt
+	wc -l all_regular_paths_dimension_2_w_rep.txt |grep -o -P "\d*\s" > all_regular_paths_dimension_2.txt
+	cat all_regular_paths_dimension_2_w_rep.txt >> all_regular_paths_dimension_2.txt
 	rm all_regular_paths_dimension_2_w_rep.txt
 else
 	echo "There are no repetitions. Keep the file all_regular_paths_dimension_2.txt"
@@ -76,7 +77,8 @@ check_diff=`diff -q all_regular_paths_dimension_3.txt all_regular_paths_dimensio
 if [ -n $check_diff ]
 then
 	echo "There are repetitions and we need to purge them from the file all_regular_paths_dimension_3.txt"
-	cat all_regular_paths_dimension_3_w_rep.txt > all_regular_paths_dimension_3.txt
+	wc -l all_regular_paths_dimension_3_w_rep.txt |grep -o -P "\d*\s" > all_regular_paths_dimension_3.txt
+	cat all_regular_paths_dimension_3_w_rep.txt >> all_regular_paths_dimension_3.txt
 	rm all_regular_paths_dimension_3_w_rep.txt
 else
 	echo "There are no repetitions. Keep the file all_regular_paths_dimension_3.txt"

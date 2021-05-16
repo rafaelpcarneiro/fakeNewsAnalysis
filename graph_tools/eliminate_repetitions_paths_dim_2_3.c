@@ -56,7 +56,7 @@ int main () {
     fh_write_dim2 = fopen ("all_regular_paths_dimension_2_w_rep.txt", "w"); 
 	if (fh_write_dim2 == NULL) printf ("Problems to write all_regular_paths_dimension_2_w_rep.txt\n\n");
 
-    fprintf (fh_write_dim2, "%u\n", size);
+    /*fprintf (fh_write_dim2, "%u\n", size);*/
     fprintf (fh_write_dim2, "%u %u\n", regular_paths->a_path[0], regular_paths->a_path[1]);
 
     for (i = 1; i < size; ++i) {
@@ -84,7 +84,7 @@ int main () {
     fh_write_dim3 = fopen ("all_regular_paths_dimension_3_w_rep.txt", "w"); 
 	if (fh_write_dim3 == NULL) printf ("Problems to write all_regular_paths_dimension_3_w_rep.txt\n\n");
 
-    fprintf (fh_write_dim3, "%u\n", size);
+    /*fprintf (fh_write_dim3, "%u\n", size);*/
     fprintf (fh_write_dim3, "%u %u %u\n", regular_paths->a_path[0],
                                           regular_paths->a_path[1],
                                           regular_paths->a_path[2]);
