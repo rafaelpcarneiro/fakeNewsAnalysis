@@ -178,8 +178,8 @@ void fprintf_branches (branch *print_branch) {
 /*|--- printf_branches {{{2*/
 void printf_branches (branch *print_branch) {
 	iterator i;
-	printf("[");
-	for (i = 0; i <= print_branch->end_of_branch; ++i ) printf ("%u   ", print_branch->a_branch[i]);
+	printf("[  ");
+	for (i = 0; i <= print_branch->end_of_branch; ++i ) printf ("%u  ", print_branch->a_branch[i]);
 	printf("]\n");
 	
 }
