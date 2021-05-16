@@ -36,7 +36,7 @@ int main (int argc, char **argv) {
     if (argc == 2) p = atoi (argv[1]);
     else printf ("Must have as argument an integer value to calculate all combinations\n\n");
 
-    fh = fopen ("all_branches_test.txt", "r");
+    fh = fopen ("all_branches.txt", "r");
 
     if (fh == NULL ) printf ("Problems to open all_branches.txt !!!\n\n\n");
 
