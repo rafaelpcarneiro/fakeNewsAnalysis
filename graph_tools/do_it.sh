@@ -33,7 +33,7 @@ echo "Now it is time to check for all branches of our tree"
 echo ""
 ./my_branch > all_branches.txt
 
-wc -l|grep -o -P "\d*\s" > all_branches_tmp.txt
+wc -l all_branches.txt |grep -o -P "\d*\s" > all_branches_tmp.txt
 cat all_branches.txt >> all_branches_tmp.txt
 cat all_branches_tmp.txt > all_branches.txt
 rm all_branches_tmp.txt
