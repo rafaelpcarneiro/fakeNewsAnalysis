@@ -10,6 +10,7 @@ echo "Compiling the C files"
 echo ""
 gcc branches.c -o my_branch
 gcc enumerate_nodes_edges_by_integers.c -o enumerate_nodes_edges_by_integers
+gcc create_paths_dim_2_and_3 -o create_paths_dim_2_and_3 
 
 
 echo "Generating nodes.txt and edges.txt that will provide info to branch.c"
@@ -34,8 +35,8 @@ echo ""
 
 echo "Now we check for all regular paths of dimension 2"
 echo ""
-./create_paths_dim_2_and_3.c 2 > all_regular_paths_dimension_2.txt
+./create_paths_dim_2_and_3 2 > all_regular_paths_dimension_2.txt
 
 echo "And, finally, all regular paths of dimension 3"
 echo ""
-./create_paths_dim_2_and_3.c 3 > all_regular_paths_dimension_3.txt
+./create_paths_dim_2_and_3 3 > all_regular_paths_dimension_3.txt
