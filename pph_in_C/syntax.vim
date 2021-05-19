@@ -8,7 +8,7 @@ syntax keyword myTypes	      boolean vertex_index base_index dim_path dim_base r
 syntax keyword myTypes	      vector_index dim_vector_space
 syntax keyword myTypes	      tuple_regular_path_double base collection_of_basis
 syntax keyword myTypes 	      T_p_tuple T_p_tuple_collection T_p
-
+syntax keyword myTypes	      Pers_interval_p root Pers
 
 syntax keyword myFunc1        are_these_regular_paths_the_same 
 syntax keyword myFunc1        is_this_path_a_regular_path
@@ -36,8 +36,17 @@ syntax keyword myFunc3	      is_T_p_pathDim_i_vector_j_empty
 syntax keyword myFunc3	      get_Tp_vector_of_pathDim_i_index_j 
 syntax keyword myFunc3	      get_Tp_et_of_pathDim_i_index_j 
 
-syntax keyword myWarnings     DANGER
 
+syntax keyword myFunc4	      alloc_Pers 
+syntax keyword myFunc4	      add_interval_of_pathDim_p 
+syntax keyword myFunc4	      print_all_persistent_diagrams 
+syntax keyword myFunc4	      allow_time_vector 
+syntax keyword myFunc4	      entry_time_vector 
+syntax keyword myFunc4	      BasisChange 
+syntax keyword myFunc4	      ComputePPH
+
+
+syntax keyword myWarnings     DANGER
 
 syntax keyword myValues       TRUE FALSE MARKED NOT_MARKED EMPTY NOT_EMPTY SORTED NOT_SORTED 
 
@@ -51,6 +60,7 @@ hi myTypes 	  cterm=bold        ctermfg=cyan
 hi myFunc1 	  cterm=italic
 hi myFunc2 	  cterm=italic
 hi myFunc3 	  cterm=italic
+hi myFunc4 	  cterm=italic
 hi myValues	                    ctermfg=darkgray
 hi myWarnings     cterm=bold        ctermfg=black	ctermbg=yellow
 
