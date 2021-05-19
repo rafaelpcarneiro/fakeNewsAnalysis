@@ -1,8 +1,10 @@
+/*vim: set ts=4 expandtab sw=4: */
 #include <stdio.h>
 #include <stdlib.h>
 #include "persistent_path_homology.h"
 #include "basis_of_vector_space.h"
 
+#define INFINITE -1
 
 Pers *alloc_Pers (dim_path pph_max) {
     dim_path i;
@@ -11,8 +13,9 @@ Pers *alloc_Pers (dim_path pph_max) {
     P->PPH_Diagrams = malloc ((pph_max + 1) * sizeof (root));
 
     for (i = 0; i <= pph_max; ++i)
-        P->PPH_Diagrams->stack = NULL;
+        (P->PPH_Diagrams + i)->stack = NULL;
 
+    P->pph_max = pph_max;
     return P;
 }
 
@@ -138,24 +141,24 @@ double entry_time_regular_path (double **network_weight, collection_of_basis *B,
         /*Now we will have to calculate the boudary operator of the path_vector
          * then we will take its allow times */
         boundary = malloc ((path_dim) * sizeof (vertex_index));
-        for (i = 0; i < get_dimVS_of_ith_base (B, path_dim); ++i) {
+        /*for (i = 0; i < get_dimVS_of_ith_base (B, path_dim); ++i) {*/
 
-            temp = get_path_of_base_i_index_j (B, path_dim, index);
+	temp = get_path_of_base_i_index_j (B, path_dim, index);
 
-            for (j = 0; j <= path_dim; ++j) {
-                l = 0;
-                for (k = 0; k <= path_dim; ++k) {
-                    if (k != j) {
-                        boundary[l] = temp[k];
-                        ++l;
-                    }
-                }
-                if (is_this_path_a_regular_path (boundary, path_dim - 1) == FALSE) continue;
+	for (j = 0; j <= path_dim; ++j) {
+	    l = 0;
+	    for (k = 0; k <= path_dim; ++k) {
+		if (k != j) {
+		boundary[l] = temp[k];
+		++l;
+		}
+	    }
+	    if (is_this_path_a_regular_path (boundary, path_dim - 1) == FALSE) continue;
 
-                distance = distance < allow_time_regular_path (network_weight, boundary, path_dim - 1) ?
-                    allow_time_regular_path (network_weight, boundary, path_dim - 1) : distance;
-            }
-        }
+	    distance = distance < allow_time_regular_path (network_weight, boundary, path_dim - 1) ?
+		allow_time_regular_path (network_weight, boundary, path_dim - 1) : distance;
+	}
+        /*}*/
         free (boundary);
         return distance;
     }
@@ -176,8 +179,8 @@ vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, ve
     boundary_of_path_vector = malloc (path_dim * sizeof (vertex_index));
 
     u = malloc (get_dimVS_of_ith_base (B, path_dim - 1) * sizeof (boolean));
+    for (i = 0; i < get_dimVS_of_ith_base (B, path_dim - 1); ++i) u[i] = 0;
 
-    max_index = 0;
 
     for (i = 0; i < get_dimVS_of_ith_base (B, path_dim); ++i) {
 
@@ -201,13 +204,19 @@ vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, ve
                         && is_path_of_dimPath_p_index_j_marked (B, path_dim - 1, k) == TRUE) {
 
                         u[k] = (u[k] + 1) % 2;
-                        if (u[k] != 0) max_index = max_index < k ? k : max_index;
+			break;
                     }
 
                 }
             }
         }
-    } /*finished calcualting the border*/
+    } /*finished calculating the border*/
+
+    free (boundary_of_path_vector);
+
+    max_index = 0;
+    for (i = 0; i < get_dimVS_of_ith_base (B, path_dim - 1); ++i)
+    	if (u[i] != 0) max_index = i;
 
     while (max_index > 0) {
         temp = get_path_of_base_i_index_j (B, path_dim - 1, max_index);
@@ -242,10 +251,10 @@ vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, ve
 }
 
 
-Pers *ComputePPH(unsigned int pph_dim, double **network_weight, unsigned int network_set_size) {
+Pers *ComputePPH(unsigned int pph_max_dim, double **network_weight, unsigned int network_set_size) {
 
-    Pers                *PPH = alloc_Pers (pph_dim);
-    collection_of_basis *B   = alloc_all_basis (pph_dim + 1, network_set_size, network_weight);
+    Pers                *PPH = alloc_Pers (pph_max_dim);
+    collection_of_basis *B   = alloc_all_basis (pph_max_dim + 1, network_set_size, network_weight);
     T_p                 *Tp  = alloc_T_p (B);
 
     unsigned int        j, k, p, max_index;
@@ -257,9 +266,9 @@ Pers *ComputePPH(unsigned int pph_dim, double **network_weight, unsigned int net
     sorting_the_basis_by_their_allow_times (B);
 
     /*Now lets start the algorithm*/
-    for (p = 0; p <= pph_dim; ++p) {
+    for (p = 0; p <= pph_max_dim; ++p) {
 
-        u   = malloc (get_dimVS_of_ith_base (B, p) * sizeof (boolean));
+        /*u   = malloc (get_dimVS_of_ith_base (B, p) * sizeof (boolean));*/
         v_j = malloc (get_dimVS_of_ith_base (B, p + 1) * sizeof (boolean));
 
         for (j = 0; j < get_dimVS_of_ith_base (B, p + 1); ++j) {
@@ -270,6 +279,7 @@ Pers *ComputePPH(unsigned int pph_dim, double **network_weight, unsigned int net
             }
 
             u = BasisChange (B, Tp, network_weight, v_j, p + 1, &et, &max_index);
+	    free (v_j);
 
             if (is_this_vector_zero (u, get_dimVS_of_ith_base (B, p)) == TRUE)
                 marking_vector_basis (B, p + 1, j);
@@ -288,7 +298,7 @@ Pers *ComputePPH(unsigned int pph_dim, double **network_weight, unsigned int net
 
 
                 lower = entry_time_regular_path (network_weight, B, p, j);
-                upper = -1.0;
+                upper = INFINITE;
                 add_interval_of_pathDim_p (PPH, p, lower, upper);
             }
         }
