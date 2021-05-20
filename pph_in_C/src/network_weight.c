@@ -1,8 +1,9 @@
 /* vim: set ts=4 expandtab sw=4: */
 
-#include "~/fakeNewsAnalysis/pph_in_C/headers/network_weight.h"
-#include "~/fakeNewsAnalysis/pph_in_C/headers/definitions.h"
+#include "../headers/network_weight.h"
+#include "../headers/definitions.h"
 #include <stdlib.h>
+#include <stdio.h>
 /*================================================================
  * DOCUMENTATION> please read the file doc.pdf (inside the folder
  * pph_in_C), it explains everething that you will find here.
@@ -13,15 +14,17 @@
 double network_weight (vertex_index x, vertex_index y) {
 
     FILE *fh;
-    unsigned int i, size;
+    unsigned int size;
     vertex_index a, b;
-    unsigned int gen_a, gen_b, test;
+    /* unsigned int gen_a, gen_b, test; */
+    unsigned int test;
 
-    fh = fopen ("~/fakeNewsAnalysis/pph_in_C/data/edges.txt", "r");
+    fh = fopen ("data/edges.txt", "r");
 
     if (fh == NULL) printf ("Problems with the file data/edges.txt\n\n");
 
     fscanf (fh, "%u", &size);
+    /* printf ("size %u\n", size); */ 
 
     /*
     for ( fscanf (fh, "%u %u %u %u", &a, &b, &gen_a, &gen_b) != EOF ) 
@@ -29,9 +32,10 @@ double network_weight (vertex_index x, vertex_index y) {
             return (double) (gen_b - gen_a);
     */
 
-    for ( fscanf (fh, "%u %u %u", &a, &b, &test) != EOF ) 
-        if ( (a == x) && (b == y) )
-            return (double) (test);
+    while ( fscanf (fh, "%u %u %u", &a, &b, &test) != EOF ) 
+        if ( (a == x) && (b == y) ) break;
 
-    return 0;
+    fclose (fh);
+    /* printf ("netw = %u\n", test); */ 
+    return (double) (test);
 }

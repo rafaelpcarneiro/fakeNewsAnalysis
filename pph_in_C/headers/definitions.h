@@ -44,4 +44,4 @@ boolean is_this_path_a_regular_path      (regular_path, dim_path);
 boolean is_this_vector_zero              (vector, dim_vector_space);
 
 void    sum_these_vectors                (vector, vector, dim_vector_space);
-#endif // __DEFINITIONS_H_
+#endif /* __DEFINITIONS_H_ */

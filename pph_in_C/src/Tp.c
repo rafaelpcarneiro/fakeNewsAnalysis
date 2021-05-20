@@ -1,6 +1,6 @@
 /* vim: set ts=4 expandtab: */
 #include <stdlib.h>
-#include "~/fakeNewsAnalysis/pph_in_C/headers/Tp.h"
+#include "../headers/Tp.h"
 
 
 /*  main functions */
@@ -11,7 +11,7 @@ T_p *alloc_T_p (collection_of_basis *B) {
     T_p_tuple_collection *Tp_i;
     T_p_tuple            *Tp_i_j;
 
-    unsigned int i, j, k;
+    unsigned int i, j;
 	
     /* I will loook for diagrams of dimension 0 and 1. Thus, I just need the
      * T_p structure of dimension 0 and 1. The code will have this changes in mind

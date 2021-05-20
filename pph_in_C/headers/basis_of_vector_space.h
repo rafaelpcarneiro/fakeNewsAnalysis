@@ -32,7 +32,7 @@ typedef struct{
 } collection_of_basis;
 
 /*  FUNCTIONS OPERATING ON THESE STRUCTS  */
-collection_of_basis *alloc_all_basis (unsigned int, unsigned int, double**);
+collection_of_basis *alloc_all_basis (unsigned int, unsigned int);
 
 /* Note that the way generating_all_regular_paths_dim_p was constructed is not 
  * ideal for LARGE data. Hence, its version2 down below try to run it better 
@@ -71,4 +71,4 @@ void set_dimVS_of_ith_base (collection_of_basis*, dim_path, dim_vector_space);
 regular_path get_path_of_base_i_index_j (collection_of_basis*, dim_path, base_index);
 
 boolean is_path_of_dimPath_p_index_j_marked (collection_of_basis*, dim_path, base_index);
-#endif // __BASIS_OF_VECTOR_SPACE_H_
+#endif /* __BASIS_OF_VECTOR_SPACE_H_ */

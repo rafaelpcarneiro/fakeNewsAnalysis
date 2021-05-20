@@ -2,7 +2,7 @@
 #ifndef __NETWORK_WEIGHT_H_
 #define __NETWORK_WEIGHT_H_
 
-#include <definitions.h>
+#include "definitions.h"
 
 /*================================================================
  * DOCUMENTATION> please read the file doc.pdf (inside the folder
@@ -13,4 +13,4 @@
 
 double network_weight (vertex_index, vertex_index);
 
-#endif // __NETWORK_WEIGHT_H_
+#endif /* __NETWORK_WEIGHT_H_ */

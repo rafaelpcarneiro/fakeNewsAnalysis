@@ -1,11 +1,11 @@
-/*vim: set ts=4 expandtab sw=4: */
+/* vim: set ts=4 expandtab sw=4: */
 #include <stdio.h>
 #include <stdlib.h>
-#include "~/fakeNewsAnalysis/pph_in_C/headers/persistent_path_homology.h"
-#include "~/fakeNewsAnalysis/pph_in_C/headers/basis_of_vector_space.h"
-#include "~/fakeNewsAnalysis/pph_in_C/headers/Tp.h"
-#include "~/fakeNewsAnalysis/pph_in_C/headers/network_weight.h"
-#include "~/fakeNewsAnalysis/pph_in_C/headers/definitions.h"
+#include "../headers/persistent_path_homology.h"
+#include "../headers/basis_of_vector_space.h"
+#include "../headers/Tp.h"
+#include "../headers/network_weight.h"
+#include "../headers/definitions.h"
 
 #define INFINITE -1
 
@@ -130,7 +130,6 @@ double entry_time_regular_path (collection_of_basis *B,
                                 dim_path path_dim,
 				base_index index) {
 
-    base_index i;
     double distance = 0.0;
     unsigned int j, k, l;
     regular_path boundary, temp;
@@ -263,18 +262,30 @@ vector BasisChange (collection_of_basis *B,
 
 Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
 
-    Pers                *PPH = alloc_Pers (pph_max_dim);
-    collection_of_basis *B   = alloc_all_basis (pph_max_dim + 1, network_set_size);
-    T_p                 *Tp  = alloc_T_p (B);
+    Pers                *PPH; 
+    collection_of_basis *B  ;
+    T_p                 *Tp ;
 
     unsigned int        j, k, p, max_index;
     vector              u, v_j;
     double              et, lower, upper;
 
     /*Setting the environment*/
-    initialize_Marking_basis_vectors       (B);
-    sorting_the_basis_by_their_allow_times (B);
+	PPH = alloc_Pers (pph_max_dim);
 
+    B   = alloc_all_basis (pph_max_dim + 1, network_set_size);
+    printf ("alocou a base Ok\n\n");
+
+    Tp  = alloc_T_p (B);
+    printf ("alocou o Tp\n\n");
+
+    initialize_Marking_basis_vectors       (B);
+    printf ("Inicializou Tp\n\n");
+
+    sorting_the_basis_by_their_allow_times (B);
+    printf ("Ordenou as bases\n\n");
+
+    printf ("Comecou o algoritmo\n");
     /*Now lets start the algorithm*/
     for (p = 0; p <= pph_max_dim; ++p) {
 
@@ -300,6 +311,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
                 upper = et;
                 add_interval_of_pathDim_p (PPH, p, lower, upper);
             }
+            free (u);
         }
         for (j = 0; j < get_dimVS_of_ith_base (B, p); ++j) {
 
@@ -313,7 +325,6 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
             }
         }
 
-        free (u);
     }
 
     return PPH;

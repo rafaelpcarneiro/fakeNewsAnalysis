@@ -1,7 +1,8 @@
 /* vim: set ts=4: set expandtab: */
+#include <stdio.h>
 #include <stdlib.h>
-#include "~/fakeNewsAnalysis/pph_in_C/headers/basis_of_vector_space.h"
-#include "~/fakeNewsAnalysis/pph_in_C/headers/network_weight.h"
+#include "../headers/basis_of_vector_space.h"
+#include "../headers/network_weight.h"
 
 /*  getters and setters */
 dim_vector_space get_dimVS_of_ith_base (collection_of_basis *B, dim_path dim_p) {
@@ -41,7 +42,8 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
 
     collection_of_basis       *B = malloc (sizeof (collection_of_basis));
     base_index                i;
-    tuple_regular_path_double ith_tuple;
+    /* tuple_regular_path_double ith_tuple; */ 
+
 
     /* Don't worry, the value (number_of_basis_to_allocate_minus_one + 1) is correct */
     B->basis        = malloc( (number_of_basis_to_allocate_minus_one + 1) * sizeof(base) );
@@ -54,19 +56,26 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
 
     for (i = 0; i < network_set_size; ++i) {
         /*Base referent to regular paths of dimension 0*/
-        ith_tuple             = ((B->basis)->base_matrix)[i];
-        ith_tuple.ith_base    = malloc ( sizeof (vertex_index) );
-        ith_tuple.ith_base[0] = i;
-        ith_tuple.allow_time  = 0.0;
+        /* ith_tuple             = ((B->basis)->base_matrix)[i]; */ 
+        /* ith_tuple.ith_base    = malloc ( sizeof (vertex_index) ); */ 
+        /* ith_tuple.ith_base[0] = i; */ 
+        /* ith_tuple.allow_time  = 0.0; */ 
+        ((B->basis)->base_matrix + i)->ith_base    = malloc ( sizeof (vertex_index) ); 
+        ((B->basis)->base_matrix + i)->ith_base[0] = i; 
+        ((B->basis)->base_matrix + i)->allow_time  = 0.0; 
+
+		/* printf ("???\n") ; */ 
+		printf ("[ %u ]\n", ((B->basis)->base_matrix + i)->ith_base[0] );
     }
 
 	/* Base referent to regular paths of dimension > 0*/
 	/* I won't use the loop below. Instead, I will make usage of the version 2
 	 * of the function generating_all_regular_paths_dim_p.
 	 */
-      for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
-          generating_all_regular_paths_dim_p (B, i, network_set_size);
-      }
+    for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
+		printf ("dim %u\n", i);
+        generating_all_regular_paths_dim_p (B, i, network_set_size);
+    }
 
 	/* Test first
 	generating_all_regular_paths_dim_p_version2 (B);
@@ -93,25 +102,33 @@ void generating_all_regular_paths_dim_p (collection_of_basis *B,
 
     l = 0;
     for (i = 0; i < get_dimVS_of_ith_base (B, dim_p - 1); ++i) {
-        /*  continue here */
-        temp_dim_p_minus_one = B_dim_p_minus_one->base_matrix + i;
-        temp_dim_p           = B_dim_p->base_matrix + l;
+		temp_dim_p_minus_one = B_dim_p_minus_one->base_matrix + i;
 
         for (j = 0; j < network_set_size; ++j) {
-            temp_dim_p->ith_base = malloc( (dim_p + 1) * sizeof(vertex_index) );
 
             if ( temp_dim_p_minus_one->ith_base[dim_p - 1] != j ) {
-                for (k = 0; k <= dim_p - 1; ++k) temp_dim_p->ith_base[k] = temp_dim_p_minus_one->ith_base[k];
+				temp_dim_p           = B_dim_p->base_matrix + l;
+				temp_dim_p->ith_base = malloc( (dim_p + 1) * sizeof(vertex_index) );
+
+                for (k = 0; k <= dim_p - 1; ++k) {
+					temp_dim_p->ith_base[k] = temp_dim_p_minus_one->ith_base[k];
+				}
                 temp_dim_p->ith_base[k] = j;
+
+				printf ("[ ");
+                for (k = 0; k <= dim_p; ++k)
+					printf ("%u  ", ((B->basis + dim_p)->base_matrix + l)->ith_base[k]);
+				printf ("]\n");
+
+				/*now calculate the allow time of such regular path*/
+				temp_dim_p->allow_time = allow_time_regular_path (temp_dim_p->ith_base, dim_p);
                 ++l;
             }
-            /*now calculate the allow time of such regular path*/
-            temp_dim_p->allow_time = allow_time_regular_path (temp_dim_p->ith_base, dim_p);
         }
     }
 } /*  Tested Ok */
 
-int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
+void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 
     /* This function is going to open a txt files containing all regular paths,
      * contrary to its ancestor which would build all possible combinations. 
@@ -132,7 +149,7 @@ int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 
     paths_xy = fopen ("~/fakeNewsAnalysis/pph_in_C/data/paths_xy.txt", "r");
     if (paths_xy == NULL) {
-        printf ("problems trying to open the file paths_xy.txt. STOP HERE")
+        printf ("problems trying to open the file paths_xy.txt. STOP HERE");
     }
 
 
@@ -163,7 +180,7 @@ int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 
     paths_xyz = fopen ("~/fakeNewsAnalysis/pph_in_C/data/paths_xyz.txt", "r");
     if (paths_xyz == NULL) {
-        printf ("problems opening the file paths_xyz.txt. STOP HERE")
+        printf ("problems opening the file paths_xyz.txt. STOP HERE");
     }
 
 

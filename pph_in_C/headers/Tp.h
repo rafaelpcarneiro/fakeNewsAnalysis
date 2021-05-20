@@ -44,4 +44,4 @@ vector get_Tp_vector_of_pathDim_i_index_j (T_p*, dim_path, vector_index);
 
 double get_Tp_et_of_pathDim_i_index_j (T_p*, dim_path, vector_index);
 
-#endif // __TP_H_
+#endif /* __TP_H_ */
