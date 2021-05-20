@@ -1,6 +1,6 @@
 /* vim: set ts=4 expandtab: */
 #include <stdlib.h>
-#include "Tp.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/Tp.h"
 
 
 /*  main functions */

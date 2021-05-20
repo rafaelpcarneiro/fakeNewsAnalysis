@@ -1,6 +1,7 @@
 /* vim: set ts=4: set expandtab: */
 #include <stdlib.h>
-#include "basis_of_vector_space.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/basis_of_vector_space.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/network_weight.h"
 
 /*  getters and setters */
 dim_vector_space get_dimVS_of_ith_base (collection_of_basis *B, dim_path dim_p) {
@@ -31,8 +32,7 @@ boolean is_path_of_dimPath_p_index_j_marked (collection_of_basis *B, dim_path pa
 
 /*  main functions */
 collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_minus_one,
-                                      unsigned int network_set_size,
-                                      double **network_weight) {
+                                      unsigned int network_set_size) {
     
     /* since the index for arrays start from 0, number_of_basis_to_allocate_minus_one
      * represents properly the amount of basis we want to calculate. Just remember
@@ -68,49 +68,13 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
      *     generating_all_regular_paths_dim_p (B, i, network_set_size, network_weight);
      * }
 	 */
-	generating_all_regular_paths_dim_p_version2 (B, network_weight);
+	generating_all_regular_paths_dim_p_version2 (B);
 
     return B;
 } /*  Tested Ok */
 
-void generating_all_regular_paths_dim_p (collection_of_basis *B,
-                                         dim_path dim_p,
-                                         unsigned int network_set_size,
-                                         double **network_weight){
 
-    base *B_dim_p           = (B->basis) + dim_p;
-    base *B_dim_p_minus_one = (B->basis) + (dim_p - 1);
-
-    tuple_regular_path_double *temp_dim_p, *temp_dim_p_minus_one;
-
-    unsigned int i, j, k, l;
-
-    set_dim_path_of_ith_base (B, dim_p);
-    set_dimVS_of_ith_base (B, dim_p, get_dimVS_of_ith_base (B, dim_p - 1) * (network_set_size - 1));
-
-    B_dim_p->base_matrix = malloc ( get_dimVS_of_ith_base (B, dim_p) * sizeof (tuple_regular_path_double) );
-
-    l = 0;
-    for (i = 0; i < get_dimVS_of_ith_base (B, dim_p - 1); ++i) {
-        /*  continue here */
-        temp_dim_p_minus_one = B_dim_p_minus_one->base_matrix + i;
-        temp_dim_p           = B_dim_p->base_matrix + l;
-
-        for (j = 0; j < network_set_size; ++j) {
-            temp_dim_p->ith_base = malloc( (dim_p + 1) * sizeof(vertex_index) );
-
-            if ( temp_dim_p_minus_one->ith_base[dim_p - 1] != j ) {
-                for (k = 0; k <= dim_p - 1; ++k) temp_dim_p->ith_base[k] = temp_dim_p_minus_one->ith_base[k];
-                temp_dim_p->ith_base[k] = j;
-                ++l;
-            }
-            /*now calculate the allow time of such regular path*/
-            temp_dim_p->allow_time = allow_time_regular_path (network_weight, temp_dim_p->ith_base, dim_p);
-        }
-    }
-} /*  Tested Ok */
-
-int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B, double **network_weight){
+int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 
     /* This function is going to open a txt files containing all regular paths,
      * contrary to its ancestor which would build all possible combinations. 
@@ -127,9 +91,9 @@ int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B, double 
     FILE *paths_xy, *paths_xyz;
 
 	/* regular paths of dimension 1 */
-	dim_path = 1;
+	dim_p = 1;
 
-    paths_xy = fopen ("paths_xy.txt", "r");
+    paths_xy = fopen ("~/fakeNewsAnalysis/pph_in_C/data/paths_xy.txt", "r");
     if (paths_xy == NULL) {
         printf ("problems trying to open the file paths_xy.txt. STOP HERE")
     }
@@ -138,29 +102,29 @@ int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B, double 
     /* First line of paths_xy.txt is a description of how many regular
      * paths the file has.
      */
-    fscanf (paths_xy, "%d", &size);
+    fscanf (paths_xy, "%u", &size);
     ((B->basis) + dim_p)->base_matrix				          = malloc (size * sizeof (tuple_regular_path_double));
-	((B->basis) + dim_p)->dimension_of_the_regular_path       = 1;
+	((B->basis) + dim_p)->dimension_of_the_regular_path       = dim_p;
 	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
 
     i = 0;
-    while (fscanf (paths_xy, "%d ; %d", &x, &y)) {
+    while (fscanf (paths_xy, "%u ; %u", &x, &y) != EOF) {
 		temp_dim_p           = ((((B->basis) + dim_p)->base_matrix) + i);
 		temp_dim_p->ith_base = malloc (2 * sizeof (vertex_index));
 
 		temp_dim_p->ith_base[0] = x;
 		temp_dim_p->ith_base[1] = y;
 
-		temp_dim_p->allow_time  = network_weight[x][y];
+		temp_dim_p->allow_time  = network_weight(x, y);
 
 		++i;
     }
 	fclose (paths_xy);
 
 	/* regular paths of dimension 2 */
-	dim_path = 2;
+	dim_p = 2;
 
-    paths_xyz = fopen ("paths_xyz.txt", "r");
+    paths_xyz = fopen ("~/fakeNewsAnalysis/pph_in_C/data/paths_xyz.txt", "r");
     if (paths_xyz == NULL) {
         printf ("problems opening the file paths_xyz.txt. STOP HERE")
     }
@@ -169,13 +133,13 @@ int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B, double 
     /* First line of paths_xyz.txt is a description of how many regular
      * paths the file has.
      */
-    fscanf (paths_xyz, "%d", &size);
+    fscanf (paths_xyz, "%u", &size);
     ((B->basis) + dim_p)->base_matrix				          = malloc (size * sizeof (tuple_regular_path_double));
-	((B->basis) + dim_p)->dimension_of_the_regular_path       = 2;
+	((B->basis) + dim_p)->dimension_of_the_regular_path       = dim_p;
 	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
 
 	i = 0;
-    while (fscanf (paths_xyz, "%d ; %d ; %d", &x, &y, &z)) {
+    while (fscanf (paths_xyz, "%u ; %u ; %u", &x, &y, &z)) {
 		temp_dim_p           = ((((B->basis) + dim_p)->base_matrix) + i);
 		temp_dim_p->ith_base = malloc (3 * sizeof (vertex_index));
 
@@ -183,8 +147,8 @@ int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B, double 
 		temp_dim_p->ith_base[1] = y;
 		temp_dim_p->ith_base[2] = z;
 
-		temp_dim_p->allow_time  = network_weight[x][y] < network_weight[y][z] ?
-						network_weight[y][z]:network_weight[x][y];
+		temp_dim_p->allow_time  = network_weight(x,y) < network_weight(y,z) ?  network_weight(y,z):
+																			   network_weight(x,y);
 
 		++i;
     }
@@ -230,7 +194,7 @@ void sorting_the_basis_by_their_allow_times (collection_of_basis *B) {
 } /*  Tested Ok */
 
 
-double allow_time_regular_path (double **network_weight, regular_path path, dim_path path_dim) {
+double allow_time_regular_path (regular_path path, dim_path path_dim) {
     /* Calculates the allow time of a regular path. It will be used to sort our basis */
 
     unsigned int j;
@@ -240,7 +204,7 @@ double allow_time_regular_path (double **network_weight, regular_path path, dim_
     for (j = 0; j < path_dim; ++j) {
         i = path[j];
         i_plus_one = path[j + 1];
-        distance = distance < network_weight[i][i_plus_one] ? network_weight[i][i_plus_one] : distance;
+        distance = distance < network_weight(i, i_plus_one) ? network_weight(i, i_plus_one) : distance;
     }
 
     return distance;

@@ -39,11 +39,9 @@ collection_of_basis *alloc_all_basis (unsigned int, unsigned int, double**);
  */
 void generating_all_regular_paths_dim_p (collection_of_basis*,
                                          dim_path,
-                                         unsigned int,
-                                         double**);
+                                         unsigned int);
 
-void generating_all_regular_paths_dim_p_version2 (collection_of_basis*,
-                                              	  double**);
+void generating_all_regular_paths_dim_p_version2 (collection_of_basis*);
 
 
 /* TODO: check if this function is necessary. */
@@ -59,7 +57,7 @@ void sorting_the_basis_by_their_allow_times (collection_of_basis*);
 
 void marking_vector_basis (collection_of_basis*, dim_path, base_index);
 
-double allow_time_regular_path (double**, regular_path, dim_path);
+double allow_time_regular_path (regular_path, dim_path);
 
 int compareTuple (const void*, const void*);
 

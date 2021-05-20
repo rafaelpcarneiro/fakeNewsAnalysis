@@ -39,20 +39,24 @@ void add_interval_of_pathDim_p (Pers*, dim_path, double, double);
 void print_all_persistent_diagrams (Pers*);
 
 
-double allow_time_vector (double**, collection_of_basis*,
-                          vector, dim_path, dim_vector_space);
+double allow_time_vector (collection_of_basis*, vector, dim_path, dim_vector_space);
 
 
-double entry_time_vector (double **network_weight, collection_of_basis *B,
-                          vector path_vector, unsigned int path_dim, unsigned int base_dim);
+double entry_time_vector (collection_of_basis *B,
+			  vector path_vector,
+			  unsigned int path_dim,
+			  unsigned int base_dim);
 
 
-vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, vector path_vector, dim_path path_dim,
-                    double *return_et, unsigned int *return_max_index);
+vector BasisChange (collection_of_basis *B,
+		    T_p	*Tp,
+		    vector path_vector,
+		    dim_path path_dim,
+                    double *return_et,
+		    unsigned int *return_max_index);
 
 
 Pers *ComputePPH(unsigned int pph_dim,
-                 double **network_weight,
                  unsigned int network_set_size);
 
 #endif /* __PERSISTENT_PATH_HOMOLOGY_H_ */

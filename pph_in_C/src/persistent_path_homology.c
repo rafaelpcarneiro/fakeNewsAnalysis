@@ -1,8 +1,11 @@
 /*vim: set ts=4 expandtab sw=4: */
 #include <stdio.h>
 #include <stdlib.h>
-#include "persistent_path_homology.h"
-#include "basis_of_vector_space.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/persistent_path_homology.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/basis_of_vector_space.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/Tp.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/network_weight.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/definitions.h"
 
 #define INFINITE -1
 
@@ -48,8 +51,10 @@ void print_all_persistent_diagrams (Pers *P) {
 }
 
 
-double allow_time_vector (double **network_weight, collection_of_basis *B,
-                          vector path_vector, dim_path path_dim, dim_vector_space base_dim) {
+double allow_time_vector (collection_of_basis *B,
+                          vector path_vector,
+			  dim_path path_dim,
+			  dim_vector_space base_dim) {
 
     base_index   i;
     unsigned int j;
@@ -67,8 +72,8 @@ double allow_time_vector (double **network_weight, collection_of_basis *B,
                 vertex      = temp_path[j];
                 vertex_next = temp_path[j + 1];
 
-                distance = distance < network_weight[vertex][vertex_next]
-                           ? network_weight [vertex][vertex_next] : distance;
+                distance = distance < network_weight (vertex, vertex_next)
+                           ? network_weight (vertex, vertex_next) : distance;
             }
         }
     }
@@ -76,8 +81,10 @@ double allow_time_vector (double **network_weight, collection_of_basis *B,
 } /*  Tested Ok */
 
 
-double entry_time_vector (double **network_weight, collection_of_basis *B,
-                          vector path_vector, dim_path path_dim, dim_vector_space base_dim) {
+double entry_time_vector (collection_of_basis *B,
+                          vector path_vector,
+			  dim_path path_dim,
+			  dim_vector_space base_dim) {
 
     base_index i;
     double distance = 0.0;
@@ -86,10 +93,10 @@ double entry_time_vector (double **network_weight, collection_of_basis *B,
 
     if (path_dim == 0) return 0.0;
 
-    else if (path_dim == 1) return allow_time_vector (network_weight, B, path_vector, path_dim, base_dim);
+    else if (path_dim == 1) return allow_time_vector (B, path_vector, path_dim, base_dim);
 
     else {
-        distance = allow_time_vector (network_weight, B, path_vector, path_dim, base_dim);
+        distance = allow_time_vector (B, path_vector, path_dim, base_dim);
 
         /*Now we will have to calculate the boudary operator of the path_vector
          * then we will take its allow times */
@@ -109,8 +116,8 @@ double entry_time_vector (double **network_weight, collection_of_basis *B,
                     }
                     if (is_this_path_a_regular_path (boundary, path_dim - 1) == FALSE) continue;
 
-                    distance = distance < allow_time_regular_path (network_weight, boundary, path_dim - 1) ?
-                        allow_time_regular_path (network_weight, boundary, path_dim - 1) : distance;
+                    distance = distance < allow_time_regular_path (boundary, path_dim - 1) ?
+                        allow_time_regular_path (boundary, path_dim - 1) : distance;
                 }
             }
         }
@@ -119,8 +126,9 @@ double entry_time_vector (double **network_weight, collection_of_basis *B,
     }
 }
 
-double entry_time_regular_path (double **network_weight, collection_of_basis *B,
-                                dim_path path_dim, base_index index) {
+double entry_time_regular_path (collection_of_basis *B,
+                                dim_path path_dim,
+				base_index index) {
 
     base_index i;
     double distance = 0.0;
@@ -129,13 +137,11 @@ double entry_time_regular_path (double **network_weight, collection_of_basis *B,
 
     if (path_dim == 0) return 0.0;
 
-    else if (path_dim == 1) return allow_time_regular_path (network_weight,
-                                                            get_path_of_base_i_index_j (B, path_dim, index),
+    else if (path_dim == 1) return allow_time_regular_path (get_path_of_base_i_index_j (B, path_dim, index),
                                                             path_dim);
 
     else {
-        distance = allow_time_regular_path (network_weight,
-                                            get_path_of_base_i_index_j (B, path_dim, index),
+        distance = allow_time_regular_path (get_path_of_base_i_index_j (B, path_dim, index),
                                             path_dim);
 
         /*Now we will have to calculate the boudary operator of the path_vector
@@ -155,8 +161,8 @@ double entry_time_regular_path (double **network_weight, collection_of_basis *B,
 	    }
 	    if (is_this_path_a_regular_path (boundary, path_dim - 1) == FALSE) continue;
 
-	    distance = distance < allow_time_regular_path (network_weight, boundary, path_dim - 1) ?
-		allow_time_regular_path (network_weight, boundary, path_dim - 1) : distance;
+	    distance = distance < allow_time_regular_path (boundary, path_dim - 1) ?
+		allow_time_regular_path (boundary, path_dim - 1) : distance;
 	}
         /*}*/
         free (boundary);
@@ -164,8 +170,12 @@ double entry_time_regular_path (double **network_weight, collection_of_basis *B,
     }
 }
 
-vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, vector path_vector, dim_path path_dim,
-                    double *return_et, base_index *return_max_index) {
+vector BasisChange (collection_of_basis *B,
+		    T_p *Tp,
+		    vector path_vector,
+		    dim_path path_dim,
+                    double *return_et, 
+		    base_index *return_max_index) {
 
     vector u;
 
@@ -221,12 +231,12 @@ vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, ve
     while (max_index > 0) {
         temp = get_path_of_base_i_index_j (B, path_dim - 1, max_index);
 
-        et = allow_time_vector (network_weight, B, u, path_dim - 1, get_dimVS_of_ith_base (B, path_dim - 1))
+        et = allow_time_vector (B, u, path_dim - 1, get_dimVS_of_ith_base (B, path_dim - 1))
             <
-            allow_time_regular_path (network_weight, temp, path_dim - 1 )
+            allow_time_regular_path (temp, path_dim - 1 )
             ?
-            allow_time_regular_path (network_weight, temp, path_dim - 1 ) :
-            allow_time_vector (network_weight, B, u, path_dim - 1, get_dimVS_of_ith_base (B, path_dim - 1));
+            allow_time_regular_path (temp, path_dim - 1 ) :
+            allow_time_vector (B, u, path_dim - 1, get_dimVS_of_ith_base (B, path_dim - 1));
 
         if (is_T_p_pathDim_i_vector_j_empty (Tp, path_dim - 1, max_index) == EMPTY) break;
 
@@ -251,10 +261,10 @@ vector BasisChange (collection_of_basis *B, T_p *Tp, double **network_weight, ve
 }
 
 
-Pers *ComputePPH(unsigned int pph_max_dim, double **network_weight, unsigned int network_set_size) {
+Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
 
     Pers                *PPH = alloc_Pers (pph_max_dim);
-    collection_of_basis *B   = alloc_all_basis (pph_max_dim + 1, network_set_size, network_weight);
+    collection_of_basis *B   = alloc_all_basis (pph_max_dim + 1, network_set_size);
     T_p                 *Tp  = alloc_T_p (B);
 
     unsigned int        j, k, p, max_index;
@@ -278,7 +288,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, double **network_weight, unsigned int
                 else        v_j[k] = FALSE;
             }
 
-            u = BasisChange (B, Tp, network_weight, v_j, p + 1, &et, &max_index);
+            u = BasisChange (B, Tp, v_j, p + 1, &et, &max_index);
 	    free (v_j);
 
             if (is_this_vector_zero (u, get_dimVS_of_ith_base (B, p)) == TRUE)
@@ -286,7 +296,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, double **network_weight, unsigned int
             else {
                 set_T_p_pathDim_i_vector_j (Tp, p, max_index, u, et);
 
-                lower = entry_time_regular_path (network_weight, B, p, max_index);
+                lower = entry_time_regular_path (B, p, max_index);
                 upper = et;
                 add_interval_of_pathDim_p (PPH, p, lower, upper);
             }
@@ -297,7 +307,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, double **network_weight, unsigned int
                 is_path_of_dimPath_p_index_j_marked (B, p, j) == MARKED ) {
 
 
-                lower = entry_time_regular_path (network_weight, B, p, j);
+                lower = entry_time_regular_path (B, p, j);
                 upper = INFINITE;
                 add_interval_of_pathDim_p (PPH, p, lower, upper);
             }

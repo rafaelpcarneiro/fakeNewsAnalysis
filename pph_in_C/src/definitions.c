@@ -1,4 +1,4 @@
-#include "definitions.h"
+#include "~/fakeNewsAnalysis/pph_in_C/headers/definitions.h"
 
 boolean are_these_regular_paths_the_same (regular_path path1, regular_path path2, dim_path path_dim) {
 
