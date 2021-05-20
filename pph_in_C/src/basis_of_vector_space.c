@@ -60,19 +60,56 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
         ith_tuple.allow_time  = 0.0;
     }
 
-	/*Base referent to regular paths of dimension > 0*/
+	/* Base referent to regular paths of dimension > 0*/
 	/* I won't use the loop below. Instead, I will make usage of the version 2
-	 * of the function: generating_all_regular_paths_dim_p.
-	 *
-     * for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
-     *     generating_all_regular_paths_dim_p (B, i, network_set_size, network_weight);
-     * }
+	 * of the function generating_all_regular_paths_dim_p.
 	 */
+      for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
+          generating_all_regular_paths_dim_p (B, i, network_set_size);
+      }
+
+	/* Test first
 	generating_all_regular_paths_dim_p_version2 (B);
+	*/
 
     return B;
 } /*  Tested Ok */
 
+void generating_all_regular_paths_dim_p (collection_of_basis *B,
+                                         dim_path dim_p,
+                                         unsigned int network_set_size){
+
+    base *B_dim_p           = (B->basis) + dim_p;
+    base *B_dim_p_minus_one = (B->basis) + (dim_p - 1);
+
+    tuple_regular_path_double *temp_dim_p, *temp_dim_p_minus_one;
+
+    unsigned int i, j, k, l;
+
+    set_dim_path_of_ith_base (B, dim_p);
+    set_dimVS_of_ith_base (B, dim_p, get_dimVS_of_ith_base (B, dim_p - 1) * (network_set_size - 1));
+
+    B_dim_p->base_matrix = malloc ( get_dimVS_of_ith_base (B, dim_p) * sizeof (tuple_regular_path_double) );
+
+    l = 0;
+    for (i = 0; i < get_dimVS_of_ith_base (B, dim_p - 1); ++i) {
+        /*  continue here */
+        temp_dim_p_minus_one = B_dim_p_minus_one->base_matrix + i;
+        temp_dim_p           = B_dim_p->base_matrix + l;
+
+        for (j = 0; j < network_set_size; ++j) {
+            temp_dim_p->ith_base = malloc( (dim_p + 1) * sizeof(vertex_index) );
+
+            if ( temp_dim_p_minus_one->ith_base[dim_p - 1] != j ) {
+                for (k = 0; k <= dim_p - 1; ++k) temp_dim_p->ith_base[k] = temp_dim_p_minus_one->ith_base[k];
+                temp_dim_p->ith_base[k] = j;
+                ++l;
+            }
+            /*now calculate the allow time of such regular path*/
+            temp_dim_p->allow_time = allow_time_regular_path (temp_dim_p->ith_base, dim_p);
+        }
+    }
+} /*  Tested Ok */
 
 int generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 
