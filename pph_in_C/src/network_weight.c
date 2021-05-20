@@ -15,7 +15,7 @@ double network_weight (vertex_index x, vertex_index y) {
     FILE *fh;
     unsigned int i, size;
     vertex_index a, b;
-    unsigned int gen_a, gen_b;
+    unsigned int gen_a, gen_b, test;
 
     fh = fopen ("~/fakeNewsAnalysis/pph_in_C/data/edges.txt", "r");
 
@@ -23,10 +23,15 @@ double network_weight (vertex_index x, vertex_index y) {
 
     fscanf (fh, "%u", &size);
 
+    /*
     for ( fscanf (fh, "%u %u %u %u", &a, &b, &gen_a, &gen_b) != EOF ) 
         if ( (a == x) && (b == y) )
             return (double) (gen_b - gen_a);
+    */
 
+    for ( fscanf (fh, "%u %u %u", &a, &b, &test) != EOF ) 
+        if ( (a == x) && (b == y) )
+            return (double) (test);
 
     return 0;
 }
