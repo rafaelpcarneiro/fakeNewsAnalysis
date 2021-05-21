@@ -180,7 +180,7 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
 
 	i = 0;
-    while (fscanf (paths_xyz, "%u %u %u", &x, &y, &z)) {
+    while (fscanf (paths_xyz, "%u %u %u", &x, &y, &z) != EOF) {
 		temp_dim_p           = ((((B->basis) + dim_p)->base_matrix) + i);
 		temp_dim_p->ith_base = malloc (3 * sizeof (vertex_index));
 
