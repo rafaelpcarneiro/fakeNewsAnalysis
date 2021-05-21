@@ -10,8 +10,16 @@
 int main () {
 
     Pers  *PPH; 
+    FILE *nodes;
+    unsigned int network_size;
 
-    PPH =  ComputePPH(1, 11);
+    nodes = fopen ("data/nodes.txt", "r");
+    if (nodes == NULL) printf ("Problems to read data/nodes.txt\n");
+
+    fscanf (nodes, "%u", &network_size);
+    fclose (nodes);
+
+    PPH =  ComputePPH(1, network_size);
 
     print_all_persistent_diagrams (PPH); 
 
