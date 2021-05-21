@@ -55,11 +55,6 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
     (B->basis)->dimension_of_the_vs_spanned_by_base = network_set_size;
 
     for (i = 0; i < network_set_size; ++i) {
-        /*Base referent to regular paths of dimension 0*/
-        /* ith_tuple             = ((B->basis)->base_matrix)[i]; */ 
-        /* ith_tuple.ith_base    = malloc ( sizeof (vertex_index) ); */ 
-        /* ith_tuple.ith_base[0] = i; */ 
-        /* ith_tuple.allow_time  = 0.0; */ 
         ((B->basis)->base_matrix + i)->ith_base    = malloc ( sizeof (vertex_index) ); 
         ((B->basis)->base_matrix + i)->ith_base[0] = i; 
         ((B->basis)->base_matrix + i)->allow_time  = 0.0; 
@@ -69,14 +64,13 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
 	/* Base referent to regular paths of dimension > 0*/
 	/* I won't use the loop below. Instead, I will make usage of the version 2
 	 * of the function generating_all_regular_paths_dim_p.
+	 *
+     * for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
+     *     generating_all_regular_paths_dim_p (B, i, network_set_size);
+     * }
 	 */
-    for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
-        generating_all_regular_paths_dim_p (B, i, network_set_size);
-    }
 
-	/* Test first
 	generating_all_regular_paths_dim_p_version2 (B);
-	*/
 
     return B;
 } /*  Tested Ok */
@@ -139,7 +133,7 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 	/* regular paths of dimension 1 */
 	dim_p = 1;
 
-    paths_xy = fopen ("~/fakeNewsAnalysis/pph_in_C/data/paths_xy.txt", "r");
+    paths_xy = fopen ("data/paths_xy.txt", "r");
     if (paths_xy == NULL) {
         printf ("problems trying to open the file paths_xy.txt. STOP HERE");
     }
@@ -154,7 +148,7 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
 
     i = 0;
-    while (fscanf (paths_xy, "%u ; %u", &x, &y) != EOF) {
+    while (fscanf (paths_xy, "%u %u", &x, &y) != EOF) {
 		temp_dim_p           = ((((B->basis) + dim_p)->base_matrix) + i);
 		temp_dim_p->ith_base = malloc (2 * sizeof (vertex_index));
 
@@ -170,7 +164,7 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 	/* regular paths of dimension 2 */
 	dim_p = 2;
 
-    paths_xyz = fopen ("~/fakeNewsAnalysis/pph_in_C/data/paths_xyz.txt", "r");
+    paths_xyz = fopen ("data/paths_xyz.txt", "r");
     if (paths_xyz == NULL) {
         printf ("problems opening the file paths_xyz.txt. STOP HERE");
     }
@@ -185,7 +179,7 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
 
 	i = 0;
-    while (fscanf (paths_xyz, "%u ; %u ; %u", &x, &y, &z)) {
+    while (fscanf (paths_xyz, "%u %u %u", &x, &y, &z)) {
 		temp_dim_p           = ((((B->basis) + dim_p)->base_matrix) + i);
 		temp_dim_p->ith_base = malloc (3 * sizeof (vertex_index));
 

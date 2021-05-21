@@ -308,6 +308,8 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     sorting_the_basis_by_their_allow_times (B);
     
     printf ("Basis marked and ordered -- DONE\n\n");
+    printf_basis (B);
+    return 0;
 
     printf ("===========================================\n");
     printf ("Calculating the path persisten homology\n");
