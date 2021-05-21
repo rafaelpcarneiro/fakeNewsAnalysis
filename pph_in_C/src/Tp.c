@@ -1,4 +1,5 @@
 /* vim: set ts=4 expandtab: */
+#include <stdio.h>
 #include <stdlib.h>
 #include "../headers/Tp.h"
 
@@ -29,7 +30,8 @@ T_p *alloc_T_p (collection_of_basis *B) {
 
         for (j = 0; j < Tp_i->size; ++j) {
             Tp_i_j              = Tp_i->array_of_T_p_tuple + j;
-            Tp_i_j->path_vector = malloc (Tp_i->size * sizeof (boolean)); /* DANGER TOO BIG */
+            /*Tp_i_j->path_vector = malloc (Tp_i->size * sizeof (boolean));  DANGER TOO BIG */
+            Tp_i_j->path_vector = NULL;
             Tp_i_j->is_empty    = EMPTY;
         }
     }
@@ -65,3 +67,16 @@ vector get_Tp_vector_of_pathDim_i_index_j (T_p *Tp, dim_path dim_i, vector_index
 double get_Tp_et_of_pathDim_i_index_j (T_p *Tp, dim_path dim_i, vector_index index_j) {
     return ((Tp->all_Tp + dim_i)->array_of_T_p_tuple + index_j)->entry_time;
 }
+
+void print_Tp (T_p *Tp) {
+    unsigned int i,j;
+
+    for (i = 0; i <= Tp->max_of_Tp; ++i){
+        printf ("Regular path dim = %u\n", i);
+        for (j = 0; j < (Tp->all_Tp + i)->size; ++j){
+            print_vec_nicely (get_Tp_vector_of_pathDim_i_index_j (Tp, i, j),(Tp->all_Tp + i)->size, "Tp");       
+        }
+    }
+}
+
+

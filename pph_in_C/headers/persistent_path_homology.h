@@ -42,10 +42,11 @@ void print_all_persistent_diagrams (Pers*);
 double allow_time_vector (collection_of_basis*, vector, dim_path, dim_vector_space);
 
 
-double entry_time_vector (collection_of_basis *B,
-			  vector path_vector,
-			  unsigned int path_dim,
-			  unsigned int base_dim);
+double entry_time_vector (collection_of_basis*, vector, unsigned int, unsigned int);
+
+vector apply_border_operator_and_take_out_unmarked_points (collection_of_basis*, vector, dim_path);
+
+void print_vec_nicely (vector, dim_vector_space, char*);
 
 
 vector BasisChange (collection_of_basis *B,

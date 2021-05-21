@@ -1,3 +1,5 @@
+/* vim: set ts=4 expandtab sw=4: */
+#include <stdio.h>
 #include "../headers/definitions.h"
 
 boolean are_these_regular_paths_the_same (regular_path path1, regular_path path2, dim_path path_dim) {
@@ -33,4 +35,17 @@ void sum_these_vectors (vector a, vector b, dim_vector_space dim) {
 
     for (i = 0; i < dim; ++i)
         a[i] = (a[i] + b[i]) % 2;
+}
+
+
+void print_vec_nicely (vector u, dim_vector_space dim, char *vec_name) {
+    unsigned int i;
+
+    if (u != NULL) {
+        printf ("%s =", vec_name);
+        for (i = 0; i < dim; ++i)
+            if (u[i] == 1) printf (" v_%d +", i);
+        printf ("\n\n");
+    }
+    else printf ("%s = 0\n", vec_name);
 }

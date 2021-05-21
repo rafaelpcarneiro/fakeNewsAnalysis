@@ -153,41 +153,34 @@ double entry_time_regular_path (collection_of_basis *B,
 	for (j = 0; j <= path_dim; ++j) {
 	    l = 0;
 	    for (k = 0; k <= path_dim; ++k) {
-		if (k != j) {
-		boundary[l] = temp[k];
-		++l;
-		}
+            if (k != j) {
+                boundary[l] = temp[k];
+                ++l;
+		    }
 	    }
 	    if (is_this_path_a_regular_path (boundary, path_dim - 1) == FALSE) continue;
 
 	    distance = distance < allow_time_regular_path (boundary, path_dim - 1) ?
 		allow_time_regular_path (boundary, path_dim - 1) : distance;
 	}
-        /*}*/
-        free (boundary);
-        return distance;
+    /*}*/
+    free (boundary);
+    return distance;
     }
 }
 
-vector BasisChange (collection_of_basis *B,
-		    T_p *Tp,
-		    vector path_vector,
-		    dim_path path_dim,
-                    double *return_et, 
-		    base_index *return_max_index) {
+vector apply_border_operator_and_take_out_unmarked_points (collection_of_basis *B,
+                                                           vector path_vector,
+                                                           dim_path path_dim) {
 
     vector u;
-
+    unsigned int i, j, l, k;
     regular_path boundary_of_path_vector, temp;
-
-
-    base_index i, j, k, l, max_index = 0;
-
-    double et = 0.0;
 
     boundary_of_path_vector = malloc (path_dim * sizeof (vertex_index));
 
     u = malloc (get_dimVS_of_ith_base (B, path_dim - 1) * sizeof (boolean));
+
     for (i = 0; i < get_dimVS_of_ith_base (B, path_dim - 1); ++i) u[i] = 0;
 
 
@@ -208,20 +201,43 @@ vector BasisChange (collection_of_basis *B,
                 if (is_this_path_a_regular_path (boundary_of_path_vector, path_dim - 1) == FALSE) continue;
 
                 for (k = 0; k < get_dimVS_of_ith_base (B, path_dim - 1); ++k) {
+
                     if (are_these_regular_paths_the_same (get_path_of_base_i_index_j (B, path_dim - 1, k),
                                                           boundary_of_path_vector, path_dim - 1) == TRUE
                         && is_path_of_dimPath_p_index_j_marked (B, path_dim - 1, k) == TRUE) {
 
                         u[k] = (u[k] + 1) % 2;
-			break;
+			            break;
                     }
-
                 }
             }
         }
     } /*finished calculating the border*/
 
     free (boundary_of_path_vector);
+
+
+    return u;
+}
+
+
+vector BasisChange (collection_of_basis *B,
+		    T_p *Tp,
+		    vector path_vector,
+		    dim_path path_dim,
+                    double *return_et, 
+		    base_index *return_max_index) {
+
+    vector u;
+
+    base_index i, k, max_index = 0;
+
+    double et = 0.0;
+
+    regular_path temp;
+
+    u = apply_border_operator_and_take_out_unmarked_points (B, path_vector, path_dim);
+
 
     max_index = 0;
     for (i = 0; i < get_dimVS_of_ith_base (B, path_dim - 1); ++i)
@@ -230,20 +246,18 @@ vector BasisChange (collection_of_basis *B,
     while (max_index > 0) {
         temp = get_path_of_base_i_index_j (B, path_dim - 1, max_index);
 
-        et = allow_time_vector (B, u, path_dim - 1, get_dimVS_of_ith_base (B, path_dim - 1))
+        et = allow_time_vector (B, path_vector, path_dim, get_dimVS_of_ith_base (B, path_dim))
             <
             allow_time_regular_path (temp, path_dim - 1 )
             ?
             allow_time_regular_path (temp, path_dim - 1 ) :
-            allow_time_vector (B, u, path_dim - 1, get_dimVS_of_ith_base (B, path_dim - 1));
+            allow_time_vector (B, path_vector, path_dim, get_dimVS_of_ith_base (B, path_dim));
 
         if (is_T_p_pathDim_i_vector_j_empty (Tp, path_dim - 1, max_index) == EMPTY) break;
 
-        for (k = 0; k < get_dimVS_of_ith_base (B, path_dim - 1); ++k) {
-            sum_these_vectors (u,
-                               get_Tp_vector_of_pathDim_i_index_j (Tp, path_dim - 1, max_index),
-                               get_dimVS_of_ith_base (B, path_dim - 1));
-        }
+        sum_these_vectors (u,
+                           get_Tp_vector_of_pathDim_i_index_j (Tp, path_dim - 1, max_index),
+                           get_dimVS_of_ith_base (B, path_dim - 1));
 
         /*now check again max_index*/
         max_index = 0;
@@ -271,21 +285,34 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     double              et, lower, upper;
 
     /*Setting the environment*/
+    printf ("Environment variables\n\n");
 	PPH = alloc_Pers (pph_max_dim);
 
     B   = alloc_all_basis (pph_max_dim + 1, network_set_size);
-    printf ("alocou a base Ok\n\n");
+    printf ("Info about all basis allocated:\n");
+    printf ("===============================\n\n");
+
+    for (j = 0; j < 3; ++j)
+        printf ("The amount of regular paths of dimension %u is: %u\n",(B->basis+j)->dimension_of_the_regular_path,
+                                                                       (B->basis+j)->dimension_of_the_vs_spanned_by_base);
+
+    printf("\n\n");
+
+    printf ("Basis -- DONE\n");
+
 
     Tp  = alloc_T_p (B);
-    printf ("alocou o Tp\n\n");
+    printf ("T_p -- DONE\n");
 
     initialize_Marking_basis_vectors       (B);
-    printf ("Inicializou Tp\n\n");
-
     sorting_the_basis_by_their_allow_times (B);
-    printf ("Ordenou as bases\n\n");
+    
+    printf ("Basis marked and ordered -- DONE\n\n");
 
-    printf ("Comecou o algoritmo\n");
+    printf ("===========================================\n");
+    printf ("Calculating the path persisten homology\n");
+    printf ("===========================================\n");
+
     /*Now lets start the algorithm*/
     for (p = 0; p <= pph_max_dim; ++p) {
 
@@ -299,32 +326,32 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
                 else        v_j[k] = FALSE;
             }
 
+            /*if (p == 1 && j == 12 ) print_Tp (Tp);*/
             u = BasisChange (B, Tp, v_j, p + 1, &et, &max_index);
-	    free (v_j);
+            /*print_vec_nicely (u, get_dimVS_of_ith_base (B, p), "u");*/
 
-            if (is_this_vector_zero (u, get_dimVS_of_ith_base (B, p)) == TRUE)
+
+            if (is_this_vector_zero (u, get_dimVS_of_ith_base (B, p)) == TRUE) {
                 marking_vector_basis (B, p + 1, j);
+                free (u);
+            }
             else {
                 set_T_p_pathDim_i_vector_j (Tp, p, max_index, u, et);
-
                 lower = entry_time_regular_path (B, p, max_index);
                 upper = et;
                 add_interval_of_pathDim_p (PPH, p, lower, upper);
             }
-            free (u);
         }
+        free (v_j);
         for (j = 0; j < get_dimVS_of_ith_base (B, p); ++j) {
 
             if (is_T_p_pathDim_i_vector_j_empty  (Tp, p, j) == EMPTY &&
                 is_path_of_dimPath_p_index_j_marked (B, p, j) == MARKED ) {
-
-
                 lower = entry_time_regular_path (B, p, j);
                 upper = INFINITE;
                 add_interval_of_pathDim_p (PPH, p, lower, upper);
             }
         }
-
     }
 
     return PPH;

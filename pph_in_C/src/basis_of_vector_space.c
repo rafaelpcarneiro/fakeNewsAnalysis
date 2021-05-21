@@ -64,8 +64,6 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
         ((B->basis)->base_matrix + i)->ith_base[0] = i; 
         ((B->basis)->base_matrix + i)->allow_time  = 0.0; 
 
-		/* printf ("???\n") ; */ 
-		printf ("[ %u ]\n", ((B->basis)->base_matrix + i)->ith_base[0] );
     }
 
 	/* Base referent to regular paths of dimension > 0*/
@@ -73,7 +71,6 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
 	 * of the function generating_all_regular_paths_dim_p.
 	 */
     for (i = 1; i <= number_of_basis_to_allocate_minus_one; ++i) {
-		printf ("dim %u\n", i);
         generating_all_regular_paths_dim_p (B, i, network_set_size);
     }
 
@@ -114,11 +111,6 @@ void generating_all_regular_paths_dim_p (collection_of_basis *B,
 					temp_dim_p->ith_base[k] = temp_dim_p_minus_one->ith_base[k];
 				}
                 temp_dim_p->ith_base[k] = j;
-
-				printf ("[ ");
-                for (k = 0; k <= dim_p; ++k)
-					printf ("%u  ", ((B->basis + dim_p)->base_matrix + l)->ith_base[k]);
-				printf ("]\n");
 
 				/*now calculate the allow time of such regular path*/
 				temp_dim_p->allow_time = allow_time_regular_path (temp_dim_p->ith_base, dim_p);
@@ -275,3 +267,28 @@ int compareTuple (const void *p1, const void *p2) {
     else if (p1_value == p2_value) return 0;
     else               return 1;
 } /*  Ok*/
+
+
+void printf_basis (collection_of_basis *B) {
+	
+	FILE *fh;
+	unsigned int i, j, k;
+
+	fh = fopen ("data/basis.txt", "w");
+	if (fh == NULL) printf ("Problems to write the basis\n");
+
+	for (i = 0; i <= B->max_of_basis; ++i) {
+		fprintf (fh,
+				 "Regular paths of dimension %u\nVS dimension = %u\n\n",
+			 	 (B->basis + i)->dimension_of_the_regular_path,
+				 (B->basis + i)->dimension_of_the_vs_spanned_by_base);
+		
+		for (j = 0; j < (B->basis + i)->dimension_of_the_vs_spanned_by_base; ++j) {
+			fprintf (fh, "[");
+			for (k = 0; k <= (B->basis + i)->dimension_of_the_regular_path; ++k)
+				fprintf (fh, "%u ", ((B->basis + i)->base_matrix + j)->ith_base[k]);
+			fprintf (fh, "]\n");
+		}
+		fprintf (fh, "\n");
+	}
+}

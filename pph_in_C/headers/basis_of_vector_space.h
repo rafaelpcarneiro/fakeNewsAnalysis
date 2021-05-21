@@ -61,6 +61,8 @@ double allow_time_regular_path (regular_path, dim_path);
 
 int compareTuple (const void*, const void*);
 
+void printf_basis (collection_of_basis*);
+
 /*  setters and getters */
 dim_vector_space get_dimVS_of_ith_base (collection_of_basis*, dim_path);
 
