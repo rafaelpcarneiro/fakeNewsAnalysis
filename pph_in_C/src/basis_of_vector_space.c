@@ -157,6 +157,7 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 
 		temp_dim_p->allow_time  = network_weight(x, y);
 
+		printf ("Reading regular path dim 1, index = %u\n", i);
 		++i;
     }
 	fclose (paths_xy);
@@ -190,6 +191,7 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 		temp_dim_p->allow_time  = network_weight(x,y) < network_weight(y,z) ?  network_weight(y,z):
 																			   network_weight(x,y);
 
+		printf ("Reading regular path dim 2, index = %u\n", i);
 		++i;
     }
 	fclose (paths_xyz);

@@ -36,18 +36,23 @@ void add_interval_of_pathDim_p (Pers *P, dim_path p, double lower, double upper)
 
 
 void print_all_persistent_diagrams (Pers *P) {
+    FILE *fh;
     Pers_interval_p *interval;
     dim_path        p;
 
+    fh = fopen ("data/pph_diagrams.txt", "w");
+    if (fh == NULL) printf ("Problems to write pph_diagrams.txt\n");
+
     for (p = 0; p <= P->pph_max; ++p) {
-        printf ("Persistent Path Diagrams of dimension %u:\n", p);
+        fprintf (fh, "Persistent Path Diagrams of dimension %u:\n", p);
         interval = (P->PPH_Diagrams + p)->stack;
 
         while (interval != NULL) {
-            printf ("[%6.2f,%6.2f]\n", (interval->PPH_interval_dim_p)[0], (interval->PPH_interval_dim_p)[1]);
+            fprintf (fh, "[%6.2f,%6.2f]\n", (interval->PPH_interval_dim_p)[0], (interval->PPH_interval_dim_p)[1]);
             interval = interval->next;
         }
     }
+    fclose (fh);
 }
 
 
@@ -308,11 +313,10 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     sorting_the_basis_by_their_allow_times (B);
     
     printf ("Basis marked and ordered -- DONE\n\n");
-    printf_basis (B);
-    return 0;
+    /*printf_basis (B); */
 
     printf ("===========================================\n");
-    printf ("Calculating the path persisten homology\n");
+    printf ("Calculating the path persistent homology   \n");
     printf ("===========================================\n");
 
     /*Now lets start the algorithm*/
@@ -322,6 +326,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
         v_j = malloc (get_dimVS_of_ith_base (B, p + 1) * sizeof (boolean));
 
         for (j = 0; j < get_dimVS_of_ith_base (B, p + 1); ++j) {
+            printf ("First Loop -- Path dim = %u, base index = %u\n", p, j);
 
             for (k = 0; k < get_dimVS_of_ith_base (B, p + 1); ++k) {
                 if (k == j) v_j[k] = TRUE;
@@ -346,6 +351,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
         }
         free (v_j);
         for (j = 0; j < get_dimVS_of_ith_base (B, p); ++j) {
+            printf ("Second Loop -- Path dim = %u, base index = %u\n", p, j);
 
             if (is_T_p_pathDim_i_vector_j_empty  (Tp, p, j) == EMPTY &&
                 is_path_of_dimPath_p_index_j_marked (B, p, j) == MARKED ) {
