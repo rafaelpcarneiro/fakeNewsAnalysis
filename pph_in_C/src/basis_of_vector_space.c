@@ -133,9 +133,9 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 	/* regular paths of dimension 1 */
 	dim_p = 1;
 
-    paths_xy = fopen ("data/paths_xy.txt", "r");
+    paths_xy = fopen ("data/all_regular_paths_dimension_1.txt", "r");
     if (paths_xy == NULL) {
-        printf ("problems trying to open the file paths_xy.txt. STOP HERE");
+        printf ("problems trying to open the file all_regular_paths_dimension_1.txt. STOP HERE");
     }
 
 
@@ -164,9 +164,9 @@ void generating_all_regular_paths_dim_p_version2 (collection_of_basis *B){
 	/* regular paths of dimension 2 */
 	dim_p = 2;
 
-    paths_xyz = fopen ("data/paths_xyz.txt", "r");
+    paths_xyz = fopen ("data/all_regular_paths_dimension_2.txt", "r");
     if (paths_xyz == NULL) {
-        printf ("problems opening the file paths_xyz.txt. STOP HERE");
+        printf ("problems opening the file all_regular_paths_dimension_2.txt. STOP HERE");
     }
 
 
