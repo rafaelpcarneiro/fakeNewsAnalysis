@@ -14,9 +14,10 @@ gcc create_paths_dim_2_and_3.c -o create_paths_dim_2_and_3
 gcc eliminate_repetitions_paths_dim_2_3.c -o eliminate_repetitions_paths_dim_2_3
 
 echo "Generating nodes.txt and edges.txt that will provide info to branch.c"
+echo "Each edge weight is given by the time taken to the tweet son get born"
 echo ""
-sqlite3 twitter.db < generate_nodes_txt.sql
-sqlite3 twitter.db < generate_edges_txt.sql
+#sqlite3 twitter.db < generate_nodes_and_edges_to_txt.sql
+sqlite3 twitter.db < generate_nodes_and_edges_to_txt_filtered_by_time.sql
 
 
 echo "Enumerating each node in a convenient way: 0, 1, 2, 3, ..."

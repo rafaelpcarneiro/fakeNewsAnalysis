@@ -16,7 +16,7 @@ double network_weight (vertex_index x, vertex_index y) {
     FILE *fh;
     unsigned int size;
     vertex_index a, b;
-    unsigned int gen_a, gen_b;
+    unsigned int weight;
     /* unsigned int test; */
 
     fh = fopen ("data/edges.txt", "r");
@@ -26,7 +26,7 @@ double network_weight (vertex_index x, vertex_index y) {
     fscanf (fh, "%u", &size);
     /* printf ("size %u\n", size); */ 
 
-    while ( fscanf (fh, "%u %u %u %u", &a, &b, &gen_a, &gen_b) != EOF ) 
+    while ( fscanf (fh, "%u %u %u", &a, &b, &weight) != EOF ) 
         if ( (a == x) && (b == y) ) break;
 
     /*
@@ -37,5 +37,5 @@ double network_weight (vertex_index x, vertex_index y) {
     fclose (fh);
     /* printf ("netw = %u\n", test); */ 
     /* return (double) (test); */
-    return (double) (gen_b - gen_a);
+    return (double) (weight);
 }

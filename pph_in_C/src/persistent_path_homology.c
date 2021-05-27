@@ -48,7 +48,7 @@ void print_all_persistent_diagrams (Pers *P) {
         interval = (P->PPH_Diagrams + p)->stack;
 
         while (interval != NULL) {
-            fprintf (fh, "[%6.2f,%6.2f]\n", (interval->PPH_interval_dim_p)[0], (interval->PPH_interval_dim_p)[1]);
+            fprintf (fh, "%6.2f,%6.2f\n", (interval->PPH_interval_dim_p)[0], (interval->PPH_interval_dim_p)[1]);
             interval = interval->next;
         }
     }
