@@ -13,12 +13,12 @@ void print_comb (unsigned int N, unsigned int p, node *a_branch) {
 
     iterator i, j, k;
 
-    if (p == 2) 
+    if (p == 1) 
         for (i = 0; i < N; ++i) 
             for (j = i+1; j < N; ++j)
                 printf ("%u  %u\n", a_branch[i], a_branch[j]);
 
-    if (p == 3) 
+    if (p == 2) 
         for (i = 0; i < N; ++i) 
             for (j = i+1; j < N; ++j)
                 for (k = j+1; k < N; ++k)

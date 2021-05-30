@@ -22,8 +22,7 @@ typedef struct {
 typedef struct {
 	node 	     from;
 	node 	     to;
-	generation   from_gen;
-	generation   to_gen;
+	unsigned int weight;
 
 	char         flag;
 
@@ -45,7 +44,7 @@ int main() {
 	iterator         	      i, from, to;
 
 	node	          	      node_tmp, from_node_A, to_node_B;
-	generation        	      generation_tmp, from_gen_X, to_gen_Y;
+	generation        	      generation_tmp, weight;
 	
 	unsigned long int 		  amount_of_sons;
 
@@ -74,11 +73,10 @@ int main() {
 	edges = malloc (MAX_EDGES * sizeof (edge_generation));
 
 	i = 0;
-	while (fscanf (file_edges, "%lu %lu %lu %lu", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
+	while (fscanf (file_edges, "%lu %lu %lu", &from_node_A, &to_node_B, &weight) != EOF) {
 		(edges + i)->from     = from_node_A;
 		(edges + i)->to       = to_node_B;
-		(edges + i)->from_gen = from_gen_X;
-		(edges + i)->to_gen   = to_gen_Y;
+		(edges + i)->weight   = weight;
 
 		++i;
 	}
@@ -106,7 +104,7 @@ int main() {
 		for (to = 0; to < MAX_NODES; ++to)
 			if ((edges+i)->to == (nodes+to)->vertex) break;
 		
-		fprintf (file_edges_enumerated, "%lu\t%lu\t%lu\t%lu\n", from, to, (edges+i)->from_gen, (edges+i)->to_gen);
+		fprintf (file_edges_enumerated, "%lu\t%lu\t%lu\n", from, to, (edges+i)->weight);
 	}
 	fclose (file_edges_enumerated);
 

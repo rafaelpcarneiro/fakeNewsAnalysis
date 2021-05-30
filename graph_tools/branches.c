@@ -28,8 +28,7 @@ typedef struct {
 typedef struct {
 	node 	     from;
 	node 	     to;
-	generation   from_gen;
-	generation   to_gen;
+	unsigned int weight;
 
 } edge_generation;
 
@@ -204,9 +203,9 @@ int main() {
 	iterator         	      i;
 
 	node	          	      node_tmp, from_node_A, to_node_B;
-	generation        	      generation_tmp, from_gen_X, to_gen_Y;
+	generation        	      generation_tmp;
 	
-	unsigned int 		      amount_of_sons;
+	unsigned int 		      amount_of_sons, weight;
 
 	/*END Variable Declaration 2}}}*/
 
@@ -233,11 +232,10 @@ int main() {
 	edges = malloc (MAX_EDGES * sizeof (edge_generation));
 
 	i = 0;
-	while (fscanf (file_edges, "%u %u %u %u", &from_node_A, &to_node_B, &from_gen_X, &to_gen_Y) != EOF) {
+	while (fscanf (file_edges, "%u %u %u", &from_node_A, &to_node_B, &weight) != EOF) {
 		(edges + i)->from     = from_node_A;
 		(edges + i)->to       = to_node_B;
-		(edges + i)->from_gen = from_gen_X;
-		(edges + i)->to_gen   = to_gen_Y;
+		(edges + i)->weight   = weight;
 
 		++i;
 	}
