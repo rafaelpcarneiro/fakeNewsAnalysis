@@ -1,5 +1,6 @@
 # Creating a Relational Database who will provide me a platform to study how Fake News spread throughout social media.
 
+
 The social media used for my analysis is *Twitter*. This choise is based on the 
 following facts:
 + Twitter is a platform with a broad audience. It has the impressive numbers of:
