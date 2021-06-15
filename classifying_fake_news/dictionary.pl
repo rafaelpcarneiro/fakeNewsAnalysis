@@ -27,12 +27,15 @@ sub createDict {
 	# Uppercase to Lowercase
 	$text = lc $text;
     
+    # Removing links 
+    $text =~ s/https:\/\/[^\s]*/ /g;
+    
+	# Removing unicode symbols and \n and \t
+	$text =~ s/(\\u[^\s]+|\\n|\\t)/ /g;
+
     # Removing . , - / \ @ # ! ? ...
 	$text =~ s/[ \. , ! \? : \( ) \[ \] \{ \} 
 	             \- \# \@ \+ \- \* < > \\ \| \' \" ]+/ /g;
-	
-	# Removing unicode symbols and \n and \t
-	$text =~ s/(\\u[^\s]+|\\n|\\t)/ /g;
 
 	# Removing articles 
 	$text =~ s/\s[aeiou]+ / /g;
@@ -44,8 +47,6 @@ sub createDict {
 	#$text =~ s/^[\d]+ / /g;
 	#$text =~ s/\s[\d]+$/ /g;
 
-    # Removing links 
-    $text =~ s/https:\/\/[^\s]*/ /g;
 
     # Removing words that do not bring context to the tweet
     #$text =~ s/\s(de|da|do|dos|um|uns|uma|ele|ela|você|vc)\s/ /g;
