@@ -26,6 +26,10 @@ sub createDict {
     sleep 5;
 	# Uppercase to Lowercase
 	$text = lc $text;
+    
+    # Removing . , - / \ @ # ! ? ...
+	$text =~ s/[ \. , ! \? : \( ) \[ \] \{ \} 
+	             \- \# \@ \+ \- \* < > \\ \| \' \" ]+/ /g;
 	
 	# Removing unicode symbols and \n and \t
 	$text =~ s/(\\u[^\s]+|\\n|\\t)/ /g;
@@ -36,16 +40,12 @@ sub createDict {
 	$text =~ s/\s[aeiou]+$/ /g;
 
 	# Removing only numbers 
-	$text =~ s/\s[\d]+ / /g;
-	$text =~ s/^[\d]+ / /g;
-	$text =~ s/\s[\d]+$/ /g;
+    #$text =~ s/\s[\d]+ / /g;
+	#$text =~ s/^[\d]+ / /g;
+	#$text =~ s/\s[\d]+$/ /g;
 
     # Removing links 
     $text =~ s/https:\/\/[^\s]*/ /g;
-
-    # Removing . , - / \ @ # ! ? ...
-	$text =~ s/[ \. , ! \? : \( ) \[ \] \{ \} 
-	             \- \# \@ \+ \- \* < > \\ \| \' \" ]+/ /g;
 
     # Removing words that do not bring context to the tweet
     #$text =~ s/\s(de|da|do|dos|um|uns|uma|ele|ela|você|vc)\s/ /g;
@@ -181,8 +181,8 @@ for ($i = 1; $i <= $MAX_FORKS; ++$i) {
 for ($j = $TWEETS_PER_FORK * ($MAX_FORKS); $j < $counter; ++$j) {
     $dictionary = $tweetID_text [$j];
 
-    $text       = ${$tweetID_text[$j]}->{'text'};
-    $tweet_id   = ${$tweetID_text[$j]}->{'tweet_id'};
+    $text       = $dictionary->{'text'};
+    $tweet_id   = $dictionary->{'tweet_id'};
 
     $dictionary = createDict ($text);
 
