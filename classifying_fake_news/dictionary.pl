@@ -129,7 +129,9 @@ $sql_query01 =  $dbh->prepare ("SELECT tweet_id, text
                                                    FROM nodes AS x
                                                    WHERE tweet_id = x.tweet_id 
                                                          AND
-                                                         x.generation_of_tweet_id = 0)");
+                                                         x.generation_of_tweet_id = 0)
+                                      AND created_at IS NOT NULL
+                                      AND text IS NOT NULL");
 
 #$sql_query02 = $dbh ("INSERT INTO dictionary (
 #                        tweet_id,
@@ -150,6 +152,8 @@ while (($tweet_id, $text) = $sql_query01->fetchrow_array) {
     ++$counter;
 }
 #END Executing SQL commands 2}}}
+print "Counter = $counter\n";
+exit;
 
 #|--- Creating the dictionary {{{2
 print "\n\nBuilding the dictionary\n\n";
