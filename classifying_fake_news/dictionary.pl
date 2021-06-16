@@ -152,8 +152,8 @@ while (($tweet_id, $text) = $sql_query01->fetchrow_array) {
     ++$counter;
 }
 #END Executing SQL commands 2}}}
-print "Counter = $counter\n";
-exit;
+#print "Counter = $counter\n";
+# Counter = 7897
 
 #|--- Creating the dictionary {{{2
 print "\n\nBuilding the dictionary\n\n";
