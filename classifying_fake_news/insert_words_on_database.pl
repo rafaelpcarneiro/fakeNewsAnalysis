@@ -57,9 +57,10 @@ $sql_insert  = $dbh->prepare ("INSERT INTO dictionary(
 open $fh, '<', 'words.txt'
     or die "Couldn't open the file words.txt";
 
-while (<$hf>) {
+while (<$fh>) {
     ($tweet_id, $word, $word_counter) = split (/\s/, $_);
     $sql_insert->execute ($tweet_id, $word, $word_counter);
+    print ".";
 }
                                                     
 # END Inserting words into the dictionary 3}}}
