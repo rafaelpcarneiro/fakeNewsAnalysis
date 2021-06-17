@@ -8,5 +8,3 @@ CREATE TABLE dictionary (
 
 	PRIMARY KEY (tweet_id, word_found_on_tweet_id)
 );
-
-.save theDictionary.db
