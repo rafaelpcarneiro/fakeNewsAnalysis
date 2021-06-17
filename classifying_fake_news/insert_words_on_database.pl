@@ -60,7 +60,7 @@ open $fh, '<', 'words.txt'
 while (<$fh>) {
     ($tweet_id, $word, $word_counter) = split (/\t/, $_);
     $sql_insert->execute ($tweet_id, $word, $word_counter);
-    print ".";
+    print "$tweet_id\n";
 }
                                                     
 # END Inserting words into the dictionary 2}}}
