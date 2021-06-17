@@ -9,7 +9,7 @@ do
 	cat $file >> words.txt
 done
 
-ls !(words.txt) -1| grep -P ".*\.txt"|xargs rm -f
+ls *.txt -1| grep -P "\d+\.txt"|xargs rm -f
 
 echo "Reading words.txt to twitter.db"
 sqlite3 twitter.db < create_dict.sql
