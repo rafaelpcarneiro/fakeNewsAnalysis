@@ -45,7 +45,7 @@ my $word_counter;
 
 # END VARIABLES 2}}}
 
-#|--- Inserting words into the dictionary {{{3
+#|--- Inserting words into the dictionary {{{2
 
 $sql_insert  = $dbh->prepare ("INSERT INTO dictionary(
                                   tweet_id,				         
@@ -58,12 +58,12 @@ open $fh, '<', 'words.txt'
     or die "Couldn't open the file words.txt";
 
 while (<$fh>) {
-    ($tweet_id, $word, $word_counter) = split (/\s/, $_);
+    ($tweet_id, $word, $word_counter) = split (/\t/, $_);
     $sql_insert->execute ($tweet_id, $word, $word_counter);
     print ".";
 }
                                                     
-# END Inserting words into the dictionary 3}}}
+# END Inserting words into the dictionary 2}}}
 
 # END MAIN 1}}} 
 
