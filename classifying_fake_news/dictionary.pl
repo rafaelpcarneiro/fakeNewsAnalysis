@@ -82,7 +82,7 @@ sub printDict {
     my $dict, my $file_index, my $tweet_id;
     ($dict, $tweet_id, $file_index) = @_;
 
-    open (my $fh, '>:encode(utf8)', "$file_index" . ".txt")
+    open (my $fh, '>:encode(utf-8)', "$file_index" . ".txt")
         or die "Problems to write the file!\n";
 
     foreach (keys %$dict) {
