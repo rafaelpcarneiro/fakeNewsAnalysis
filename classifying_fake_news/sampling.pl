@@ -9,8 +9,11 @@
 use warnings;
 use strict;
 use DBI;
-#use open ':encoding(utf8)';
-binmode(STDOUT, ":utf-8");
+
+use utf8;
+use open ':encoding(utf8)';
+binmode(STDOUT, ":utf8");
+binmode(STDIN, ":encoding(utf8)");
 
 use POSIX;
 #1}}}
