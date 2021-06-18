@@ -59,7 +59,7 @@ open $fh, '<', 'words.txt'
     or die "Couldn't open the file words.txt";
 
 while (<$fh>) {
-    ($tweet_id, $word, $word_counter) = split (/(\t| )+/, $_);
+    ($tweet_id, $word, $word_counter) = split (/\t/, $_);
     $sql_insert->execute ($tweet_id, $word, $word_counter);
     print "$word\n";
 }
