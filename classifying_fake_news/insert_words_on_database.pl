@@ -9,8 +9,8 @@ use warnings;
 use strict;
 
 use DBI;                   # database
-##binmode(STDOUT, ":utf-8"); #utf8 chars
-##binmode(STDIN, ":utf-8"); #utf8 chars
+#binmode(STDOUT, ":utf8"); #utf8 chars
+#binmode(STDIN, ":utf8"); #utf8 chars
 #1}}}
 
 #|--- Functions {{{1
