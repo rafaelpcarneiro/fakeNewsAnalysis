@@ -9,10 +9,11 @@ use warnings;
 use strict;
 
 use DBI;                   # database
+
 use utf8;
 use open ':encoding(utf8)';
-binmode(STDOUT, ":utf8"); #utf8 chars
-binmode(STDIN, ":utf8"); #utf8 chars
+binmode(STDOUT, ":utf8");
+binmode(STDIN, ":encoding(utf8)");
 #1}}}
 
 #|--- MAIN {{{1
@@ -54,13 +55,13 @@ $sql_insert  = $dbh->prepare ("INSERT INTO dictionary(
                                )
                                VALUES (?,?,?)");
 
-open $fh, '<:unicode(utf8)', 'words.txt'
+open $fh, '<', 'words.txt'
     or die "Couldn't open the file words.txt";
 
 while (<$fh>) {
     ($tweet_id, $word, $word_counter) = split (/\t/, $_);
     $sql_insert->execute ($tweet_id, $word, $word_counter);
-    print "$tweet_id\n";
+    print "$word\n";
 }
                                                     
 # END Inserting words into the dictionary 2}}}
