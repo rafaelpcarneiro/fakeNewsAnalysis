@@ -28,19 +28,22 @@ sub createDict {
 	$text = lc $text;
     
     # Removing links 
-    $text =~ s/https:\/\/[^\s]*/ /g;
+    $text =~ s/https:\/\/[^\s]*/  /g;
     
 	# Removing unicode symbols and \n and \t
-	$text =~ s/(\\u[^\s]+|\\n|\\t)/ /g;
+	$text =~ s/(\\u.{4}|\\n|\\t)/  /g;
+
+    # Removing everything that is not \w
+    $text =~ s/[^\w]/  /g;
 
     # Removing . , - / \ @ # ! ? ...
-	$text =~ s/[ \. , ! \? : \( ) \[ \] \{ \} 
-	             \- \# \@ \+ \- \* < > \\ \| \' \" ]+/ /g;
+    #$text =~ s/[ \. , ! \? : \( ) \[ \] \{ \} 
+	#             \- \# \@ \+ \- \* < > \\ \| \' \" ]+/ /g;
 
 	# Removing articles 
-	$text =~ s/\s[aeiou]+ / /g;
-	$text =~ s/^[aeiou]+ / /g;
-	$text =~ s/\s[aeiou]+$/ /g;
+    #$text =~ s/\s[aeiou]+ / /g;
+	#$text =~ s/^[aeiou]+ / /g;
+	#$text =~ s/\s[aeiou]+$/ /g;
 
 	# Removing only numbers 
     #$text =~ s/\s[\d]+ / /g;
@@ -63,7 +66,7 @@ sub createDict {
 	        	       \- \# \@ \+ \- \* < > \\ \| \' \" ]+/, $text);
 
 	foreach (@words) {
-		next            unless $_ =~ /\w+/;
+        next            unless $_ =~ /^\w+$/;
 		$dict{$_}  += 1 if (exists $dict{$_});
 		$dict{$_}   = 1 unless (exists $dict{$_});
 	}
