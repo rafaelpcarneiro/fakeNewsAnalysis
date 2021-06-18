@@ -10,9 +10,9 @@ use warnings;
 use strict;
 use DBI;
 use utf8;
-#use open ':encoding(utf8)';
-#binmode(STDOUT, ":utf-8");
-#binmode(STDIN, ":utf-8");
+use open ':encoding(utf8)';
+binmode(STDOUT, ":utf8");
+binmode(STDIN, ":encoding(utf8)");
 #1}}}
 
 #|--- Functions {{{1
@@ -82,7 +82,7 @@ sub printDict {
     my $dict, my $file_index, my $tweet_id;
     ($dict, $tweet_id, $file_index) = @_;
 
-    open (my $fh, '>:encode(utf-8)', "$file_index" . ".txt")
+    open (my $fh, '>', "$file_index" . ".txt")
         or die "Problems to write the file!\n";
 
     foreach (keys %$dict) {
