@@ -10,9 +10,9 @@ use warnings;
 use strict;
 use DBI;
 use utf8;
-use open ':encoding(utf8)';
-binmode(STDOUT, ":utf-8");
-binmode(STDIN, ":utf-8");
+#use open ':encoding(utf8)';
+#binmode(STDOUT, ":utf-8");
+#binmode(STDIN, ":utf-8");
 #1}}}
 
 #|--- Functions {{{1

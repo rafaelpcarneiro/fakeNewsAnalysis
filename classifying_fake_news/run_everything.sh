@@ -10,7 +10,7 @@ do
 done
 
 ls *.txt -1| grep -P "\d+\.txt"|xargs rm -f
-
+exit
 echo "Reading words.txt to twitter.db"
 sqlite3 twitter.db < create_dict.sql
 
