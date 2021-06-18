@@ -9,8 +9,10 @@
 use warnings;
 use strict;
 use DBI;
-#use open ':encoding(utf8)';
+use utf8;
+use open ':encoding(utf8)';
 binmode(STDOUT, ":utf-8");
+binmode(STDIN, ":utf-8");
 #1}}}
 
 #|--- Functions {{{1
@@ -34,7 +36,7 @@ sub createDict {
 	$text =~ s/(\\u.{4}|\\n|\\t)/  /g;
 
     # Removing everything that is [^\wáéíóúãẽĩõũâêîôû]
-    $text =~ s/[^\wáéíóúãẽĩõũâêîôû]/  /g;
+    $text =~ s/[^\wáéíóúãẽĩõũâêîôûç]/  /g;
 
     # Removing . , - / \ @ # ! ? ...
     #$text =~ s/[ \. , ! \? : \( ) \[ \] \{ \} 
@@ -80,7 +82,7 @@ sub printDict {
     my $dict, my $file_index, my $tweet_id;
     ($dict, $tweet_id, $file_index) = @_;
 
-    open (my $fh, '>', "$file_index" . ".txt")
+    open (my $fh, '>:encode(utf8)', "$file_index" . ".txt")
         or die "Problems to write the file!\n";
 
     foreach (keys %$dict) {
@@ -106,6 +108,7 @@ my $dbh      = DBI->connect ($dsn, $user, $password, {
 	PrintError		 => 0,
 	RaiseError		 => 1,
 	AutoCommit		 => 1,
+    sqlite_unicode   => 1,
 	FetchHashKeyName => 'NAME_lc',
 });
 

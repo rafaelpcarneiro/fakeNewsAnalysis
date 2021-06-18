@@ -9,12 +9,11 @@ use warnings;
 use strict;
 
 use DBI;                   # database
-#binmode(STDOUT, ":utf8"); #utf8 chars
-#binmode(STDIN, ":utf8"); #utf8 chars
+use utf8;
+use open ':encoding(utf8)';
+binmode(STDOUT, ":utf8"); #utf8 chars
+binmode(STDIN, ":utf8"); #utf8 chars
 #1}}}
-
-#|--- Functions {{{1
-# 1}}}
 
 #|--- MAIN {{{1
 
@@ -30,6 +29,7 @@ my $dbh = DBI->connect ($dsn, $user, $password, {
 	PrintError		 => 0,
 	RaiseError		 => 1,
 	AutoCommit		 => 1,
+    sqlite_unicode   => 1,
 	FetchHashKeyName => 'NAME_lc',
 });
 
@@ -54,7 +54,7 @@ $sql_insert  = $dbh->prepare ("INSERT INTO dictionary(
                                )
                                VALUES (?,?,?)");
 
-open $fh, '<', 'words.txt'
+open $fh, '<:unicode(utf8)', 'words.txt'
     or die "Couldn't open the file words.txt";
 
 while (<$fh>) {
