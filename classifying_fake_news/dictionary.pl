@@ -33,8 +33,8 @@ sub createDict {
 	# Removing unicode symbols and \n and \t
 	$text =~ s/(\\u.{4}|\\n|\\t)/  /g;
 
-    # Removing everything that is not \w
-    $text =~ s/[^\w]/  /g;
+    # Removing everything that is [^\wáéíóúãẽĩõũâêîôû]
+    $text =~ s/[^\wáéíóúãẽĩõũâêîôû]/  /g;
 
     # Removing . , - / \ @ # ! ? ...
     #$text =~ s/[ \. , ! \? : \( ) \[ \] \{ \} 
