@@ -58,7 +58,7 @@ open $fh, '<', 'naiveBayes_data.sample'
 <$fh>; #ignore the first line.
 while (<$fh>) {
     ($tweet_id, $is_tweet_id_unreliable) = split (/[\t ]+/, $_);
-    $sql_insert->execute (1, , $is_tweet_id_unreliable, $tweet_id);
+    $sql_insert->execute (1, $is_tweet_id_unreliable, $tweet_id);
 }
                                                     
 # END Inserting words into the dictionary 2}}}
