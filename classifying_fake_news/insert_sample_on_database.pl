@@ -47,10 +47,13 @@ my $is_tweet_id_unreliable;
 
 #|--- Inserting words into the dictionary {{{2
 
-$sql_insert  = $dbh->prepare ("UPDATE dictionary
-                               SET was_this_tweet_id_sampled                = ?,
-                                   if_tweet_id_was_sampled_is_it_unreliable = ?
-                               WHERE tweet_id = ?");
+$sql_insert  = $dbh->prepare ("UPDATE 
+                                    dictionary
+                               SET 
+                                    was_this_tweet_id_sampled                = ?,
+                                    if_tweet_id_was_sampled_is_it_unreliable = ?
+                               WHERE
+                                    tweet_id = ?");
 
 open $fh, '<', 'naiveBayes_data.sample'
     or die "Couldn't open the file naiveBayes_data.sample";
