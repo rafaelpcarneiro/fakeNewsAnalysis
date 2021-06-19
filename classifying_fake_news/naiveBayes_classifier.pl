@@ -146,6 +146,8 @@ while (($word) = $sql_words_sampled->fetchrow_array) {
     $prob0       = ($numerator + 1.0) / ($total_inconclusive_tweets + $total_words_sampled);
 
     $sql_insert_probabilities->execute ($word, $prob1, $prob0);
+
+    print "$word  p[X|Theta=1] = $prob1  p[X|Theta=0] = $prob0\n";
 }
 
 # FINALLY,  lets classificate all tweets
@@ -185,6 +187,7 @@ while (($tweet_id) = $sql_tweets_to_classify->fetchrow_array) {
     $is_tweet_id_unreliable = $prob1 >= $prob0 ? 1:0;
 
     $sql_insert_tweets_naiveBayes->execute ($tweet_id, $is_tweet_id_unreliable, $prob1, $prob0);
+    print "$tweet_id  p[Theta=1|X] = $prob1  p[Theta=0|X] = $prob0\n";
 }
 #END Calculating all probabilities 2}}}
 
