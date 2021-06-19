@@ -60,6 +60,7 @@ CREATE TABLE nodes (
 	ON DELETE NO ACTION
 );
 
+.save twitter.db
 -- Am I going ot use any of the tables below??? {{{1
 --CREATE TABLE user_followed (
 --	user_X 		   INT,

@@ -204,7 +204,9 @@ sub createTweetForm {
 		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
 	}
 	#$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
-	$Tweet {'text'} = undef if ($Tweet {'type'} eq 'retweeted');
+	
+	##RT have their text not null now
+	#$Tweet {'text'} = undef if ($Tweet {'type'} eq 'retweeted');
 	return \%Tweet;
 } # }}}
 
@@ -523,6 +525,7 @@ my $dbh = DBI->connect ($dsn, $user, $password, {
 	PrintError		 => 0,
 	RaiseError		 => 0,
 	AutoCommit		 => 1,
+	sqlite_unicode		 => 1,
 	FetchHashKeyName    	 => 'NAME_lc',
 });
 
