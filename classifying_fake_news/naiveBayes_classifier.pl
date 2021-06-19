@@ -143,7 +143,7 @@ while (($word) = $sql_words_sampled->fetchrow_array) {
 
     $sql_count_words->execute (0, $word);
     ($numerator) = $sql_count_words->fetchrow_array;
-    $prob2       = ($numerator + 1.0) / ($total_inconclusive_tweets + $total_words_sampled);
+    $prob0       = ($numerator + 1.0) / ($total_inconclusive_tweets + $total_words_sampled);
 
     $sql_insert_probabilities->execute ($word, $prob1, $prob0);
 }
@@ -156,15 +156,15 @@ while (($tweet_id) = $sql_tweets_to_classify->fetchrow_array) {
 
     $sql_words_of_tweet->excute ($tweet_id);
     $prob1 = 1.0;
-    $prob2 = 1.0;
+    $prob0 = 1.0;
     while ( ($word) = $sql_words_of_tweet->fetchrow_array ){
 
         $sql_check_word_probabilities->execute ($word);
         ($tmp) = $sql_check_word_probabilities->fetchrow_array;
 
         if ($tmp == 0) {
-            $prob1 *= 1.0 / ($total_unreliable_tweets + $total_words_sampled)
-            $prob0 *= 1.0 / ($total_inconclusive_tweets + $total_words_sampled)
+            $prob1 *= 1.0 / ($total_unreliable_tweets + $total_words_sampled);
+            $prob0 *= 1.0 / ($total_inconclusive_tweets + $total_words_sampled);
         }
         else {
             $sql_probabilities->execute ($word);
