@@ -94,7 +94,7 @@ while ($counter2 < 4072) {
 
     $sample = floor (rand ($counter));
     $j      = 0;
-    while (j < $counter2) {
+    while ($j < $counter2) {
         if ($rand_numbers [$j] == $sample) {
             $j = 0;
             $sample = floor (rand ($counter));
