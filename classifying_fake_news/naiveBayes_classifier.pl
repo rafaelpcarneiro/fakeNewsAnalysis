@@ -63,24 +63,32 @@ my $prob1;  # p[W=word|Theta=1]
 
 #|--- Get all info necessary from twitter.db {{{2
 
-my $sql_tweets_to_classify = $dbh->prepare ("SELECT tweet_id
-                                          FROM dictionary
-                                          WHERE was_this_tweet_id_sampled = 0
-                                          GROUP BY tweet_id");
+my $sql_tweets_to_classify = $dbh->prepare ("SELECT DISTINCT
+                                                tweet_id
+                                             FROM
+                                                dictionary
+                                             WHERE
+                                                was_this_tweet_id_sampled = 0");
 
-my $sql_words_sampled      = $dbh->prepare ("SELECT word_found_on_tweet_id
-                                          FROM dictionary
-                                          WHERE was_this_tweet_id_sampled = 1
-                                          GROUP BY word_found_on_tweet_id");
+my $sql_words_sampled      = $dbh->prepare ("SELECT DISTINCT
+                                                word_found_on_tweet_id
+                                             FROM
+                                                dictionary
+                                             WHERE
+                                                was_this_tweet_id_sampled = 1");
 
-my $sql_amount_words_sampled = $dbh->prepare ("SELECT COUNT(word_found_on_tweet_id)
-                                          FROM dictionary
-                                          WHERE was_this_tweet_id_sampled = 1
-                                          GROUP BY word_found_on_tweet_id");
+my $sql_amount_words_sampled = $dbh->prepare ("SELECT DISTINCT 
+                                                    COUNT(word_found_on_tweet_id)
+                                               FROM
+                                                    dictionary
+                                               WHERE
+                                                    was_this_tweet_id_sampled = 1");
 
 my $sql_count_words        = $dbh->prepare ("SELECT COUNT(*)
-                                          FROM dictionary
-                                          WHERE (was_this_tweet_id_sampled = 1)
+                                             FROM
+                                                dictionary
+                                             WHERE
+                                                (was_this_tweet_id_sampled = 1)
                                                 AND
                                                 (if_tweet_id_was_sampled_is_it_unreliable =?)
                                                 AND
@@ -88,22 +96,38 @@ my $sql_count_words        = $dbh->prepare ("SELECT COUNT(*)
                                             
 
 my $sql_amount_unreliable_or_not_tweets  = $dbh->prepare (
-                                         "SELECT COUNT(tweet_id)
-                                          FROM dictionary
-                                          WHERE (was_this_tweet_id_sampled = 1)
-                                                AND
-                                                (if_tweet_id_was_sampled_is_it_unreliable = ?)
-                                          GROUP BY tweet_id");
+                                         "SELECT 
+                                            COUNT(tweet_id)
+                                          FROM
+                                            tweet_id
+                                          WHERE
+                                            tweet_id IN ( 
+                                                SELECT 
+                                                    x.tweet_id
+                                                FROM
+                                                    dictionary AS x
+                                                WHERE
+                                                    (x.was_this_tweet_id_sampled = 1)
+                                                    AND
+                                                    (x.if_tweet_id_was_sampled_is_it_unreliable = ?)
+                                            )"
+                                      );
 
 
-my $sql_words_of_tweet     = $dbh->prepare ("SELECT word_found_on_tweet_id
-                                          FROM dictionary
-                                          WHERE tweet_id = ?");
+my $sql_words_of_tweet     = $dbh->prepare ("SELECT
+                                                word_found_on_tweet_id
+                                             FROM
+                                                dictionary
+                                             WHERE
+                                                tweet_id = ?");
 
-my $sql_probabilities      = $dbh->prepare ("SELECT prob_find_word_given_Theta_eq_1,
-                                                    prob_find_word_given_Theta_eq_0
-                                             FROM probabilities
-                                             WHERE word_sampled = ?");
+my $sql_probabilities      = $dbh->prepare ("SELECT
+                                                prob_find_word_given_Theta_eq_1,
+                                                prob_find_word_given_Theta_eq_0
+                                             FROM
+                                                probabilities
+                                             WHERE
+                                                word_sampled = ?");
 
 my $sql_check_word_probabilities      = $dbh->prepare ("SELECT COUNT(*)
                                                         FROM probabilities
@@ -147,7 +171,7 @@ while (($word) = $sql_words_sampled->fetchrow_array) {
 
     $sql_insert_probabilities->execute ($word, $prob1, $prob0);
 
-    print "$word  p[X|Theta=1] = $prob1  p[X|Theta=0] = $prob0\n";
+    printf ("%-10s p[X|Theta=1] = %2.3f p[X|Theta=0] = %2.3f\n", $word, $prob1, $prob0);
 }
 
 # FINALLY,  lets classificate all tweets
@@ -156,7 +180,7 @@ while (($word) = $sql_words_sampled->fetchrow_array) {
 $sql_tweets_to_classify->execute ();
 while (($tweet_id) = $sql_tweets_to_classify->fetchrow_array) {
 
-    $sql_words_of_tweet->excute ($tweet_id);
+    $sql_words_of_tweet->execute ($tweet_id);
     $prob1 = 1.0;
     $prob0 = 1.0;
     while ( ($word) = $sql_words_of_tweet->fetchrow_array ){
@@ -187,7 +211,7 @@ while (($tweet_id) = $sql_tweets_to_classify->fetchrow_array) {
     $is_tweet_id_unreliable = $prob1 >= $prob0 ? 1:0;
 
     $sql_insert_tweets_naiveBayes->execute ($tweet_id, $is_tweet_id_unreliable, $prob1, $prob0);
-    print "$tweet_id  p[Theta=1|X] = $prob1  p[Theta=0|X] = $prob0\n";
+    printf ("%d p[Theta=1|X] = %2.3f p[Theta=0|X] = %2.3f\n", $tweet_id, $prob1, $prob0);
 }
 #END Calculating all probabilities 2}}}
 
