@@ -20,6 +20,7 @@ echo "Sampling now"
 # sampling now
 ./sampling.pl
 
+cp twitter.db twitter2.db
 echo "Inserting the sample on the database"
 ./insert_sample_on_database.pl
 

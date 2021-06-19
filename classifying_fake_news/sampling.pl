@@ -74,7 +74,7 @@ open $fh, '>', 'naiveBayes.sample'
     or die "Problems to create the sample file";
 
 srand (666);
-foreach (1..100) {
+foreach (1..700) {
     $sample = floor (rand ($counter));
 
     $dict = $tweetID_text [$sample];
