@@ -9,6 +9,9 @@
 use warnings;
 use strict;
 use DBI;
+
+use POSIX;
+
 use utf8;
 use open ':encoding(utf8)';
 binmode(STDOUT, ":utf8");
@@ -129,22 +132,21 @@ my @tweetID_text;
 # END VARIABLES 2}}}
 
 #|--- Declaring SQL commands to be executed {{{2
-$sql_query01 =  $dbh->prepare ("SELECT tweet_id, text
-			                    FROM tweet
-                                WHERE tweet_id IN (SELECT x.tweet_id 
-                                                   FROM nodes AS x
-                                                   WHERE tweet_id = x.tweet_id 
-                                                         AND
-                                                         x.generation_of_tweet_id = 0)
-                                      AND created_at IS NOT NULL
-                                      AND text IS NOT NULL");
-
-#$sql_query02 = $dbh ("INSERT INTO dictionary (
-#                        tweet_id,
-#                        word_found_on_tweet_id,
-#                        word_counter_considering_tweet_id
-#                      )
-#                      VALUES (?,?,?)");
+$sql_query01 =  $dbh->prepare ("SELECT 
+                                    tweet_id, text
+			                    FROM
+                                    tweet
+                                WHERE
+                                    tweet_id IN (SELECT
+                                                    x.tweet_id 
+                                                 FROM
+                                                    nodes AS x
+                                                 WHERE
+                                                    tweet_id = x.tweet_id)
+                                     AND
+                                     created_at IS NOT NULL
+                                     AND
+                                     text IS NOT NULL");
 
 # 2}}}
 
@@ -159,14 +161,14 @@ while (($tweet_id, $text) = $sql_query01->fetchrow_array) {
 }
 #END Executing SQL commands 2}}}
 #print "Counter = $counter\n";
-# Counter = 7897
+# Counter = 81433
 
 #|--- Creating the dictionary {{{2
 print "\n\nBuilding the dictionary\n\n";
 my $tmp = @tweetID_text;
-print $tmp, "\n\n";
+print "Amount of tweets to process $tmp \n\n";
 
-my $MAX_FORKS = 789;
+my $MAX_FORKS = floor ($counter);
 my $TWEETS_PER_FORK = 10;
 
 for ($i = 1; $i <= $MAX_FORKS; ++$i) {
@@ -175,6 +177,7 @@ for ($i = 1; $i <= $MAX_FORKS; ++$i) {
     die "Failed to fork -- iteration $i\n\n" unless (defined $pid);
 
     #$dictionary = $tweetID_text[0];
+    print "Fork -> $i\n";
     unless ($pid) {
         for ($j = $TWEETS_PER_FORK * ($i-1); $j < $TWEETS_PER_FORK * $i; ++$j) {
             $dictionary = $tweetID_text [$j];
