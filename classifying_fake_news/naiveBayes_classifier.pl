@@ -100,9 +100,10 @@ my $sql_words_of_tweet     = $dbh->prepare ("SELECT word_found_on_tweet_id
                                           FROM dictionary
                                           WHERE tweet_id = ?");
 
-my $sql_probabilities      = $dbh->prepare ("SELECT p[W=word|Theta=1], p[W=word|Theta=0]
-                                          FROM probabilities
-                                          WHERE word_sampled = ?");
+my $sql_probabilities      = $dbh->prepare ("SELECT prob_find_word_given_Theta_eq_1,
+                                                    prob_find_word_given_Theta_eq_0
+                                             FROM probabilities
+                                             WHERE word_sampled = ?");
 
 my $sql_check_word_probabilities      = $dbh->prepare ("SELECT COUNT(*)
                                                         FROM probabilities
