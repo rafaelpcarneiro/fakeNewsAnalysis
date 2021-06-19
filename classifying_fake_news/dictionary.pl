@@ -168,7 +168,7 @@ print "\n\nBuilding the dictionary\n\n";
 my $tmp = @tweetID_text;
 print "Amount of tweets to process $tmp \n\n";
 
-my $TWEETS_PER_FORK = 10;
+my $TWEETS_PER_FORK = 100;
 my $MAX_FORKS = floor ($counter / $TWEETS_PER_FORK);
 
 for ($i = 1; $i <= $MAX_FORKS; ++$i) {
