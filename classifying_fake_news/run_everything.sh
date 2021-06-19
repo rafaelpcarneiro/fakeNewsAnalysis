@@ -19,3 +19,10 @@ sqlite3 twitter.db < create_dict.sql
 echo "Sampling now"
 # sampling now
 ./sampling.pl
+
+echo "Inserting the sample on the database"
+./insert_sample_on_database.pl
+
+exit
+echo "Finally, lets classify the tweets"
+./naiveBayes_classifier.pl
