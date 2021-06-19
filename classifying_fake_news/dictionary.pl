@@ -167,8 +167,9 @@ while (($tweet_id, $text) = $sql_query01->fetchrow_array) {
 print "\n\nBuilding the dictionary\n\n";
 my $tmp = @tweetID_text;
 print "Amount of tweets to process $tmp \n\n";
+sleep 5;
 
-my $TWEETS_PER_FORK = 100;
+my $TWEETS_PER_FORK = 1000;
 my $MAX_FORKS = floor ($counter / $TWEETS_PER_FORK);
 
 for ($i = 1; $i <= $MAX_FORKS; ++$i) {
