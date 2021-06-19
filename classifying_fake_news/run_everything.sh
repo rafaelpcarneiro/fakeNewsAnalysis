@@ -3,6 +3,7 @@
 echo "Running dictionary.pl"
 ./dictionary.pl
 
+exit
 echo "Inserting all words into words.txt"
 for file in `ls -1 *txt`
 do
@@ -16,7 +17,6 @@ sqlite3 twitter.db < create_dict.sql
 
 ./insert_words_on_database.pl
 
-exit
 echo "Sampling now"
 # sampling now
 ./sampling.pl
