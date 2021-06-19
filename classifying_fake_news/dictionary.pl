@@ -169,7 +169,7 @@ my $tmp = @tweetID_text;
 print "Amount of tweets to process $tmp \n\n";
 sleep 5;
 
-my $TWEETS_PER_FORK = 1000;
+my $TWEETS_PER_FORK = 100;
 my $MAX_FORKS = floor ($counter / $TWEETS_PER_FORK);
 
 for ($i = 1; $i <= $MAX_FORKS; ++$i) {
