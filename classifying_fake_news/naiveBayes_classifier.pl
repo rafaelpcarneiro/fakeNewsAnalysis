@@ -99,7 +99,7 @@ my $sql_amount_unreliable_or_not_tweets  = $dbh->prepare (
                                          "SELECT 
                                             COUNT(tweet_id)
                                           FROM
-                                            tweet_id
+                                            tweet
                                           WHERE
                                             tweet_id IN ( 
                                                 SELECT 
