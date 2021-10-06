@@ -3,5 +3,5 @@
 sqlite3 twitter.db < root_view.sql
 sqlite3 twitter.db < edges.sql
 
-./root_view.sql
+./nodes_tree.pl
 ./edges.pl

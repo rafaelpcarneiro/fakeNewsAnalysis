@@ -71,7 +71,7 @@ $sql_query02 = $dbh->prepare (
                );
 
 $sql_query03 = $dbh->prepare (
-                  "SELECT author_tweet_id
+                  "SELECT ifnull(author_tweet_id, -1)
 			       FROM   tweet
 			       WHERE  tweet_id = ?"
                );
