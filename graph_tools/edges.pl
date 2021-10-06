@@ -71,7 +71,7 @@ $sql_query02 = $dbh->prepare (
                );
 
 $sql_query03 = $dbh->prepare (
-                  "SELECT ifnull(author_tweet_id, -1)
+                  "SELECT author_tweet_id
 			       FROM   tweet
 			       WHERE  tweet_id = ?"
                );
@@ -90,6 +90,11 @@ do {
 
         $sql_query03->execute ($to_tweet_id);
         ($to_author_tweet_id) = $sql_query03->fetchrow_array;
+
+        if (!defined($from_author_tweet_id) || !defined($to_author_tweet_id)) {
+            $from_author_tweet_id = -1;
+            $to_author_tweet_id   = -1;
+        }
 
 		$sql_insert->execute ($from_tweet_id,
                               $to_tweet_id,
