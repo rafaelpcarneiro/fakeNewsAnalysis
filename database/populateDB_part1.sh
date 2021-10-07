@@ -14,7 +14,7 @@ sleep 5
 echo "Starting now..."
 sleep 3
 
-for file in `ls -1 -t -r 2021-03-25/`
+for file in `ls 2021-03-25/ |sort -V`
 do
 	echo "$file" >> log.txt
 	./insertTweetsAndUsersToDB.pl "2021-03-25/$file" >>log.txt
