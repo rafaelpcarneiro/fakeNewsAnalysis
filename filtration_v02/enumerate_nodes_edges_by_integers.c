@@ -96,9 +96,9 @@ int main() {
 
     i = 0;
     while (fscanf (file_pathDim2, "%lu %lu %lu", &a0, &a1, &a2) != EOF) {
-        (pathsDim2 + i)->from     = a0;
-        (pathsDim2 + i)->to       = a1;
-        (pathsDim2 + i)->weight   = a2;
+        (pathsDim2 + i)->a0   = a0;
+        (pathsDim2 + i)->a1   = a1;
+        (pathsDim2 + i)->a2   = a2;
 
         ++i;
     }
