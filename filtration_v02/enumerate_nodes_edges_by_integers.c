@@ -153,7 +153,7 @@ int main() {
         for (b2 = 0; b2 < MAX_NODES; ++b2)
             if ((pathsDim2+i)->a2 == (nodes+b2)->vertex) break;
         
-        fprintf (file_pathDim1_enumerated,
+        fprintf (file_pathDim2_enumerated,
                  "%lu\t%lu\t%lu\n",
                  b0, b1, b2);
     }
