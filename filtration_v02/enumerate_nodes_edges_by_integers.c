@@ -19,7 +19,7 @@ typedef struct {
 typedef struct {
     node         from;
     node         to;
-    unsigned int weight;
+    unsigned long int weight;
 
     char         flag;
 
