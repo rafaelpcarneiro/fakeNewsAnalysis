@@ -42,21 +42,25 @@ SELECT
     L.to_author_tweet_id,
     R.to_author_tweet_id
 FROM 
-   (SELECT * 
+   (SELECT from_author_tweet_id, to_author_tweet_id 
     FROM 
         paths_xy
     WHERE
         from_author_tweet_id != -1
         AND 
-        from_author_tweet_id != to_author_tweet_id) AS L
+        from_author_tweet_id != to_author_tweet_id
+    GROUP BY
+        from_author_tweet_id, to_author_tweet_id) AS L
 INNER JOIN
-   (SELECT *
+   (SELECT from_author_tweet_id, to_author_tweet_id
     FROM
         paths_xy
     WHERE
         from_author_tweet_id != -1
         AND 
-        from_author_tweet_id != to_author_tweet_id) AS R
+        from_author_tweet_id != to_author_tweet_id
+    GROUP BY
+        from_author_tweet_id, to_author_tweet_id) AS R
 ON
     L.to_author_tweet_id = R.from_author_tweet_id;
 
@@ -81,5 +85,5 @@ SELECT DISTINCT       *  FROM pathDim2;
 .output stdout
 
 DROP VIEW userNodes;
-DROP VIEW edges_with_time;
+DROP VIEW edges_with_weight;
 DROP VIEW pathDim2;
