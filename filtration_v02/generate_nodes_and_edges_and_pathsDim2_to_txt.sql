@@ -15,7 +15,7 @@ SELECT
 FROM
     paths_xy
 WHERE
-    to_author_tweet_id != -1;
+    to_author_tweet_id != -1
     AND 
     from_author_tweet_id != to_author_tweet_id;
 
