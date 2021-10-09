@@ -14,22 +14,19 @@ typedef struct _vector_index {
 
 typedef struct {
    vector_index     *root; 
-   dim_vector_space dim; /* dim of the vector space which the vector is
-                          * element
-                          */
 }vector;
 
-vector *alloc_vec (dim_vector_space);
+vector *alloc_vec (void);
 
 void add_index_to_vector (vector*, unsigned long int);
 
-void remove_index_to_vector (vector*, unsigned long int);
+void remove_index_from_vector (vector*, unsigned long int);
 
 boolean is_this_vector_zero (vector*);
 
 void sum_these_vectors (vector*, vector*);
 
-vector *I_k (void); /* vector with 1 on position k and 0 otherwise */
+vector *I_k (unsigned long int); /* vector with 1 on position k and 0 otherwise */
 
 void print_vec_nicely (vector*, char*);
 

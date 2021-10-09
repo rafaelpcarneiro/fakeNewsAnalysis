@@ -4,6 +4,7 @@
 #include "definitions.h"
 #include "Tp.h"
 #include "basis_of_vector_space.h"
+#include "sparce_vector.h"
 #include <stdlib.h>
 
 /*================================================================
@@ -39,22 +40,24 @@ void add_interval_of_pathDim_p (Pers*, dim_path, double, double);
 void print_all_persistent_diagrams (Pers*);
 
 
-double allow_time_vector (collection_of_basis*, vector, dim_path, dim_vector_space);
+double allow_time_vector (collection_of_basis*, vector*, dim_path);
 
 
-double entry_time_vector (collection_of_basis*, vector, unsigned int, unsigned int);
+double entry_time_vector (collection_of_basis*, vector*, unsigned int);
 
-vector apply_border_operator_and_take_out_unmarked_points (collection_of_basis*, vector, dim_path);
+vector *apply_border_operator_and_take_out_unmarked_points (collection_of_basis*, vector*, dim_path);
 
-void print_vec_nicely (vector, dim_vector_space, char*);
+/*
+void print_vec_nicely (vector*, dim_vector_space, char*);
+*/
 
 
-vector BasisChange (collection_of_basis *B,
-		    T_p	*Tp,
-		    vector path_vector,
-		    dim_path path_dim,
-                    double *return_et,
-		    unsigned int *return_max_index);
+vector *BasisChange (collection_of_basis *B,
+                     T_p *Tp,
+                     vector *path_vector,
+                     dim_path path_dim,
+                     double *return_et,
+                     unsigned int *return_max_index);
 
 
 Pers *ComputePPH(unsigned int pph_dim,

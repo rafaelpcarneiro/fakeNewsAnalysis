@@ -3,11 +3,10 @@
 #include "../headers/definitions.h" 
 #include "../headers/sparce_vector.h" 
 
-vector *alloc_vec (dim_vector_space dimVS) {
+vector *alloc_vec (void) {
     vector *u = malloc (sizeof (vector));
 
-    u->dim = dimVS;
-    root   = NULL;
+    u->root   = NULL;
 
     return u;
 }
@@ -27,14 +26,14 @@ void add_index_to_vector (vector *u, unsigned long int position) {
         (u->root)->next = NULL;
     }
     else {
-        prev = u;
         tmp  = u->root;
+        prev = tmp;
         while (tmp != NULL) {
             if (tmp->pos == position) {
                 flag  = FALSE;
                 nnext = tmp->next;
-                if (prev == u) u->root    = nnext;
-                else           prev->next = nnext;
+                if (tmp == u->root) u->root    = nnext;
+                else                prev->next = nnext;
 
                 remove_index_from_vector (u, tmp->pos);
                 break;
@@ -54,21 +53,20 @@ void add_index_to_vector (vector *u, unsigned long int position) {
 }
 
 void remove_index_from_vector (vector *u, unsigned long int position) {
-    unsigned long int i;
     boolean test;
 
     vector_index *prev_index, *next_index, *tmp_index;
 
     test = is_this_vector_zero (u);
 
-    if (test != NULL) {
+    if (test != TRUE) {
 
         if ((u->root)->pos == position) {
             tmp_index  = u->root;
             next_index = tmp_index->next;
             u->root    = next_index;
 
-            free_vector_index (tmp_index);
+            free (tmp_index);
         }
         else {
             prev_index = u->root;
@@ -78,7 +76,8 @@ void remove_index_from_vector (vector *u, unsigned long int position) {
                     next_index       = tmp_index->next;
                     prev_index->next = next_index;
 
-                    free_vector_index (tmp_index);
+                    free (tmp_index);
+                    break;
                 }
                 else {
                     prev_index = tmp_index;
@@ -90,8 +89,6 @@ void remove_index_from_vector (vector *u, unsigned long int position) {
 }
 
 boolean is_this_vector_zero (vector *u) {
-    boolean test;
-
     if (u->root == NULL) return TRUE;
     else                 return FALSE;
 }
@@ -101,23 +98,70 @@ void sum_these_vectors (vector *a, vector *b) {
     /*Remember that we are working with the field Z/2Z*/
 
     boolean           testA, testB;
-    unsigned long int indexB, i;
     vector_index      *tmp;
 
     testB = is_this_vector_zero (b);
+    testA = is_this_vector_zero (a);
+
     if (testB != TRUE ) {
         if (testA == TRUE) a->root = b->root;
         else {
             tmp = b->root;
             add_index_to_vector (a, tmp->pos);
-            while (tmp->next != NULL) {
+
+            tmp = tmp->next;
+            while (tmp != NULL) {
                 add_index_to_vector (a, tmp->pos);
-                tmp = tmp->index;
+                tmp = tmp->next;
             }
         }
     }
 }
 
+vector *I_k (unsigned long int k) {
+    vector *u = alloc_vec ();
+    add_index_to_vector (u, k);
+
+    return u;
+}
+
 void free_vector (vector *u){
 
+    boolean test;
+    vector_index *tmp, *nnext;
+
+    test = is_this_vector_zero (u);
+
+    if (test == TRUE) free (u);
+    else {
+        tmp   = u->root;
+        nnext = tmp->next;
+
+        free (tmp);
+        while (nnext != NULL) {
+            tmp = nnext;
+            nnext = tmp->next;
+
+            free (tmp);
+        }
+        free (u);
+    }
+}
+
+void print_vec_nicely (vector *u, char *str) {
+    vector_index *tmp;
+    boolean test;
+
+    test = is_this_vector_zero (u);
+
+    if (test == TRUE ) printf ("u = 0\n");
+    else {
+        tmp = u->root;
+        printf ("%s = ", str);
+        while (tmp != NULL) {
+            printf ("e%lu + ", tmp->pos);
+            tmp = tmp->next;
+        }
+        printf ("\n");
+    }
 }

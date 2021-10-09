@@ -221,8 +221,8 @@ void initialize_Marking_basis_vectors (collection_of_basis *B) {
 } /*  Teste ok */
 
 
-void marking_vector_basis (collection_of_basis *B, dim_path dim_p, base_index vector_index) {
-    ((B->basis + dim_p)->marks) [vector_index] = MARKED;
+void marking_vector_basis (collection_of_basis *B, dim_path dim_p, base_index vector__index) {
+    ((B->basis + dim_p)->marks) [vector__index] = MARKED;
 }
 
 
