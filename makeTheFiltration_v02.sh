@@ -34,7 +34,7 @@ mv pathDim2_enumerated.txt all_regular_paths_dimension_2.txt
 
 mkdir data
 mv *txt -t data/
-mv data/ -t ../pph_in_C/
+mv data/ -t ../pph_in_C_v02/
 
 rm enumerate_nodes_edges_by_integers
 
