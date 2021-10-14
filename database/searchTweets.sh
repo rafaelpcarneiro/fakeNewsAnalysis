@@ -366,7 +366,15 @@ do
 	##### looping throughout pagination
 	next_token=`cat "$saveAtThisFile" |grep -o -E "\"next_token\":\".*\""`
 	amountOfTweetsFound=`cat $saveAtThisFile|grep -o -E "\"id\":"|wc -l`
-	searchThroughoutPagination $next_token $dayToSearch $twitterAPI
+	#searchThroughoutPagination $next_token $dayToSearch $twitterAPI
+
+    # check if there is more pagination than one
+    if test -z "$next_token"
+    then 
+        searchThroughoutPagination "empty_next_token" $dayToSearch $twitterAPI
+    else
+        searchThroughoutPagination $next_token $dayToSearch $twitterAPI
+    fi
 
 	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
 
