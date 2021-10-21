@@ -82,7 +82,7 @@ open ($fh, '<:encoding(UTF-8)', $dotfilename)
 open ($fh_write, '>', "coloured_plot.dot") 
     or die "Problems to write coloured_plot.dot \n";
 
-while $line (<$fh>) {
+while ($line = <$fh>) {
 
     if ($line =~ m/(\d+) -- (\d+)/) {
         foreach $edge (@edges) {
