@@ -115,4 +115,7 @@ while $line (<$fh>) {
     print $fh_write $line;
 }
 
+close $fh;
+close $fh_write;
+
 
