@@ -40,7 +40,7 @@ open ($fh, '<:encoding(UTF-8)', $dotfilename)
 # Find the maximum value of all distances;
 while (<$fh>) {
 
-    $node = $1 if (m/(\d+)\s*[height/);
+    $node = $1 if (m/(\d+)\s*\[height/);
 
     if (m/\s*pos="([\d.]+),[\d.]+",)/) {
             $point_Ax = $1; 
