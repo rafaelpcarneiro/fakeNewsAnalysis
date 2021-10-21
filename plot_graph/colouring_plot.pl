@@ -42,7 +42,7 @@ while (<$fh>) {
 
     $node = $1 if (m/(\d+)\s*\[height/);
 
-    if (m/\s*pos="([\d.]+),[\d.]+",)/) {
+    if (m/\s*pos="([\d.]+),([\d.]+)",/) {
             $point_Ax = $1; 
             $point_Ay = $2; 
     }
