@@ -89,6 +89,8 @@ while (@List_of_edges > 0) {
         print $fh $string;
     }
     close $fh;
+    print "Connected Component = $file_index \n";
+    ++$file_index;
 }
 
 # 3}}}
