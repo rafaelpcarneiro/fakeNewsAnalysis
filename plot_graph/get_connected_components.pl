@@ -75,7 +75,8 @@ while (@List_of_edges > 0) {
             {
                 push @edges, $node1;
                 splice @List_of_edges, $i, 1;
-                --$i;
+                #--$i;
+                $i = -1;
                 last;
             }
         }
