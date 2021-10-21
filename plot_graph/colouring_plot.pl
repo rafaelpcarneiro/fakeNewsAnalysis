@@ -31,7 +31,7 @@ my $edge;
 my $point_Ax, my $point_Ay;
 my $point_Bx, my $point_By;
 
-my $dist, $max_distances;
+my $dist, my $max_distances;
 
 $dotfilename = @ARGV[0];
 open ($fh, '<:encoding(UTF-8)', $dotfilename) 
