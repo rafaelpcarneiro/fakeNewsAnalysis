@@ -86,7 +86,7 @@ while (@List_of_edges > 0) {
 
     foreach $node2 (@edges) {
         $string = $node2->{'from_node'} . " -- " . $node2->{'to_node'};
-        print $fh $string;
+        print $fh $string . "\n";
     }
     close $fh;
     print "Connected Component = $file_index \n";
