@@ -1,3 +1,14 @@
+-- vim: foldmethod=marker:
+
+-- lets call as 'A' and 'B' any user on the graph, G,
+-- which interect with each other.
+--
+-- Here we will define as
+--      weight(A) := card{ B in G; B interacts with A }
+-- and
+--      MAX := max { weight(A); A in G }.
+
+
 CREATE VIEW tmp AS
 SELECT
     from_author_tweet_id,
@@ -36,6 +47,7 @@ FROM
     tmp;
 
 -- First Plot: all_data_influencers.dot
+-- {{{1
 .separator " "
 .output "all_data_influencers.dot"
 .print "graph {"
@@ -49,7 +61,7 @@ FROM
 SELECT
     from_author_tweet_id,
     "[width = ",
-    normalized_weight,
+    1+5*normalized_weight,
     "];"
 FROM
     influencers; 
@@ -76,10 +88,11 @@ WHERE
     L.from_author_tweet_id = R.from_author_tweet_id;
 
 .print "}"
+-- 1}}}
 
 -- Plot: 1_perc_data_influencers.dot
--- Plot with all influencers with more than 1% of the total of
--- user interaction
+-- Plot with all influencers with weight greater than 1% of MAX.
+-- {{{1
 .separator " "
 .output "1_perc_data_influencers.dot"
 .print "graph {"
@@ -92,8 +105,8 @@ WHERE
 .print " "
 SELECT
     from_author_tweet_id,
-    "[width = ",
-    normalized_weight,
+    "[color=darkgoldenrod3, width = ",
+    1+5*normalized_weight,
     "];"
 FROM
     influencers
@@ -126,10 +139,11 @@ WHERE
     L.from_author_tweet_id = R.from_author_tweet_id;
 
 .print "}"
+-- 1}}}
 
 -- Plot: 5_perc_data_influencers.dot
--- Plot with all influencers with more than 5% of the total of
--- user interaction
+-- Plot with all influencers with weight greater than 5% of MAX.
+-- {{{1
 .separator " "
 .output "5_perc_data_influencers.dot"
 .print "graph {"
@@ -142,8 +156,8 @@ WHERE
 .print " "
 SELECT
     from_author_tweet_id,
-    "[width = ",
-    normalized_weight,
+    "[color=darkgoldenrod3, width = ",
+    1+5*normalized_weight,
     "];"
 FROM
     influencers
@@ -176,10 +190,11 @@ WHERE
     L.from_author_tweet_id = R.from_author_tweet_id;
 
 .print "}"
+-- 1}}}
 
 -- Plot: 10_perc_data_influencers.dot
--- Plot with all influencers with more than 10% of the total of
--- user interaction
+-- Plot with all influencers with weight greater than 10% of MAX.
+-- {{{1
 .separator " "
 .output "10_perc_data_influencers.dot"
 .print "graph {"
@@ -192,8 +207,8 @@ WHERE
 .print " "
 SELECT
     from_author_tweet_id,
-    "[width = ",
-    normalized_weight,
+    "[color=darkgoldenrod3, width = ",
+    1+5*normalized_weight,
     "];"
 FROM
     influencers
@@ -226,10 +241,11 @@ WHERE
     L.from_author_tweet_id = R.from_author_tweet_id;
 
 .print "}"
+-- 1}}}
 
 -- Plot: 20_perc_data_influencers.dot
--- Plot with all influencers with more than 20% of the total of
--- user interaction
+-- Plot with all influencers with weight greater than 20% of MAX.
+-- {{{1
 .separator " "
 .output "20_perc_data_influencers.dot"
 .print "graph {"
@@ -242,8 +258,8 @@ WHERE
 .print " "
 SELECT
     from_author_tweet_id,
-    "[width = ",
-    normalized_weight,
+    "[color=darkgoldenrod3, width = ",
+    1+5*normalized_weight,
     "];"
 FROM
     influencers
@@ -276,6 +292,7 @@ WHERE
     L.from_author_tweet_id = R.from_author_tweet_id;
 
 .print "}"
+-- 1}}}
 
 DROP VIEW tmp;
 DROP VIEW max_tmp;
