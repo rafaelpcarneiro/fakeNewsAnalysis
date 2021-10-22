@@ -7,3 +7,5 @@ for file in *.dot
 do
     sfdp $file -Tpng -o ${file//dot/png}
 done
+
+rm *.dot
