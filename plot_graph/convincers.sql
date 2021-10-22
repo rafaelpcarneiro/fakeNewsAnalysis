@@ -83,7 +83,7 @@ FROM
          from_author_tweet_id != -1
          AND
          path_distance = 1) AS L,
-    influencers AS R
+    convincers AS R
 WHERE
     L.to_author_tweet_id = R.to_author_tweet_id;
 
