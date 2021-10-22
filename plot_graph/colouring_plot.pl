@@ -16,37 +16,54 @@ use strict;
 # Meanwhile, sparce points will have their edges coloured with colder 
 # colors.
 
+# color scheme chosen:  rdylgn9 
+#-------------------------------
+
 my $dotfilename;
 my $fh, my $fh_write;
 
 my $line;
-my $colorflag;
+
+my $colorflag, my $flag;
 
 my @nodes = ();
 my $node;
+my $node_A, my $node_B;
 
 my @edges = ();
 my $edge;
+my $tmp;
 
 my $point_Ax, my $point_Ay;
 my $point_Bx, my $point_By;
 
 my $dist, my $max_distances;
 
-$dotfilename = @ARGV[0];
+$dotfilename = $ARGV[0];
 open ($fh, '<:encoding(UTF-8)', $dotfilename) 
     or die "Problems to read $dotfilename \n";
 
 # Find the maximum value of all distances;
+$flag = 0;
 while (<$fh>) {
 
-    $node = $1 if (m/(\d+)\s*\[height/);
+    if (m/(\d+)\s*\[height/) {
+        $node = $1;
+        ++$flag;
+    }
 
     if (m/\s*pos="([\d.]+),([\d.]+)",/) {
             $point_Ax = $1; 
             $point_Ay = $2; 
+
+            ++$flag;
     }
-    push @nodes, {'node' => $node, 'pos_x' => $point_Ax, 'pos_y' => $point_Ay};
+
+    if ($flag == 2  ) {
+        push @nodes,
+             {'node' => $node, 'pos_x' => $point_Ax, 'pos_y' => $point_Ay};
+        $flag = 0;
+    }
 
     if (m/(\d+) -- (\d+)/) {
         push @edges, {'from_node' => $1, 'to_node' => $2, 'distance' => 0.0};
@@ -54,16 +71,20 @@ while (<$fh>) {
 }
 close $fh;
 
+#foreach $edge (@edges) {
+#    print $edge->{'from_node'}, " ", $edge->{'to_node'}, " ",  $edge->{'distance'}, "\n";
+#}
+
 $max_distances = 0;
 foreach $edge (@edges) {
-    foreach (@nodes) {
-        if ($edge->{'from_node'} == $_->{'node'}) {
-            $point_Ax = $_->{'pos_x'};
-            $point_Ay = $_->{'pos_y'};
+    foreach $node (@nodes) {
+        if ($edge->{'from_node'} == $node->{'node'}) {
+            $point_Ax = $node->{'pos_x'};
+            $point_Ay = $node->{'pos_y'};
         }
-        if ($edge->{'to_node'} == $_->{'node'}) {
-            $point_Bx = $_->{'pos_x'};
-            $point_By = $_->{'pos_y'};
+        if ($edge->{'to_node'} == $node->{'node'}) {
+            $point_Bx = $node->{'pos_x'};
+            $point_By = $node->{'pos_y'};
         }
     }
 
@@ -85,25 +106,29 @@ open ($fh_write, '>', "coloured_plot.dot")
 while ($line = <$fh>) {
 
     if ($line =~ m/(\d+) -- (\d+)/) {
-        foreach $edge (@edges) {
-            last if ($edge->{'from_node'} == $1 && $edge->{'to_node'} == $2);
+
+        foreach $tmp (@edges) {
+            $edge = $tmp if ($tmp->{'from_node'} == $1 &&
+                             $tmp->{'to_node'}   == $2);
         }
+
         # color scheme with 9 colors
-        if ($edge->{'distance'} <= 1/9.0 ) {
+        $dist = $edge->{'distance'} / ($max_distances * 1.0);
+        if ($dist <= 1/9.0 ) {
             $colorflag = 1;
-        } elsif ($edge->{'distance'} <= 2/9.0 ) {
+        } elsif ($dist <= 2/9.0 ) {
             $colorflag = 2;
-        } elsif ($edge->{'distance'} <= 3/9.0 ) {
+        } elsif ($dist <= 3/9.0 ) {
             $colorflag = 3;
-        } elsif ($edge->{'distance'} <= 4/9.0 ) {
+        } elsif ($dist <= 4/9.0 ) {
             $colorflag = 4;
-        } elsif ($edge->{'distance'} <= 5/9.0 ) {
+        } elsif ($dist <= 5/9.0 ) {
             $colorflag = 5;
-        } elsif ($edge->{'distance'} <= 6/9.0 ) {
+        } elsif ($dist <= 6/9.0 ) {
             $colorflag = 6;
-        } elsif ($edge->{'distance'} <= 7/9.0 ) {
+        } elsif ($dist <= 7/9.0 ) {
             $colorflag = 7;
-        } elsif ($edge->{'distance'} <= 8/9.0 ) {
+        } elsif ($dist <= 8/9.0 ) {
             $colorflag = 8;
         } else {
             $colorflag = 9;
