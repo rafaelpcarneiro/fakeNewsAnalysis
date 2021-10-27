@@ -18,7 +18,7 @@
 #
 # With that in mind, we will understand a tweet X as the following set
 #
-#		 Tweet
+#        Tweet
 #        ===========================================
 #        || tweet X = {                           ||  
 #        ||   type,                               ||   
@@ -46,7 +46,7 @@
 #        || * replied_to                          ||
 #        || * quoted_plus_replied_to              ||
 #        || * simple_message                      ||
-#        || * quoted_plus_simple_message 	  ||
+#        || * quoted_plus_simple_message          ||
 #        ||                                       ||
 #        || Obs: If a tweet has no parent then    ||
 #        || parent_tweet_id and parent_author_id  ||
@@ -59,7 +59,7 @@
 #
 # As one would expect, Tweets are made by a user, which will be represented
 # as 
-#		 User
+#        User
 #        ===========================================
 #        || User = {                              ||  
 #        ||   id,                                 ||
@@ -78,7 +78,7 @@
 #       containers of perl. Not necessarily they will match the database 
 #       architecture.)
 # (Obs: Our database has its representation by an Entity-Relationship diagram.
-# 		The diagram can be found here: 'er.png')
+#       The diagram can be found here: 'er.png')
 #
 # }}}
 
@@ -97,167 +97,167 @@ sub createTweetForm {
 # this function will receive as parameter an array and it will return
 # a reference to a hash called Tweet.
 # (Obs: This function must be used for the the JSON element called "data")
-	my %Tweet;
-	%Tweet = (
-		type				 => undef,                                  
-		quote_id			 => undef,
-		parent_tweet_id 		 => undef,                    
-		#parent_author_id 		 => undef,                   
-		tweet_id 			 => undef,                           
-		author_id 			 => undef,                          
-		#parent_tweet_created_at  => '',            
-		tweet_created_at 		 => undef,                   
-		retweet_count			 => undef,                           
-		reply_count 			 => undef,                        
-		like_count 			 => undef,                         
-		quote_count 			 => undef,                        
-		language 			 => undef,                           
-		text 				 => undef,
-		place_id			 => undef
-	);
-	
+    my %Tweet;
+    %Tweet = (
+        type                 => undef,                                  
+        quote_id             => undef,
+        parent_tweet_id          => undef,                    
+        #parent_author_id        => undef,                   
+        tweet_id             => undef,                           
+        author_id            => undef,                          
+        #parent_tweet_created_at  => '',            
+        tweet_created_at         => undef,                   
+        retweet_count            => undef,                           
+        reply_count              => undef,                        
+        like_count           => undef,                         
+        quote_count              => undef,                        
+        language             => undef,                           
+        text                 => undef,
+        place_id             => undef
+    );
+    
 
-	my $i    = 0;
-	my @data = @_;
-	my $temp1    = undef, my $temp2    = undef; # variables to handle type values
-	my $temp1_id = undef, my $temp2_id = undef; # variables to handle type values
+    my $i    = 0;
+    my @data = @_;
+    my $temp1    = undef, my $temp2    = undef; # variables to handle type values
+    my $temp1_id = undef, my $temp2_id = undef; # variables to handle type values
 
-	while ($i < @_) {
+    while ($i < @_) {
 
-		if ($data [$i] eq 'id') {
-			$Tweet {'tweet_id'} = $data [++$i];
-		}
-		#elsif ($data [$i] eq 'referenced_tweets') {
-		#	$i++;
-		#	$Tweet {'type'} = $data [++$i];
+        if ($data [$i] eq 'id') {
+            $Tweet {'tweet_id'} = $data [++$i];
+        }
+        #elsif ($data [$i] eq 'referenced_tweets') {
+        #   $i++;
+        #   $Tweet {'type'} = $data [++$i];
 
-		#	$i++;
-		#	$Tweet {'parent_tweet_id'} = $data [++$i];
-		#}
-		elsif ($data [$i] eq 'type' && !defined($temp1)){
-			$temp1 = $data [++$i];
+        #   $i++;
+        #   $Tweet {'parent_tweet_id'} = $data [++$i];
+        #}
+        elsif ($data [$i] eq 'type' && !defined($temp1)){
+            $temp1 = $data [++$i];
 
-			++$i;
-			$temp1_id = $data [++$i];
-		}
-		elsif ($data [$i] eq 'type' && defined($temp1)){
-			$temp2 = $data [++$i];
+            ++$i;
+            $temp1_id = $data [++$i];
+        }
+        elsif ($data [$i] eq 'type' && defined($temp1)){
+            $temp2 = $data [++$i];
 
-			++$i;
-			$temp2_id = $data [++$i];
-		}
-		elsif ($data [$i] eq 'lang') {
-			$Tweet {'language'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'author_id'){
-			$Tweet {'author_id'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'created_at') {
-			$Tweet {'tweet_created_at'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'public_metrics') {
-			$i++;
-			$Tweet {'retweet_count'} = $data [++$i];
+            ++$i;
+            $temp2_id = $data [++$i];
+        }
+        elsif ($data [$i] eq 'lang') {
+            $Tweet {'language'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'author_id'){
+            $Tweet {'author_id'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'created_at') {
+            $Tweet {'tweet_created_at'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'public_metrics') {
+            $i++;
+            $Tweet {'retweet_count'} = $data [++$i];
 
-			$i++;
-			$Tweet {'reply_count'} = $data [++$i];
+            $i++;
+            $Tweet {'reply_count'} = $data [++$i];
 
-			$i++;
-			$Tweet {'like_count'} = $data [++$i];
+            $i++;
+            $Tweet {'like_count'} = $data [++$i];
 
-			$i++;
-			$Tweet {'quote_count'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'text') {
-			$Tweet {'text'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'place_id') {
-			$Tweet {'place_id'} = $data [++$i];
-		}
+            $i++;
+            $Tweet {'quote_count'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'text') {
+            $Tweet {'text'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'place_id') {
+            $Tweet {'place_id'} = $data [++$i];
+        }
 
-		$i++;
-	}	
-	
-	if ( !defined($temp1) && !defined($temp2) ){
-		$Tweet {'type'} = 'simple_message';
-	}
-	elsif ( defined($temp1) && !defined($temp2) ){
-		if ($temp1 eq 'quoted') {
-			$Tweet {'type'}            = 'quoted_plus_simple_message';
-			$Tweet {'quote_id'}        = $temp1_id; 
-		}
-		elsif ($temp1 eq 'replied_to') {
-			$Tweet {'type'}        	   = 'replied_to';
-			$Tweet {'parent_tweet_id'} = $temp1_id;
-		}
-		else {
-			$Tweet {'type'}            = 'retweeted';
-			$Tweet {'parent_tweet_id'} = $temp1_id;
-		}
-	}
-	else {
-		$Tweet {'type'}     = 'quoted_plus_replied_to';
-		$Tweet {'quote_id'} = $temp1_id if ($temp1 eq 'quoted');
-		$Tweet {'quote_id'} = $temp1_id if ($temp2 eq 'quoted');
+        $i++;
+    }   
+    
+    if ( !defined($temp1) && !defined($temp2) ){
+        $Tweet {'type'} = 'simple_message';
+    }
+    elsif ( defined($temp1) && !defined($temp2) ){
+        if ($temp1 eq 'quoted') {
+            $Tweet {'type'}            = 'quoted_plus_simple_message';
+            $Tweet {'quote_id'}        = $temp1_id; 
+        }
+        elsif ($temp1 eq 'replied_to') {
+            $Tweet {'type'}            = 'replied_to';
+            $Tweet {'parent_tweet_id'} = $temp1_id;
+        }
+        else {
+            $Tweet {'type'}            = 'retweeted';
+            $Tweet {'parent_tweet_id'} = $temp1_id;
+        }
+    }
+    else {
+        $Tweet {'type'}     = 'quoted_plus_replied_to';
+        $Tweet {'quote_id'} = $temp1_id if ($temp1 eq 'quoted');
+        $Tweet {'quote_id'} = $temp1_id if ($temp2 eq 'quoted');
 
-		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp1 eq 'replied_to');
-		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
-	}
-	#$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
-	
-	##RT have their text not null now
-	#$Tweet {'text'} = undef if ($Tweet {'type'} eq 'retweeted');
-	return \%Tweet;
+        $Tweet {'parent_tweet_id'} = $temp1_id if ($temp1 eq 'replied_to');
+        $Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
+    }
+    #$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
+    
+    ##RT have their text not null now
+    #$Tweet {'text'} = undef if ($Tweet {'type'} eq 'retweeted');
+    return \%Tweet;
 } # }}}
 
 #|--- Function createUserForm {{{
 sub createUserForm {
 # this function will receive as parameter an array and it will return
 # a reference to a hash called User.
-	my %User;
-	%User = (
-		id 		 => undef,                          
-		username         => undef,
-		name             => undef,
-		followers_count  => undef,
-		following_count  => undef,
-		tweet_count      => undef,
-		location	 => undef,
-		created_at	 => undef
-	);
-	
+    my %User;
+    %User = (
+        id       => undef,                          
+        username         => undef,
+        name             => undef,
+        followers_count  => undef,
+        following_count  => undef,
+        tweet_count      => undef,
+        location     => undef,
+        created_at   => undef
+    );
+    
 
-	my $i    = 0;
-	my @data = @_;
+    my $i    = 0;
+    my @data = @_;
 
-	while ($i < @_) {
+    while ($i < @_) {
 
-		if ($data [$i] eq 'id') {
-			$User {'id'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'username') {
-			$User {'username'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'name') {
-			$User {'name'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'followers_count') {
-			$User {'followers_count'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'following_count') {
-			$User {'following_count'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'tweet_count') {
-			$User {'tweet_count'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'location') {
-			$User {'location'} = $data [++$i];
-		}
+        if ($data [$i] eq 'id') {
+            $User {'id'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'username') {
+            $User {'username'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'name') {
+            $User {'name'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'followers_count') {
+            $User {'followers_count'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'following_count') {
+            $User {'following_count'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'tweet_count') {
+            $User {'tweet_count'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'location') {
+            $User {'location'} = $data [++$i];
+        }
 
-		$i++;
-	}	
+        $i++;
+    }   
 
-	return \%User;
+    return \%User;
 } # }}}
 
 ## TODO Incorporate a flag to the createTweetForm so
@@ -267,121 +267,121 @@ sub createTweetForm2 {
 # this function will receive as parameter an array and it will return
 # a reference to a hash called Tweet.
 # (Obs: This function must be used for the the JSON element called "tweets")
-	my %Tweet;
-	%Tweet = (
-		type			 => undef,
-		quote_id		 => undef,
-		tweet_id 		 => undef,                           
-		author_id 		 => undef,                          
-		parent_tweet_id          => undef,
-		tweet_created_at	 => undef,                   
-		retweet_count		 => undef,                           
-		reply_count 		 => undef,                        
-		like_count 		 => undef,                         
-		quote_count 		 => undef,                        
-		language 		 => undef,                           
-		text 			 => undef,
-		place_id		 => undef
-	);
-	
+    my %Tweet;
+    %Tweet = (
+        type             => undef,
+        quote_id         => undef,
+        tweet_id         => undef,                           
+        author_id        => undef,                          
+        parent_tweet_id          => undef,
+        tweet_created_at     => undef,                   
+        retweet_count        => undef,                           
+        reply_count          => undef,                        
+        like_count       => undef,                         
+        quote_count          => undef,                        
+        language         => undef,                           
+        text             => undef,
+        place_id         => undef
+    );
+    
 
-	my $i    = 0;
-	my @data = @_;
-	my $temp1    = undef, my $temp2    = undef; # variables to handle type values
-	my $temp1_id = undef, my $temp2_id = undef; # variables to handle type values
+    my $i    = 0;
+    my @data = @_;
+    my $temp1    = undef, my $temp2    = undef; # variables to handle type values
+    my $temp1_id = undef, my $temp2_id = undef; # variables to handle type values
 
-	while ($i < @_) {
+    while ($i < @_) {
 
-		if ($data [$i] eq 'id') {
-			$Tweet {'tweet_id'} = $data [++$i];
-		}
-		#elsif ($data [$i] eq 'referenced_tweets') {
-		#	$i++;
-		#	$Tweet {'type'} = $data [++$i];
+        if ($data [$i] eq 'id') {
+            $Tweet {'tweet_id'} = $data [++$i];
+        }
+        #elsif ($data [$i] eq 'referenced_tweets') {
+        #   $i++;
+        #   $Tweet {'type'} = $data [++$i];
 
-		#	$i++;
-		#	$Tweet {'parent_tweet_id'} = $data [++$i];
-		#}
-		elsif ($data [$i] eq 'type' && !defined($temp1)){
-			$temp1 = $data [++$i];
+        #   $i++;
+        #   $Tweet {'parent_tweet_id'} = $data [++$i];
+        #}
+        elsif ($data [$i] eq 'type' && !defined($temp1)){
+            $temp1 = $data [++$i];
 
-			++$i;
-			$temp1_id = $data [++$i];
-		}
-		elsif ($data [$i] eq 'type' && defined($temp1)){
-			$temp2 = $data [++$i];
+            ++$i;
+            $temp1_id = $data [++$i];
+        }
+        elsif ($data [$i] eq 'type' && defined($temp1)){
+            $temp2 = $data [++$i];
 
-			++$i;
-			$temp2_id = $data [++$i];
-		}
-		elsif ($data [$i] eq 'lang') {
-			$Tweet {'language'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'author_id'){
-			$Tweet {'author_id'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'created_at') {
-			$Tweet {'tweet_created_at'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'public_metrics') {
-			$i++;
-			$Tweet {'retweet_count'} = $data [++$i];
+            ++$i;
+            $temp2_id = $data [++$i];
+        }
+        elsif ($data [$i] eq 'lang') {
+            $Tweet {'language'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'author_id'){
+            $Tweet {'author_id'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'created_at') {
+            $Tweet {'tweet_created_at'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'public_metrics') {
+            $i++;
+            $Tweet {'retweet_count'} = $data [++$i];
 
-			$i++;
-			$Tweet {'reply_count'} = $data [++$i];
+            $i++;
+            $Tweet {'reply_count'} = $data [++$i];
 
-			$i++;
-			$Tweet {'like_count'} = $data [++$i];
+            $i++;
+            $Tweet {'like_count'} = $data [++$i];
 
-			$i++;
-			$Tweet {'quote_count'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'text') {
-			$Tweet {'text'} = $data [++$i];
-		}
-		elsif ($data [$i] eq 'place_id') {
-			$Tweet {'place_id'} = $data [++$i];
-		}
+            $i++;
+            $Tweet {'quote_count'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'text') {
+            $Tweet {'text'} = $data [++$i];
+        }
+        elsif ($data [$i] eq 'place_id') {
+            $Tweet {'place_id'} = $data [++$i];
+        }
 
-		$i++;
-	}	
-	
-	if ( !defined($temp1) && !defined($temp2) ){
-		$Tweet {'type'} = 'simple_message';
-	}
-	elsif ( defined($temp1) && !defined($temp2) ){
-		if ($temp1 eq 'quoted') {
-			$Tweet {'type'} 	   = 'quoted_plus_simple_message';
-			$Tweet {'quote_id'}        = $temp1_id;
-		}
-		elsif ($temp1 eq 'replied_to') {
-			$Tweet {'type'}        	   = 'replied_to';
-			$Tweet {'parent_tweet_id'} = $temp1_id;
-		}
-		else {
-			$Tweet {'type'} 	   = 'retweeted';
-			$Tweet {'parent_tweet_id'} = $temp1_id;
-		}
-	}
-	else {
-		$Tweet {'type'}     = 'quoted_plus_replied_to';
-		$Tweet {'quote_id'} = $temp1_id if ($temp1 eq 'quoted');
-		$Tweet {'quote_id'} = $temp1_id if ($temp2 eq 'quoted');
+        $i++;
+    }   
+    
+    if ( !defined($temp1) && !defined($temp2) ){
+        $Tweet {'type'} = 'simple_message';
+    }
+    elsif ( defined($temp1) && !defined($temp2) ){
+        if ($temp1 eq 'quoted') {
+            $Tweet {'type'}        = 'quoted_plus_simple_message';
+            $Tweet {'quote_id'}        = $temp1_id;
+        }
+        elsif ($temp1 eq 'replied_to') {
+            $Tweet {'type'}            = 'replied_to';
+            $Tweet {'parent_tweet_id'} = $temp1_id;
+        }
+        else {
+            $Tweet {'type'}        = 'retweeted';
+            $Tweet {'parent_tweet_id'} = $temp1_id;
+        }
+    }
+    else {
+        $Tweet {'type'}     = 'quoted_plus_replied_to';
+        $Tweet {'quote_id'} = $temp1_id if ($temp1 eq 'quoted');
+        $Tweet {'quote_id'} = $temp1_id if ($temp2 eq 'quoted');
 
-		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp1 eq 'replied_to');
-		$Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
-	}
-	#$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
-	return \%Tweet;
+        $Tweet {'parent_tweet_id'} = $temp1_id if ($temp1 eq 'replied_to');
+        $Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
+    }
+    #$Tweet {'type'} = 'doesnt_have_parent' if (!defined ($Tweet {'type'}));
+    return \%Tweet;
 } # }}}
 
 
 ### Printing function is not working ???
 ##sub printTweets {
-##	my $temp = $_[0];
-##	print "$_[0]\n";
+##  my $temp = $_[0];
+##  print "$_[0]\n";
 ##
-##	print "$_ \t\t\t = $temp->{$_}\n" foreach (keys %{$temp});
+##  print "$_ \t\t\t = $temp->{$_}\n" foreach (keys %{$temp});
 ##}
 
 
@@ -456,60 +456,60 @@ $i = 0;
 
 ++$i, $tweetCounter = 0;
 until ($selected [$i] eq 'includes'|| $selected [$i] eq 'errors' || $selected [$i] eq 'places'){
-	if ($selected [$i] eq '{') {
-		$j = ++$i;
-		++$j until ($selected [$j] eq '}');
-		$listOfTweets [$tweetCounter] =
-			createTweetForm @selected[$i .. ($j - 1)];
-		$i = ++$j;
-	}
-	++$tweetCounter;
+    if ($selected [$i] eq '{') {
+        $j = ++$i;
+        ++$j until ($selected [$j] eq '}');
+        $listOfTweets [$tweetCounter] =
+            createTweetForm @selected[$i .. ($j - 1)];
+        $i = ++$j;
+    }
+    ++$tweetCounter;
 }
 
 ++$i until ($selected [$i] eq 'users');
 #$i += 2, 
 ++$i, $userCounter = 0;
 until ($selected [$i] eq 'tweets'|| $selected [$i] eq 'errors' || $selected [$i] eq 'places'){
-	if ($selected [$i] eq '{') {
-		$j = ++$i;
-		++$j until ($selected[$j] eq '}');
-		$listOfUsers [$userCounter] =
-			createUserForm @selected [$i .. ($j - 1)];
-		$i = ++$j;
-	}
-	++$userCounter;
+    if ($selected [$i] eq '{') {
+        $j = ++$i;
+        ++$j until ($selected[$j] eq '}');
+        $listOfUsers [$userCounter] =
+            createUserForm @selected [$i .. ($j - 1)];
+        $i = ++$j;
+    }
+    ++$userCounter;
 }
 
 
 ++$i until ($selected [$i] eq 'tweets');
 $i += 1;
 until ($selected [$i] eq 'meta' || $selected [$i] eq 'errors' || $selected [$i] eq 'places'){
-	if ($selected [$i] eq '{') {
-		$j = ++$i;
-		++$j until ($selected[$j] eq '}');
-		$listOfTweets [$tweetCounter] =
-			createTweetForm2 @selected [$i .. ($j - 1)];
-		$i = ++$j;
-	}
-	++$tweetCounter;
+    if ($selected [$i] eq '{') {
+        $j = ++$i;
+        ++$j until ($selected[$j] eq '}');
+        $listOfTweets [$tweetCounter] =
+            createTweetForm2 @selected [$i .. ($j - 1)];
+        $i = ++$j;
+    }
+    ++$tweetCounter;
 }
 # }}}
 
 #|--- Debuging. STATUS: WORKING FINE {{{
 #foreach (@listOfTweets) {
-#	my %printTweet = %{$_};
-#	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
-#	print "\n\n";
+#   my %printTweet = %{$_};
+#   print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
+#   print "\n\n";
 #}
 #foreach (@listOfUsers) {
-#	my %printUser = %{$_};
-#	print "$_ : $printUser{$_}\n" foreach (keys %printUser);
-#	print "\n\n";
+#   my %printUser = %{$_};
+#   print "$_ : $printUser{$_}\n" foreach (keys %printUser);
+#   print "\n\n";
 #}
 #foreach (@listOfTweets) {
-#	my %printTweet = %{$_};
-#	print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
-#	print "\n\n";
+#   my %printTweet = %{$_};
+#   print "$_ : $printTweet{$_}\n" foreach (keys %printTweet);
+#   print "\n\n";
 #}
 # }}}
      
@@ -522,63 +522,63 @@ my $dsn = "dbi:SQLite:dbname=$dbfile";
 my $user = '';
 my $password ='';
 my $dbh = DBI->connect ($dsn, $user, $password, {
-	PrintError		 => 0,
-	RaiseError		 => 0,
-	AutoCommit		 => 1,
-	sqlite_unicode		 => 1,
-	FetchHashKeyName    	 => 'NAME_lc',
+    PrintError       => 0,
+    RaiseError       => 0,
+    AutoCommit       => 1,
+    sqlite_unicode       => 1,
+    FetchHashKeyName         => 'NAME_lc',
 });
 
 my %Tweet;
 my $sqlCommand =  $dbh->prepare('INSERT INTO tweet VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
 foreach (@listOfTweets){
-	%Tweet = %{ $_ };
+    %Tweet = %{ $_ };
 
-	$sqlCommand->execute($Tweet {'tweet_id'},
-			     $Tweet {'author_id'},
-			     $Tweet {'type'},
-			     $Tweet {'retweet_count'},
-			     $Tweet {'like_count'},
-			     $Tweet {'reply_count'},
-			     $Tweet {'quote_count'},
-			     $Tweet {'language'},
-			     $Tweet {'text'},
-			     $Tweet {'tweet_created_at'},
-			     $Tweet {'place_id'},
-			     $Tweet {'parent_tweet_id'});
+    $sqlCommand->execute($Tweet {'tweet_id'},
+                 $Tweet {'author_id'},
+                 $Tweet {'type'},
+                 $Tweet {'retweet_count'},
+                 $Tweet {'like_count'},
+                 $Tweet {'reply_count'},
+                 $Tweet {'quote_count'},
+                 $Tweet {'language'},
+                 $Tweet {'text'},
+                 $Tweet {'tweet_created_at'},
+                 $Tweet {'place_id'},
+                 $Tweet {'parent_tweet_id'});
 
-	if ( $sqlCommand->{err} ){
-		print "\n";
-		print "Problem with tweet: $Tweet{'tweet_id'}\n";
-		print "Type:               $Tweet{'type'}\n";
-		print "Author:             $Tweet{'author_id'}\n";
+    if ( $sqlCommand->{err} ){
+        print "\n";
+        print "Problem with tweet: $Tweet{'tweet_id'}\n";
+        print "Type:               $Tweet{'type'}\n";
+        print "Author:             $Tweet{'author_id'}\n";
 
-		print "\n";
-		print "DBI ERROR! : $sqlCommand->{err} : $sqlCommand->{errstr} \n";
-		print "\n";
-		print "\n";
-	}
+        print "\n";
+        print "DBI ERROR! : $sqlCommand->{err} : $sqlCommand->{errstr} \n";
+        print "\n";
+        print "\n";
+    }
 }
 
 my %User;
 $sqlCommand =  $dbh->prepare('INSERT INTO twitter_user VALUES (?,?,?,?,?,?,?)');
 foreach (@listOfUsers) {
-	%User = %{ $_ };
+    %User = %{ $_ };
 
-	$sqlCommand->execute($User {'id'},
-			     $User {'name'},
-			     $User {'username'},
-			     $User {'location'},
-			     $User {'followers_count'},
-			     $User {'following_count'},
-			     $User {'tweet_count'});
+    $sqlCommand->execute($User {'id'},
+                 $User {'name'},
+                 $User {'username'},
+                 $User {'location'},
+                 $User {'followers_count'},
+                 $User {'following_count'},
+                 $User {'tweet_count'});
 
-	if ( $sqlCommand->{err} ){
-		print "\n";
-		print "Problem with user: $User{'id'}\n";
-		print "\n";
-		print "DBI ERROR! : $sqlCommand->{err} : $sqlCommand->{errstr} \n";
-	}
+    if ( $sqlCommand->{err} ){
+        print "\n";
+        print "Problem with user: $User{'id'}\n";
+        print "\n";
+        print "DBI ERROR! : $sqlCommand->{err} : $sqlCommand->{errstr} \n";
+    }
 }
 $dbh->disconnect;
 # }}}
