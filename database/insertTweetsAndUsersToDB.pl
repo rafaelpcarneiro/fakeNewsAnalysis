@@ -12,7 +12,7 @@
 #
 # In (a) the diagram means that the tweet X has a parent Y (also a tweet). 
 # The meaning of Y being a parent of X is that X is an RT of Y or
-# X is a quote of Y or, finally, X is an answer to the tweet Y.
+# X is a quote of Y or, finally, X is a reply to the tweet Y.
 #
 # In case (b) the tweet X has no parent.
 #
@@ -24,12 +24,10 @@
 #        ||   type,                               ||   
 #        ||                                       ||
 #        ||   parent_tweet_id,                    ||
-#        ||   parent_author_id,                   ||
 #        ||                                       ||
 #        ||   tweet_id,                           ||
 #        ||   author_id,                          ||
 #        ||                                       ||
-#        ||   parent_tweet_created_at,            ||
 #        ||   tweet_created_at,                   ||
 #        ||                                       ||
 #        ||   rt_count,                           ||
@@ -42,11 +40,11 @@
 #        || }                                     ||
 #        ===========================================
 #        || Obs: 'type' has as values:            ||
-#        || * retweeted;                          ||
-#        || * replied_to                          ||
-#        || * quoted_plus_replied_to              ||
+#        || * retweet;                            ||
+#        || * reply                               ||
+#        || * quote_plus_reply                    ||
 #        || * simple_message                      ||
-#        || * quoted_plus_simple_message          ||
+#        || * quote_plus_simple_message           ||
 #        ||                                       ||
 #        || Obs: If a tweet has no parent then    ||
 #        || parent_tweet_id and parent_author_id  ||
@@ -99,21 +97,19 @@ sub createTweetForm {
 # (Obs: This function must be used for the the JSON element called "data")
     my %Tweet;
     %Tweet = (
-        type                 => undef,                                  
-        quote_id             => undef,
+        type                     => undef,                                  
+        quote_id                 => undef,
         parent_tweet_id          => undef,                    
-        #parent_author_id        => undef,                   
-        tweet_id             => undef,                           
-        author_id            => undef,                          
-        #parent_tweet_created_at  => '',            
+        tweet_id                 => undef,                           
+        author_id                => undef,                          
         tweet_created_at         => undef,                   
         retweet_count            => undef,                           
         reply_count              => undef,                        
-        like_count           => undef,                         
+        like_count               => undef,                         
         quote_count              => undef,                        
-        language             => undef,                           
-        text                 => undef,
-        place_id             => undef
+        language                 => undef,                           
+        text                     => undef,
+        place_id                 => undef
     );
     
 
@@ -183,22 +179,22 @@ sub createTweetForm {
     }
     elsif ( defined($temp1) && !defined($temp2) ){
         if ($temp1 eq 'quoted') {
-            $Tweet {'type'}            = 'quoted_plus_simple_message';
+            $Tweet {'type'}            = 'quote_plus_simple_message';
             $Tweet {'quote_id'}        = $temp1_id; 
         }
         elsif ($temp1 eq 'replied_to') {
-            $Tweet {'type'}            = 'replied_to';
+            $Tweet {'type'}            = 'reply';
             $Tweet {'parent_tweet_id'} = $temp1_id;
         }
         else {
-            $Tweet {'type'}            = 'retweeted';
+            $Tweet {'type'}            = 'retweet';
             $Tweet {'parent_tweet_id'} = $temp1_id;
         }
     }
     else {
-        $Tweet {'type'}     = 'quoted_plus_replied_to';
-        $Tweet {'quote_id'} = $temp1_id if ($temp1 eq 'quoted');
-        $Tweet {'quote_id'} = $temp1_id if ($temp2 eq 'quoted');
+        $Tweet {'type'}            = 'quote_plus_reply';
+        $Tweet {'quote_id'}        = $temp1_id if ($temp1 eq 'quoted');
+        $Tweet {'quote_id'}        = $temp1_id if ($temp2 eq 'quoted');
 
         $Tweet {'parent_tweet_id'} = $temp1_id if ($temp1 eq 'replied_to');
         $Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
@@ -216,14 +212,14 @@ sub createUserForm {
 # a reference to a hash called User.
     my %User;
     %User = (
-        id       => undef,                          
+        id               => undef,                          
         username         => undef,
         name             => undef,
         followers_count  => undef,
         following_count  => undef,
         tweet_count      => undef,
-        location     => undef,
-        created_at   => undef
+        location         => undef,
+        created_at       => undef
     );
     
 
@@ -273,12 +269,12 @@ sub createTweetForm2 {
         quote_id         => undef,
         tweet_id         => undef,                           
         author_id        => undef,                          
-        parent_tweet_id          => undef,
-        tweet_created_at     => undef,                   
-        retweet_count        => undef,                           
-        reply_count          => undef,                        
+        parent_tweet_id  => undef,
+        tweet_created_at => undef,                   
+        retweet_count    => undef,                           
+        reply_count      => undef,                        
         like_count       => undef,                         
-        quote_count          => undef,                        
+        quote_count      => undef,                        
         language         => undef,                           
         text             => undef,
         place_id         => undef
@@ -351,22 +347,22 @@ sub createTweetForm2 {
     }
     elsif ( defined($temp1) && !defined($temp2) ){
         if ($temp1 eq 'quoted') {
-            $Tweet {'type'}        = 'quoted_plus_simple_message';
+            $Tweet {'type'}            = 'quote_plus_simple_message';
             $Tweet {'quote_id'}        = $temp1_id;
         }
         elsif ($temp1 eq 'replied_to') {
-            $Tweet {'type'}            = 'replied_to';
+            $Tweet {'type'}            = 'reply';
             $Tweet {'parent_tweet_id'} = $temp1_id;
         }
         else {
-            $Tweet {'type'}        = 'retweeted';
+            $Tweet {'type'}            = 'retweet';
             $Tweet {'parent_tweet_id'} = $temp1_id;
         }
     }
     else {
-        $Tweet {'type'}     = 'quoted_plus_replied_to';
-        $Tweet {'quote_id'} = $temp1_id if ($temp1 eq 'quoted');
-        $Tweet {'quote_id'} = $temp1_id if ($temp2 eq 'quoted');
+        $Tweet {'type'}            = 'quote_plus_reply';
+        $Tweet {'quote_id'}        = $temp1_id if ($temp1 eq 'quoted');
+        $Tweet {'quote_id'}        = $temp1_id if ($temp2 eq 'quoted');
 
         $Tweet {'parent_tweet_id'} = $temp1_id if ($temp1 eq 'replied_to');
         $Tweet {'parent_tweet_id'} = $temp1_id if ($temp2 eq 'replied_to');
@@ -525,8 +521,8 @@ my $dbh = DBI->connect ($dsn, $user, $password, {
     PrintError       => 0,
     RaiseError       => 0,
     AutoCommit       => 1,
-    sqlite_unicode       => 1,
-    FetchHashKeyName         => 'NAME_lc',
+    sqlite_unicode   => 1,
+    FetchHashKeyName => 'NAME_lc',
 });
 
 my %Tweet;
