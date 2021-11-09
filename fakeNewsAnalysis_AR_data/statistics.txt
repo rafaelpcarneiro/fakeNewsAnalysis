@@ -1,0 +1,57 @@
++===============================================================================
++                                  DADOS CRU
++===============================================================================
+
+
++-------------------------------------+
+|Dados capturados                     |
++----------------------------+--------+
+|Total de tweets             |  97957 |
+|Total de usuarios           |  37684 |
+|Total mensagens isoladas    |  17158 |
++----------------------------+--------+
+
++-------------------------------------+
+|Tipos de tweet                       |
++----------------------------+--------+
+|quote_plus_reply            |  68    |
+|quote_plus_simple_message   |  1743  |
+|reply                       |  14384 |
+|retweet                     |  58062 |
+|simple_message              |  23700 |
++----------------------------+--------+
+
+
++===============================================================================
++                        GRAFO INTERACAO ENTRE USUARIOS
++===============================================================================
+
+Grafo:   
+        G = (V,A),
+
+onde
+        V (Vertices) := (Usuarios)
+        A (Arestas)  := { (x,y); y interage com x }.
+
+Vale:
+        card(V) = 31304     e        card(A) = 61594
+
+
+Quantidade de tweets envolvidos no grafo G = 80399
+
++-------------------------------------+
+|Tipos de tweet                       |
++----------------------------+--------+
+|quote_plus_reply            |  67    |
+|quote_plus_simple_message   |  648   |
+|reply                       |  13985 |
+|retweet                     |  58062 |
+|simple_message              |  7637  |
++----------------------------+--------+
+
+
+Graficos:
+ * Histograma tempo (em seg) para dar RT:            histograma_tempo_rt.pdf
+ * Quantos seguidores cada usuario tem :             followers.pdf
+ * Quantos usuarios cada usuario esta Seguindo:      following.pdf
+ * Quantos tweets cada usuario tem publicado ate hj: tweet_count.pdf
