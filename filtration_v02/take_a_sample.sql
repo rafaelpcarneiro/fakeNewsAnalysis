@@ -32,7 +32,7 @@ CREATE TABLE paths_xy_SAMPLE (
     PRIMARY KEY (from_tweet_id, to_tweet_id)
 );
 
--- Take a sample size equal to 25% of the numberOfEdges
+-- Take a sample size equal to 50% of the numberOfEdges
 INSERT INTO aSample
 SELECT DISTINCT
     from_author_tweet_id,
@@ -46,7 +46,7 @@ WHERE
     AND
     path_distance = 1
 ORDER BY random()
-LIMIT CAST(0.25 * (SELECT * FROM numberOfEdges) AS INT);
+LIMIT CAST(.50 * (SELECT * FROM numberOfEdges) AS INT);
 
 -- Fill paths_xy_SAMPLE with the sample
 INSERT INTO paths_xy_SAMPLE 
