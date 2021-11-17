@@ -20,7 +20,7 @@ CREATE TABLE aSample (
     to_author_tweet_id   INT NOT NULL,
 
     PRIMARY KEY (from_author_tweet_id, to_author_tweet_id)
-)
+);
 
 CREATE TABLE paths_xy_SAMPLE (
     from_tweet_id        INT NOT NULL,
