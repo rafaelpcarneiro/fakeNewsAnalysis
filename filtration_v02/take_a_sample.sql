@@ -65,8 +65,8 @@ WHERE
             FROM
                 aSample AS S
             WHERE
-                S.from_author_tweet_id = from_author_tweet_id
+                S.from_author_tweet_id = paths_xy.from_author_tweet_id
                 AND
-                S.to_author_tweet_id = to_author_tweet_id);
+                S.to_author_tweet_id = paths_xy.to_author_tweet_id);
 
 DROP VIEW numberOfEdges;
