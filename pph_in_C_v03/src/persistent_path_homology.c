@@ -281,9 +281,8 @@ vector *BasisChange (collection_of_basis *B,
         if (is_T_p_pathDim_i_vector_j_empty (Tp, path_dim - 1, max_index) == EMPTY) break;
 
         sum_these_vectors (u,
-                           get_Tp_vector_of_pathDim_i_index_j (Tp,
-                                                               path_dim - 1,
-                                                               max_index) );
+                           get_Tp_vector_of_pathDim_i_index_j (Tp, path_dim - 1, max_index));
+
 
         /*now check again max_index*/
         max_index = 0;
@@ -313,7 +312,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     double              et, lower, upper;
 
     /*Setting the environment*/
-    printf ("Environment variables\n\n");
+    printf ("Allocating the Environment variables\n\n");
     PPH = alloc_Pers (pph_max_dim);
 
     B   = alloc_all_basis (pph_max_dim + 1, network_set_size);
@@ -336,11 +335,11 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     sorting_the_basis_by_their_allow_times (B);
     
     printf ("Basis marked and ordered -- DONE\n\n");
-    printf_basis (B);
+    /* printf_basis (B); */
 
-    printf ("===========================================\n");
-    printf ("Calculating the path persistent homology   \n");
-    printf ("===========================================\n");
+    printf ("==================================================\n");
+    printf ("Now lets calculate the persistent path homology   \n");
+    printf ("==================================================\n");
 
     /*Now lets start the algorithm*/
     for (p = 0; p <= pph_max_dim; ++p) {
