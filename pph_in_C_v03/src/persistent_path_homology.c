@@ -50,7 +50,10 @@ void print_all_persistent_diagrams (Pers *P) {
         interval = (P->PPH_Diagrams + p)->stack;
 
         while (interval != NULL) {
-            fprintf (fh, "%6.2f,%6.2f\n", (interval->PPH_interval_dim_p)[0], (interval->PPH_interval_dim_p)[1]);
+            fprintf (fh, "%6.2f,%6.2f\n",
+                     (interval->PPH_interval_dim_p)[0],
+                     (interval->PPH_interval_dim_p)[1]
+            );
             interval = interval->next;
         }
     }
@@ -156,9 +159,10 @@ double entry_time_regular_path (collection_of_basis *B,
 
     if (path_dim == 0) return 0.0;
 
-    else if (path_dim == 1) return allow_time_regular_path (get_path_of_base_i_index_j (B, path_dim, index),
-                                                            path_dim,
-                                                            W);
+    else if (path_dim == 1)
+        return allow_time_regular_path (get_path_of_base_i_index_j (B, path_dim, index),
+                                        path_dim,
+                                        W);
 
     else {
         distance = allow_time_regular_path (get_path_of_base_i_index_j (B, path_dim, index),
@@ -230,7 +234,8 @@ vector *apply_border_operator_and_take_out_unmarked_points (collection_of_basis 
 
                 if (are_these_regular_paths_the_same (get_path_of_base_i_index_j (B, path_dim - 1, k),
                                                       boundary_of_path_vector, path_dim - 1) == TRUE
-                    && is_path_of_dimPath_p_index_j_marked (B, path_dim - 1, k) == TRUE) {
+                    &&
+                    is_path_of_dimPath_p_index_j_marked (B, path_dim - 1, k) == TRUE) {
 
                     add_index_to_vector (u, k);
                     /* u[k] = (u[k] + 1) % 2; */
@@ -403,6 +408,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
 
     pthread_join (thread_dim1_dim1, NULL); 
 
+    printf("\n\n");
     return PPH;
 }
 
