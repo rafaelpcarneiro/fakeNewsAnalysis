@@ -30,6 +30,15 @@ typedef struct {
     dim_path pph_max;
 } Pers;
 
+/* Thread structure */
+typedef struct {
+    Pers                *PPH;
+    collection_of_basis *B  ;
+    T_p                 *Tp ;
+    graphWeightList     *W  ;
+
+} pthread_loop_args;
+
 
 /*  Main Functions  */
 Pers *alloc_Pers                   (dim_path);
@@ -65,4 +74,12 @@ vector *BasisChange (collection_of_basis *B,
 Pers *ComputePPH    (unsigned int pph_dim,
                      unsigned int network_set_size);
 
+/* THREADS AUXILIARY FUNCTIONS */
+void *pthread_loop_dim0_dim1 (void *);
+void *pthread_loop_dim0_dim0 (void *);
+void *pthread_loop_dim1_dim2 (void *);
+void *pthread_loop_dim1_dim1 (void *);
+
+/* Progress Bar */
+void progressBar_PPH (void);
 #endif /* __PERSISTENT_PATH_HOMOLOGY_H_ */

@@ -1,6 +1,8 @@
 /* vim: set ts=4 expandtab sw=4: */
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
 #include "../headers/persistent_path_homology.h"
 #include "../headers/basis_of_vector_space.h"
 #include "../headers/Tp.h"
@@ -314,9 +316,14 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     T_p                 *Tp ;
     graphWeightList     *W;
 
-    unsigned int        j, p, max_index;
-    vector              *u, *v_j;
-    double              et, lower, upper;
+    unsigned int        j;
+
+    pthread_t           thread_dim0_dim1;
+    pthread_t           thread_dim0_dim0;
+    pthread_t           thread_dim1_dim2;
+    pthread_t           thread_dim1_dim1;
+
+    pthread_loop_args   pthreadArgs;
 
     /*Setting the environment*/
     printf ("Allocating the Environment variables\n\n");
@@ -325,74 +332,309 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     /* initializing the network weight env */
     W = alloc_graphWeightMatrix ();
     
-
     B   = alloc_all_basis (pph_max_dim + 1, network_set_size, W);
     printf ("Info about all basis allocated:\n");
     printf ("===============================\n\n");
 
     for (j = 0; j < 3; ++j)
-        printf ("The amount of regular paths of dimension %u is: %u\n",(B->basis+j)->dimension_of_the_regular_path,
-                                                                       (B->basis+j)->dimension_of_the_vs_spanned_by_base);
+        printf ("The amount of regular paths of dimension %u is: %u\n",
+                (B->basis+j)->dimension_of_the_regular_path,
+                (B->basis+j)->dimension_of_the_vs_spanned_by_base
+        );
 
     printf("\n\n");
 
-    printf ("Basis -- DONE\n");
-
 
     Tp  = alloc_T_p (B);
-    printf ("T_p -- DONE\n");
 
     initialize_Marking_basis_vectors       (B);
     sorting_the_basis_by_their_allow_times (B);
+
+    /* storing all info into a pthread arg stucture */
+    pthreadArgs.PPH = PPH;
+    pthreadArgs.B   = B;
+    pthreadArgs.Tp  = Tp;
+    pthreadArgs.W   = W;
     
-    printf ("Basis marked and ordered -- DONE\n\n");
     /* printf_basis (B); */
 
-    printf ("==================================================\n");
-    printf ("Now lets calculate the persistent path homology   \n");
-    printf ("==================================================\n");
+    printf("Env variables summary      status:\n");
+    printf("----------------------------------------------------\n");
+    printf("Basis         (*B)         allocated in MEM     - OK\n");
+    printf("Basis         (*B)         marked               - OK\n");
+    printf("Basis         (*B)         sorted by allow time - OK\n");
+    printf("PPH diagram   (*PPH)       allocated in MEM     - OK\n");
+    printf("Weight Matrix (*W)         allocated in MEM     - OK\n");
+    printf("T_p structure (*T_p)       allocated in MEM     - OK\n\n");
+    printf("Thread Args   (*pthread)   allocated in MEM     - OK\n\n");
+
+    sleep  (5);
+    printf ("Now, we are ready to calculate the persistent path homology\n");
+    printf ("\n\n");
+    sleep  (1);
 
     /*Now lets start the algorithm*/
-    for (p = 0; p <= pph_max_dim; ++p) {
+    printf("PPH diagrams\n");
 
-        /*u   = malloc (get_dimVS_of_ith_base (B, p) * sizeof (boolean));*/
+    pthread_create (&thread_dim0_dim1, 
+                    NULL, 
+                    &pthread_loop_dim0_dim1, 
+                    &pthreadArgs);
 
-        v_j = alloc_vec (); 
-        /*v_j = malloc (get_dimVS_of_ith_base (B, p + 1) * sizeof (boolean));*/
+    pthread_create (&thread_dim1_dim2, 
+                    NULL, 
+                    &pthread_loop_dim1_dim2, 
+                    &pthreadArgs);
 
-        for (j = 0; j < get_dimVS_of_ith_base (B, p + 1); ++j) {
-            printf ("First Loop -- Path dim = %u, base index = %u\n", p, j);
+    pthread_join (thread_dim0_dim1, NULL); 
 
-            v_j = I_k (j);
+    pthread_create (&thread_dim0_dim0, 
+                    NULL, 
+                    &pthread_loop_dim0_dim0, 
+                    &pthreadArgs);
 
-            /*if (p == 1 && j == 12 ) print_Tp (Tp);*/
-            u = BasisChange (B, Tp, v_j, p + 1, &et, &max_index, W);
-            /*print_vec_nicely (u, get_dimVS_of_ith_base (B, p), "u");*/
+    pthread_join (thread_dim1_dim2, NULL); 
+    pthread_join (thread_dim0_dim0, NULL); 
 
+    pthread_create (&thread_dim1_dim1, 
+                    NULL, 
+                    &pthread_loop_dim1_dim1, 
+                    &pthreadArgs);
 
-            if (is_this_vector_zero (u) == TRUE) {
-                marking_vector_basis (B, p + 1, j);
-                free_vector (u);
-            }
-            else {
-                set_T_p_pathDim_i_vector_j (Tp, p, max_index, u, et);
-                lower = entry_time_regular_path (B, p, max_index, W);
-                upper = et;
-                add_interval_of_pathDim_p (PPH, p, lower, upper);
-            }
-        }
-        free_vector (v_j);
-        for (j = 0; j < get_dimVS_of_ith_base (B, p); ++j) {
-            printf ("Second Loop -- Path dim = %u, base index = %u\n", p, j);
-
-            if (is_T_p_pathDim_i_vector_j_empty  (Tp, p, j) == EMPTY &&
-                is_path_of_dimPath_p_index_j_marked (B, p, j) == MARKED ) {
-                lower = entry_time_regular_path (B, p, j, W);
-                upper = INFINITE;
-                add_interval_of_pathDim_p (PPH, p, lower, upper);
-            }
-        }
-    }
+    pthread_join (thread_dim1_dim1, NULL); 
 
     return PPH;
+}
+
+/* THREAD AUXILIARY FUNCTIONS */
+
+/* Thread responsible for the loop j = 0, 1, 2, ..., dim (R_{0+1}) with p == 0 
+ * (Here, R_{0+1} are the regular paths of dimensio 0+1)
+ * --> First iteration of the LOOP
+ */
+void *pthread_loop_dim0_dim1 (void *myArgs) {
+    /* pt = parameter thread */
+    pthread_loop_args   *pt   = (pthread_loop_args*) myArgs;
+
+    Pers                *PPH = pt->PPH; 
+    collection_of_basis *B   = pt->B;
+    T_p                 *Tp  = pt->Tp;
+    graphWeightList     *W   = pt->W;
+
+    unsigned int        maxNumberOfIterations, onePercentageProgress;
+    unsigned int        j, p, max_index;
+    vector              *u, *v_j;
+    double              et, lower, upper;
+
+
+
+
+    maxNumberOfIterations = get_dimVS_of_ith_base (B, 1) +
+                             get_dimVS_of_ith_base (B, 0) +
+                             get_dimVS_of_ith_base (B, 2) +
+                             get_dimVS_of_ith_base (B, 1);
+
+    onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
+
+    /*Now lets start the algorithm*/
+    p   = 0;            /* p == dimension */
+    v_j = alloc_vec (); 
+
+    for (j = 0; j < get_dimVS_of_ith_base (B, p + 1); ++j) {
+        printf ("First Loop -- Path dim = %u, base index = %u\n", p, j);
+
+        v_j = I_k (j);
+
+        /*if (p == 1 && j == 12 ) print_Tp (Tp);*/
+        u = BasisChange (B, Tp, v_j, p + 1, &et, &max_index, W);
+        /*print_vec_nicely (u, get_dimVS_of_ith_base (B, p), "u");*/
+
+
+        if (is_this_vector_zero (u) == TRUE) {
+            marking_vector_basis (B, p + 1, j);
+            free_vector (u);
+        }
+        else {
+            set_T_p_pathDim_i_vector_j (Tp, p, max_index, u, et);
+            lower = entry_time_regular_path (B, p, max_index, W);
+            upper = et;
+            add_interval_of_pathDim_p (PPH, p, lower, upper);
+        }
+
+        if (j % onePercentageProgress == 0 )  progressBar_PPH ();
+    }
+    free_vector (v_j);
+
+    return NULL;
+}
+
+/* Thread responsible for the loop j = 0, 1, 2, ..., dim (R_{0}) with p == 0 
+ * (Here, R_{0} are the regular paths of dimensio 0)
+ * --> First iteration of the LOOP
+ */
+void *pthread_loop_dim0_dim0 (void *myArgs) {
+    /* pt = parameter thread */
+    pthread_loop_args   *pt   = (pthread_loop_args*) myArgs;
+
+    Pers                *PPH = pt->PPH; 
+    collection_of_basis *B   = pt->B;
+    T_p                 *Tp  = pt->Tp;
+    graphWeightList     *W   = pt->W;
+
+    unsigned int        maxNumberOfIterations, onePercentageProgress;
+    unsigned int        j, p;
+    double              lower, upper;
+
+
+
+
+    maxNumberOfIterations = get_dimVS_of_ith_base (B, 1) +
+                             get_dimVS_of_ith_base (B, 0) +
+                             get_dimVS_of_ith_base (B, 2) +
+                             get_dimVS_of_ith_base (B, 1);
+
+    onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
+
+    /*Now lets start the algorithm*/
+    p   = 0;            /* p == dimension */
+
+    for (j = 0; j < get_dimVS_of_ith_base (B, p); ++j) {
+        printf ("Second Loop -- Path dim = %u, base index = %u\n", p, j);
+
+        if (is_T_p_pathDim_i_vector_j_empty  (Tp, p, j)   == EMPTY 
+            &&
+            is_path_of_dimPath_p_index_j_marked (B, p, j) == MARKED )
+        {
+            lower = entry_time_regular_path (B, p, j, W);
+            upper = INFINITE;
+            add_interval_of_pathDim_p (PPH, p, lower, upper);
+        }
+
+        if (j % onePercentageProgress == 0 )  progressBar_PPH ();
+    }
+
+    return NULL;
+}
+
+
+
+/* Thread responsible for the loop j = 0, 1, 2, ..., dim (R_{1+1}) with p == 1
+ * (Here, R_{1+1} are the regular paths of dimensio 1+1)
+ * --> Second iteration of the LOOP
+ */
+void *pthread_loop_dim1_dim2 (void *myArgs) {
+    /* pt = parameter thread */
+    pthread_loop_args   *pt   = (pthread_loop_args*) myArgs;
+
+    Pers                *PPH = pt->PPH; 
+    collection_of_basis *B   = pt->B;
+    T_p                 *Tp  = pt->Tp;
+    graphWeightList     *W   = pt->W;
+
+    unsigned int        maxNumberOfIterations, onePercentageProgress;
+    unsigned int        j, p, max_index;
+    vector              *u, *v_j;
+    double              et, lower, upper;
+
+
+
+
+    maxNumberOfIterations = get_dimVS_of_ith_base (B, 1) +
+                             get_dimVS_of_ith_base (B, 0) +
+                             get_dimVS_of_ith_base (B, 2) +
+                             get_dimVS_of_ith_base (B, 1);
+
+    onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
+
+    /*Now lets start the algorithm*/
+    p   = 1;            /* p == dimension */
+    v_j = alloc_vec (); 
+
+    for (j = 0; j < get_dimVS_of_ith_base (B, p + 1); ++j) {
+        printf ("First Loop -- Path dim = %u, base index = %u\n", p, j);
+
+        v_j = I_k (j);
+
+        /*if (p == 1 && j == 12 ) print_Tp (Tp);*/
+        u = BasisChange (B, Tp, v_j, p + 1, &et, &max_index, W);
+        /*print_vec_nicely (u, get_dimVS_of_ith_base (B, p), "u");*/
+
+
+        if (is_this_vector_zero (u) == TRUE) {
+            marking_vector_basis (B, p + 1, j);
+            free_vector (u);
+        }
+        else {
+            set_T_p_pathDim_i_vector_j (Tp, p, max_index, u, et);
+            lower = entry_time_regular_path (B, p, max_index, W);
+            upper = et;
+            add_interval_of_pathDim_p (PPH, p, lower, upper);
+        }
+
+        if (j % onePercentageProgress == 0 )  progressBar_PPH ();
+    }
+    free_vector (v_j);
+
+    return NULL;
+}
+
+/* Thread responsible for the loop j = 0, 1, 2, ..., dim (R_{1}) with p == 1 
+ * (Here, R_{1} are the regular paths of dimensio 1)
+ * --> Second iteration of the LOOP
+ */
+void *pthread_loop_dim1_dim1 (void *myArgs) {
+    /* pt = parameter thread */
+    pthread_loop_args   *pt   = (pthread_loop_args*) myArgs;
+
+    Pers                *PPH = pt->PPH; 
+    collection_of_basis *B   = pt->B;
+    T_p                 *Tp  = pt->Tp;
+    graphWeightList     *W   = pt->W;
+
+    unsigned int        maxNumberOfIterations, onePercentageProgress;
+    unsigned int        j, p;
+    double              lower, upper;
+
+
+
+
+    maxNumberOfIterations = get_dimVS_of_ith_base (B, 1) +
+                             get_dimVS_of_ith_base (B, 0) +
+                             get_dimVS_of_ith_base (B, 2) +
+                             get_dimVS_of_ith_base (B, 1);
+
+    onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
+
+    /*Now lets start the algorithm*/
+    p   = 1;            /* p == dimension */
+
+    for (j = 0; j < get_dimVS_of_ith_base (B, p); ++j) {
+        printf ("Second Loop -- Path dim = %u, base index = %u\n", p, j);
+
+        if (is_T_p_pathDim_i_vector_j_empty  (Tp, p, j)   == EMPTY 
+            &&
+            is_path_of_dimPath_p_index_j_marked (B, p, j) == MARKED )
+        {
+            lower = entry_time_regular_path (B, p, j, W);
+            upper = INFINITE;
+            add_interval_of_pathDim_p (PPH, p, lower, upper);
+        }
+
+        if (j % onePercentageProgress == 0 )  progressBar_PPH ();
+    }
+
+    return NULL;
+}
+
+/* Progress Bar */
+void progressBar_PPH (void) {
+    static unsigned int percentagePPH = 1;
+
+    if (percentagePPH <= 100){
+        printf("█%2d%%", percentagePPH);
+        fflush(stdout);
+        printf("\b\b\b");
+    }
+
+    ++percentagePPH;
 }
