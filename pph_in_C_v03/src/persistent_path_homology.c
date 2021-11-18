@@ -380,7 +380,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
 
     /*Now lets start the algorithm*/
     printf("PPH diagrams\n");
-    printf("progress: ")
+    printf("progress: ");
 
     pthread_create (&thread_dim0_dim1, 
                     NULL, 
