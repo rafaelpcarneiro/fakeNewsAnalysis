@@ -370,7 +370,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     printf("Basis         (*B)         sorted by allow time - OK\n");
     printf("PPH diagram   (*PPH)       allocated in MEM     - OK\n");
     printf("Weight Matrix (*W)         allocated in MEM     - OK\n");
-    printf("T_p structure (*T_p)       allocated in MEM     - OK\n\n");
+    printf("T_p structure (*T_p)       allocated in MEM     - OK\n");
     printf("Thread Args   (*pthread)   allocated in MEM     - OK\n\n");
 
     sleep  (5);
@@ -380,6 +380,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
 
     /*Now lets start the algorithm*/
     printf("PPH diagrams\n");
+    printf("progress: ")
 
     pthread_create (&thread_dim0_dim1, 
                     NULL, 
