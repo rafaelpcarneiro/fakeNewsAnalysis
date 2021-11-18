@@ -447,7 +447,6 @@ void *pthread_loop_dim0_dim1 (void *myArgs) {
     v_j = alloc_vec (); 
 
     for (j = 0; j < get_dimVS_of_ith_base (B, p + 1); ++j) {
-        printf ("First Loop -- Path dim = %u, base index = %u\n", p, j);
 
         v_j = I_k (j);
 
@@ -505,7 +504,6 @@ void *pthread_loop_dim0_dim0 (void *myArgs) {
     p   = 0;            /* p == dimension */
 
     for (j = 0; j < get_dimVS_of_ith_base (B, p); ++j) {
-        printf ("Second Loop -- Path dim = %u, base index = %u\n", p, j);
 
         if (is_T_p_pathDim_i_vector_j_empty  (Tp, p, j)   == EMPTY 
             &&
@@ -557,7 +555,6 @@ void *pthread_loop_dim1_dim2 (void *myArgs) {
     v_j = alloc_vec (); 
 
     for (j = 0; j < get_dimVS_of_ith_base (B, p + 1); ++j) {
-        printf ("First Loop -- Path dim = %u, base index = %u\n", p, j);
 
         v_j = I_k (j);
 
@@ -615,7 +612,6 @@ void *pthread_loop_dim1_dim1 (void *myArgs) {
     p   = 1;            /* p == dimension */
 
     for (j = 0; j < get_dimVS_of_ith_base (B, p); ++j) {
-        printf ("Second Loop -- Path dim = %u, base index = %u\n", p, j);
 
         if (is_T_p_pathDim_i_vector_j_empty  (Tp, p, j)   == EMPTY 
             &&
