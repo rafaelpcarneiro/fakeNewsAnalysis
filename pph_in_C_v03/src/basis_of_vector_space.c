@@ -35,7 +35,8 @@ boolean is_path_of_dimPath_p_index_j_marked (collection_of_basis *B, dim_path pa
 
 /*  main functions */
 collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_minus_one,
-                                      unsigned int network_set_size) {
+                                      unsigned int network_set_size,
+                                      graphWeightList *W) {
     
     /* since the index for arrays start from 0, number_of_basis_to_allocate_minus_one
      * represents properly the amount of basis we want to calculate. Just remember
@@ -64,13 +65,13 @@ collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_m
     }
 
     /* Now Lets store all basis according to the dimensions 1 and 2*/
-	storing_all_regular_paths_up_to_dim2 (B);
+	storing_all_regular_paths_up_to_dim2 (B, W);
 
     return B;
 } /*  Tested Ok */
 
 
-void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B){
+void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B, graphWeightList *W){
 
     /* This function was adapted to work with the two threads below */
     pthread_t dim1_threadID;
@@ -101,6 +102,7 @@ void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B){
 
     myArgs.B                        = B;
     myArgs.size_dim1_plus_size_dim2 = size1 + size2;
+    myArgs.W                        = W;
 
 
     printf("Setting up the filtration\n");
@@ -135,6 +137,7 @@ void *pthread_storing_all_regular_paths_dim1 (void *parameters) {
 
     pthread_arguments         *p  = (pthread_arguments*) parameters;
     collection_of_basis       *B  = p->B;
+    graphWeightList           *W  = p->W;
     tuple_regular_path_double *temp_dim_p;
     unsigned int              x, y, i;
 	dim_path                  dim_p;
@@ -170,7 +173,7 @@ void *pthread_storing_all_regular_paths_dim1 (void *parameters) {
 		temp_dim_p->jth_vectorBase[0] = x;
 		temp_dim_p->jth_vectorBase[1] = y;
 
-		temp_dim_p->allow_time  = network_weight(x, y);
+		temp_dim_p->allow_time  = network_weight(x, y, W);
 
         if (i % one_percentage == 0 )  progressBar_reading_filtration ();
 		++i;
@@ -188,6 +191,7 @@ void *pthread_storing_all_regular_paths_dim2 (void *parameters) {
 
     pthread_arguments         *p  = (pthread_arguments*) parameters;
     collection_of_basis       *B  = p->B;
+    graphWeightList           *W  = p->W;
     tuple_regular_path_double *temp_dim_p;
     unsigned int              x, y, z, i;
 	dim_path                  dim_p;
@@ -224,8 +228,9 @@ void *pthread_storing_all_regular_paths_dim2 (void *parameters) {
 		temp_dim_p->jth_vectorBase[1] = y;
 		temp_dim_p->jth_vectorBase[2] = z;
 
-		temp_dim_p->allow_time  = network_weight(x,y) < network_weight(y,z) ?  network_weight(y,z):
-																			   network_weight(x,y);
+		temp_dim_p->allow_time  = network_weight(x,y,W) < network_weight(y,z,W)
+                                  ?  network_weight(y,z,W) : network_weight(x,y,W);
+																			   
 
         if (i % one_percentage == 0 )  progressBar_reading_filtration ();
 		++i;
@@ -286,7 +291,7 @@ void sorting_the_basis_by_their_allow_times (collection_of_basis *B) {
 } /*  Tested Ok */
 
 
-double allow_time_regular_path (regular_path path, dim_path path_dim) {
+double allow_time_regular_path (regular_path path, dim_path path_dim, graphWeightList *W) {
     /* Calculates the allow time of a regular path. It will be used to sort our basis */
 
     unsigned int j;
@@ -296,7 +301,7 @@ double allow_time_regular_path (regular_path path, dim_path path_dim) {
     for (j = 0; j < path_dim; ++j) {
         i = path[j];
         i_plus_one = path[j + 1];
-        distance = distance < network_weight(i, i_plus_one) ? network_weight(i, i_plus_one) : distance;
+        distance = distance < network_weight(i, i_plus_one, W) ? network_weight(i, i_plus_one, W) : distance;
     }
 
     return distance;

@@ -9,6 +9,7 @@
 #define __BASIS_OF_VECTOR_SPACE_H_
 
 #include "definitions.h"
+#include "network_weight.h"
 
 #define FILE_REGULAR_PATHS_DIM_1 "data/all_regular_paths_dimension_1.txt" 
 #define FILE_REGULAR_PATHS_DIM_2 "data/all_regular_paths_dimension_2.txt"
@@ -38,13 +39,16 @@ typedef struct{
 typedef struct {
     collection_of_basis *B;
     unsigned int long   size_dim1_plus_size_dim2;
+    graphWeightList     *W;
 } pthread_arguments;
 
 /*  FUNCTIONS OPERATING ON THESE STRUCTS  */
 collection_of_basis *alloc_all_basis        (unsigned int,
-                                             unsigned int);
+                                             unsigned int,
+                                             graphWeightList*);
 
-void storing_all_regular_paths_up_to_dim2   (collection_of_basis*);
+void storing_all_regular_paths_up_to_dim2   (collection_of_basis*,
+                                             graphWeightList*);
 
 void initialize_Marking_basis_vectors       (collection_of_basis*);
 
@@ -56,7 +60,8 @@ void marking_vector_basis                   (collection_of_basis*,
                                              vectorBasis_index);
 
 double allow_time_regular_path              (regular_path,
-                                             dim_path);
+                                             dim_path,
+                                             graphWeightList*);
 
 int compareTuple                            (const void*,
                                              const void*);

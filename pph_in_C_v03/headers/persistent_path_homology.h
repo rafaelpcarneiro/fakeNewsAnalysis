@@ -6,6 +6,7 @@
 #include "basis_of_vector_space.h"
 #include "sparce_vector.h"
 #include <stdlib.h>
+#include "network_weight.h"
 
 /*================================================================
  * DOCUMENTATION> please read the file doc.pdf (inside the folder
@@ -37,9 +38,12 @@ void add_interval_of_pathDim_p     (Pers*, dim_path, double, double);
 
 void print_all_persistent_diagrams (Pers*);
 
-double allow_time_vector           (collection_of_basis*, vector*, dim_path);
+double allow_time_vector           (collection_of_basis*, vector*, dim_path, graphWeightList*);
 
-double entry_time_vector           (collection_of_basis*, vector*, unsigned int);
+double entry_time_vector           (collection_of_basis*, vector*, unsigned int, graphWeightList*);
+
+double entry_time_regular_path     (collection_of_basis*, dim_path, vectorBasis_index, graphWeightList*);
+                                
 
 
 vector *apply_border_operator_and_take_out_unmarked_points (collection_of_basis*, vector*, dim_path);
@@ -54,7 +58,8 @@ vector *BasisChange (collection_of_basis *B,
                      vector *path_vector,
                      dim_path path_dim,
                      double *return_et,
-                     unsigned int *return_max_index);
+                     unsigned int *return_max_index,
+                     graphWeightList *W);
 
 
 Pers *ComputePPH    (unsigned int pph_dim,
