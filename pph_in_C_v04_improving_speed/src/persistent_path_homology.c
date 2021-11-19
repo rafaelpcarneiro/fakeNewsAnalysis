@@ -191,9 +191,25 @@ double entry_time_regular_path (collection_of_basis *B,
                                 vectorBasis_index index,
                                 graphWeightList *W) {
 
-    double distance = 0.0;
-    unsigned int j, k, l;
-    regular_path boundary, temp;
+    pthread_t thread_entry_time1_ID;
+    pthread_t thread_entry_time2_ID;
+    pthread_t thread_entry_time3_ID;
+
+    pthread_entry_time_args thread_entry_time1_args;
+    pthread_entry_time_args thread_entry_time2_args;
+    pthread_entry_time_args thread_entry_time3_args;
+
+    double distance  = 0.0;
+    double distance1 = 0.0; 
+    double distance2 = 0.0;
+    double distance3 = 0.0;
+
+    regular_path temp;
+
+    regular_path boundary1;
+    regular_path boundary2;
+    regular_path boundary3;
+
 
     if (path_dim == 0) return 0.0;
 
@@ -207,30 +223,67 @@ double entry_time_regular_path (collection_of_basis *B,
                                             path_dim,
                                             W);
 
-        /*Now we will have to calculate the boudary operator of the path_vector
-         * then we will take its allow times */
-        boundary = malloc ((path_dim) * sizeof (vertex_index));
-        /*for (i = 0; i < get_dimVS_of_ith_base (B, path_dim); ++i) {*/
+        boundary1 = malloc ((path_dim) * sizeof (vertex_index));
+        boundary2 = malloc ((path_dim) * sizeof (vertex_index));
+        boundary3 = malloc ((path_dim) * sizeof (vertex_index));
+
 
         temp = get_path_of_base_i_index_j (B, path_dim, index);
 
-        for (j = 0; j <= path_dim; ++j) {
-            l = 0;
-            for (k = 0; k <= path_dim; ++k) {
-                if (k != j) {
-                    boundary[l] = temp[k];
-                    ++l;
-                }
-            }
-            if (is_this_path_a_regular_path (boundary, path_dim - 1) == FALSE) continue;
+        boundary1[0] = temp[1];
+        boundary1[1] = temp[2];
 
-            distance = distance < allow_time_regular_path (boundary, path_dim - 1, W) ?
-                allow_time_regular_path (boundary, path_dim - 1, W) : distance;
-        }
-        /*}*/
-        free (boundary);
+        boundary2[0] = temp[0];
+        boundary2[1] = temp[2];
+
+        boundary3[0] = temp[0];
+        boundary3[1] = temp[1];
+
+        thread_entry_time1_args.boundary = boundary1;
+        thread_entry_time1_args.distance = &distance1;
+        thread_entry_time1_args.path_dim = path_dim;
+        thread_entry_time1_args.W        = W;
+
+        thread_entry_time2_args.boundary = boundary2;
+        thread_entry_time2_args.distance = &distance2;
+        thread_entry_time2_args.path_dim = path_dim;
+        thread_entry_time2_args.W        = W;
+
+        thread_entry_time3_args.boundary = boundary3;
+        thread_entry_time3_args.distance = &distance3;
+        thread_entry_time3_args.path_dim = path_dim;
+        thread_entry_time3_args.W        = W;
+
+
+        pthread_create (&thread_entry_time1_ID,
+                        NULL,
+                        &pthread_entry_time,
+                        &thread_entry_time1_args);
+
+        pthread_create (&thread_entry_time2_ID,
+                        NULL,
+                        &pthread_entry_time,
+                        &thread_entry_time2_args);
+
+        pthread_create (&thread_entry_time3_ID,
+                        NULL,
+                        &pthread_entry_time,
+                        &thread_entry_time3_args);
+
+        pthread_join (thread_entry_time1_ID, NULL);
+        pthread_join (thread_entry_time2_ID, NULL);
+        pthread_join (thread_entry_time3_ID, NULL);
+
+        distance = distance < distance1 ? distance1: distance;
+        distance = distance < distance2 ? distance2: distance;
+        distance = distance < distance3 ? distance3: distance;
+
+        free (boundary1);
+        free (boundary2);
+        free (boundary3);
+
         return distance;
-        }
+    }
 }
 
 vector *apply_border_operator_and_take_out_unmarked_points (collection_of_basis *B,
