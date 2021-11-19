@@ -174,25 +174,25 @@ double entry_time_regular_path (collection_of_basis *B,
         boundary = malloc ((path_dim) * sizeof (vertex_index));
         /*for (i = 0; i < get_dimVS_of_ith_base (B, path_dim); ++i) {*/
 
-    temp = get_path_of_base_i_index_j (B, path_dim, index);
+        temp = get_path_of_base_i_index_j (B, path_dim, index);
 
-    for (j = 0; j <= path_dim; ++j) {
-        l = 0;
-        for (k = 0; k <= path_dim; ++k) {
-            if (k != j) {
-                boundary[l] = temp[k];
-                ++l;
+        for (j = 0; j <= path_dim; ++j) {
+            l = 0;
+            for (k = 0; k <= path_dim; ++k) {
+                if (k != j) {
+                    boundary[l] = temp[k];
+                    ++l;
+                }
             }
-        }
-        if (is_this_path_a_regular_path (boundary, path_dim - 1) == FALSE) continue;
+            if (is_this_path_a_regular_path (boundary, path_dim - 1) == FALSE) continue;
 
-        distance = distance < allow_time_regular_path (boundary, path_dim - 1, W) ?
-            allow_time_regular_path (boundary, path_dim - 1, W) : distance;
-    }
-    /*}*/
-    free (boundary);
-    return distance;
-    }
+            distance = distance < allow_time_regular_path (boundary, path_dim - 1, W) ?
+                allow_time_regular_path (boundary, path_dim - 1, W) : distance;
+        }
+        /*}*/
+        free (boundary);
+        return distance;
+        }
 }
 
 vector *apply_border_operator_and_take_out_unmarked_points (collection_of_basis *B,
