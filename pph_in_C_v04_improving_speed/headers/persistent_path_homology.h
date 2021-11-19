@@ -46,6 +46,22 @@ typedef struct {
     regular_path        boundary_of_path_vector;
 } pthreadBorderOp_args;
 
+typedef struct {
+    vertex_index    vertex;
+    vertex_index    vertex_next;
+    double          *distance;
+    graphWeightList *W;
+
+} pthread_allow_time_vector_args;
+
+typedef struct {
+    regular_path        boundary;
+    double              *distance;
+    dim_path            path_dim;
+    graphWeightList     *W;
+
+} pthread_entry_time_args;
+
 /*  Main Functions  */
 Pers *alloc_Pers                   (dim_path);
 
@@ -87,6 +103,10 @@ void *pthread_loop_dim1_dim2 (void *);
 void *pthread_loop_dim1_dim1 (void *);
 
 void *pthreadBorderOp_aux (void*);
+
+void *pthread_allow_time_vector (void*);
+
+void *pthread_entry_time (void*); 
 
 /* Progress Bar */
 void progressBar_PPH (void);
