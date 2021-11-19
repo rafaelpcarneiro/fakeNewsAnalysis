@@ -97,10 +97,10 @@ double allow_time_vector (collection_of_basis *B,
             thread_allow_time_vector1_args.distance    = &distance1;
             thread_allow_time_vector1_args.W           = W;
 
-            thread_allow_time_vector1_args.vertex      = temp_path[1];
-            thread_allow_time_vector1_args.vertex_next = temp_path[2];
-            thread_allow_time_vector1_args.distance    = &distance2;
-            thread_allow_time_vector1_args.W           = W;
+            thread_allow_time_vector2_args.vertex      = temp_path[1];
+            thread_allow_time_vector2_args.vertex_next = temp_path[2];
+            thread_allow_time_vector2_args.distance    = &distance2;
+            thread_allow_time_vector2_args.W           = W;
 
             pthread_create (&thread_allow_time_vector1,
                             NULL,
