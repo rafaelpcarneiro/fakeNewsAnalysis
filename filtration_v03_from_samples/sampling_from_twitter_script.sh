@@ -10,19 +10,36 @@ echo "Parameter: Sample equivalent to 40% of the whole database"
 echo "-----------------------------------------------------------"
 echo ""
 
+echo "What weight matrix should I use to calculate the distance:"
+echo "[1] The influence of users"
+echo "[2] The expected time that users take to answer each other"
+echo ""
+echo -n "Your answer (type 1 or 2): "
+read answer
+
 # Firstly, we must set the sample database
 sqlite3            < set_sampleDB.sql
-sqlite3 twitter.db < take_a_sample_using_influence_as_weight.sql
+if [ $answer -eq 1 ]
+then 
+    sqlite3 twitter.db < take_a_sample_using_influence_as_weight.sql
+else
+    sqlite3 twitter.db < take_a_sample_using_time_as_weight.sql
+fi
 
 perl create_filtration_dim_1.pl
 
 sqlite3 twitter.db < populate_sampleDB.sql
 
-sqlite3 sample.db  < generate_the_filtration_data.sql
+if [ $answer -eq 1 ]
+then 
+    sqlite3 sample.db  < generate_the_filtration_data_using_influence_as_weight.sql
+else
+    sqlite3 sample.db  < generate_the_filtration_data_using_time_as_weight.sql
+fi
 
 gcc -Wall -Wextra  -Werror -ansi -pedantic -O3  $fileToCompile -o ${fileToCompile%.c}
 
-echo "All filtration is complete - regarding the sample"
+echo "All filtration is complete"
 echo ""
 
 chmod 700  ${fileToCompile%.c}
