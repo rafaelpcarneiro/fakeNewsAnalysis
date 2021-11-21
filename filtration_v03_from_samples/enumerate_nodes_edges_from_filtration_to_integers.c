@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NODES_FILE    "nodes.txt"
-#define EDGES_FILE    "edges.txt"
-#define PATHDIM2_FILE "pathDim2.txt"
+#define NODES_FILE               "nodes.txt"
+#define EDGES_FILE               "edges.txt"
+#define PATHDIM2_FILE            "pathDim2.txt"
 
 #define NODES_ENUMERATED_FILE    "nodes_enumerated.txt"
 #define EDGES_ENUMERATED_FILE    "edges_enumerated.txt"
@@ -87,7 +87,7 @@ int main() {
     fscanf (file_pathDim2, "%lu", &MAX_PATHDIM2);
 
     maxIterations     = 2 * (MAX_NODES + MAX_EDGES + MAX_PATHDIM2);
-    onePercentageIter = (usigned int) (0.01 * (double) maxIterations);
+    onePercentageIter = (unsigned int) (0.01 * (double) maxIterations);
 
     nodes     = malloc (MAX_NODES    * sizeof (vertex_generation));
     edges     = malloc (MAX_EDGES    * sizeof (edge_generation));

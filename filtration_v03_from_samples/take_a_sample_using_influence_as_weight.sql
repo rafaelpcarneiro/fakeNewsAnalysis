@@ -44,7 +44,7 @@ CREATE TABLE paths_xy_SAMPLE (
 
 );
 
--- Take a sample size equal to 1% of the numberOfEdges
+-- Take a sample size equal to 40% of the numberOfEdges
 INSERT INTO aSample_edges
 SELECT 
     L.from_author_tweet_id,
@@ -86,7 +86,7 @@ ON
 ORDER BY
     random()
 LIMIT
-    CAST(.01 * (SELECT * FROM numberOfEdges) AS INT);
+    CAST(.40 * (SELECT * FROM numberOfEdges) AS INT);
 
 -- Get the table of nodes sampled from the edges
 INSERT INTO aSample_nodes
