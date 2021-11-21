@@ -10,8 +10,8 @@
 #define NODES_ENUMERATED_FILE    "nodes_enumerated.txt"
 #define EDGES_ENUMERATED_FILE    "edges_enumerated.txt"
         
-#define PATHDIM1_ENUMERATED_FILE "pathDim1_enumerated.txt"
-#define PATHDIM2_ENUMERATED_FILE "pathDim2_enumerated.txt"
+#define PATHDIM1_ENUMERATED_FILE "all_regular_paths_dimension_1.txt"
+#define PATHDIM2_ENUMERATED_FILE "all_regular_paths_dimension_2.txt"
 
 /* Data Types  */
 typedef unsigned long int node;
@@ -38,6 +38,19 @@ typedef struct {
 
 } pathDim2;
 
+/* Progress Bar */
+void progressBar_PPH (void) {
+    static unsigned int percentagePPH = 1;
+
+    if (percentagePPH <= 100){
+        printf("█%2d%%", percentagePPH);
+        fflush(stdout);
+        printf("\b\b\b");
+    }
+
+    ++percentagePPH;
+}
+
 int main() {
     
     /* Variable Declaration */
@@ -58,30 +71,40 @@ int main() {
 
     node               node_tmp, from_node_A, to_node_B, a0, a1, a2;
     double             weight;
-    
+
+    unsigned int       maxIterations, onePercentageIter;
 
     /* Reading all nodes and edges 2*/
-    file_nodes = fopen (NODES_FILE, "r");
-    file_edges = fopen (EDGES_FILE, "r");
-
+    file_nodes    = fopen (NODES_FILE,    "r");
+    file_edges    = fopen (EDGES_FILE,    "r");
     file_pathDim2 = fopen (PATHDIM2_FILE, "r");
 
     if (file_nodes == NULL || file_edges == NULL || file_pathDim2 == NULL ) 
         printf("Problems to open the files\n");
 
-    fscanf (file_nodes, "%lu", &MAX_NODES);
-    nodes = malloc (MAX_NODES * sizeof (vertex_generation));
+    fscanf (file_nodes,    "%lu", &MAX_NODES);
+    fscanf (file_edges,    "%lu", &MAX_EDGES);
+    fscanf (file_pathDim2, "%lu", &MAX_PATHDIM2);
 
+    maxIterations     = 2 * (MAX_NODES + MAX_EDGES + MAX_PATHDIM2);
+    onePercentageIter = (usigned int) (0.01 * (double) maxIterations);
+
+    nodes     = malloc (MAX_NODES    * sizeof (vertex_generation));
+    edges     = malloc (MAX_EDGES    * sizeof (edge_generation));
+    pathsDim2 = malloc (MAX_PATHDIM2 * sizeof (pathDim2));
+
+    printf("Indexing all vertex by the natural numbers\n");
+    printf("Progress: ");
+    /* reading nodes */
     i = 0;
     while (fscanf (file_nodes, "%lu", &node_tmp) != EOF) {
         (nodes + i)->vertex = node_tmp;
         ++i;
+        if (i % onePercentageIter == 0) progressBar_PPH ();
     }
     fclose (file_nodes);
 
-    fscanf (file_edges, "%lu", &MAX_EDGES);
-    edges = malloc (MAX_EDGES * sizeof (edge_generation));
-
+    /* reading edges */
     i = 0;
     while (fscanf (file_edges, "%lu %lu %lf", &from_node_A, &to_node_B, &weight) != EOF) {
         (edges + i)->from     = from_node_A;
@@ -89,13 +112,11 @@ int main() {
         (edges + i)->weight   = weight;
 
         ++i;
+        if (i % onePercentageIter == 0) progressBar_PPH ();
     }
     fclose (file_edges);
 
-
-    fscanf (file_pathDim2, "%lu", &MAX_PATHDIM2);
-    pathsDim2 = malloc (MAX_PATHDIM2 * sizeof (pathDim2));
-
+    /* reading paths dim 2 */
     i = 0;
     while (fscanf (file_pathDim2, "%lu %lu %lu", &a0, &a1, &a2) != EOF) {
         (pathsDim2 + i)->a0   = a0;
@@ -103,6 +124,7 @@ int main() {
         (pathsDim2 + i)->a2   = a2;
 
         ++i;
+        if (i % onePercentageIter == 0) progressBar_PPH ();
     }
     fclose (file_pathDim2);
 
@@ -116,13 +138,18 @@ int main() {
     if (file_nodes_enumerated == NULL || file_edges_enumerated == NULL )
         printf("Problems to write the files\n");
 
+    /* writing nodes indexed by Z >= 0 */
     fprintf (file_nodes_enumerated, "%lu\n", MAX_NODES);
-    for (i = 0; i < MAX_NODES; ++i)
+    for (i = 0; i < MAX_NODES; ++i) {
         fprintf (file_nodes_enumerated, "%lu\n", i);
+
+        if (i % onePercentageIter == 0) progressBar_PPH ();
+    }
 
     fclose (file_nodes_enumerated);
 
 
+    /* writing edges indexed by Z >= 0*/
     fprintf (file_edges_enumerated,    "%lu\n", MAX_EDGES);
     fprintf (file_pathDim1_enumerated, "%lu\n", MAX_EDGES);
     for (i = 0; i < MAX_EDGES; ++i) {
@@ -139,11 +166,14 @@ int main() {
         fprintf (file_pathDim1_enumerated,
                  "%lu\t%lu\n",
                  from, to);
+
+        if (i % onePercentageIter == 0) progressBar_PPH ();
     }
     fclose (file_edges_enumerated);
     fclose (file_pathDim1_enumerated);
 
 
+    /* writing paths dim 2 indexed by Z >= 0*/
     fprintf (file_pathDim2_enumerated, "%lu\n", MAX_PATHDIM2);
     for (i = 0; i < MAX_PATHDIM2; ++i) {
         for (b0 = 0; b0 < MAX_NODES; ++b0)
@@ -158,6 +188,8 @@ int main() {
         fprintf (file_pathDim2_enumerated,
                  "%lu\t%lu\t%lu\n",
                  b0, b1, b2);
+
+        if (i % onePercentageIter == 0) progressBar_PPH ();
     }
     fclose (file_pathDim2_enumerated);
 
