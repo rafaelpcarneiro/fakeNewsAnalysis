@@ -47,42 +47,23 @@ CREATE TABLE paths_xy_SAMPLE (
 -- Take a sample size equal to 40% of the numberOfEdges
 INSERT INTO aSample_edges
 SELECT 
-    L.from_author_tweet_id,
-    L.to_author_tweet_id,
-    L.path_distance,        -- variable name choosen to be consistent with old definitions
-    R.weight
+    from_author_tweet_id,
+    to_author_tweet_id,
+    path_distance,        -- variable name choosen to be consistent with old definitions
+    AVG (strftime('%s', (SELECT x.created_at FROM tweet AS x WHERE x.tweet_id = to_tweet_id)) -
+         strftime('%s', (SELECT y.created_at FROM tweet AS y WHERE y.tweet_id = from_tweet_id))
+    ) AS weight
 FROM 
-    (SELECT DISTINCT
-        from_author_tweet_id,
-        to_author_tweet_id,
-        path_distance
-     FROM 
-        paths_xy
-     WHERE
-        from_author_tweet_id != -1
-        AND
-        from_author_tweet_id != to_author_tweet_id
-        AND
-        path_distance = 1) AS L
-JOIN
-    (SELECT 
-        from_author_tweet_id,
-        to_author_tweet_id,
-        COUNT(*) AS weight            -- weight set as the influence of a user
-     FROM
-        paths_xy
-     WHERE
-        from_author_tweet_id != -1
-        AND
-        from_author_tweet_id != to_author_tweet_id
-        AND
-        path_distance = 1
-     GROUP BY
-        from_author_tweet_id, to_author_tweet_id) AS R
-ON 
-        L.from_author_tweet_id = R.from_author_tweet_id
-        AND
-        L.to_author_tweet_id   = R.to_author_tweet_id
+    paths_xy
+WHERE
+    from_author_tweet_id != -1
+    AND
+    from_author_tweet_id != to_author_tweet_id
+    AND
+    path_distance = 1
+GROUP BY
+    from_author_tweet_id,
+    to_author_tweet_id
 ORDER BY
     random()
 LIMIT
