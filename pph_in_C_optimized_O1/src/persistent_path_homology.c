@@ -11,6 +11,9 @@
 
 #define INFINITE -1
 
+#define PPH0_FILE "data/pph0.txt"
+#define PPH1_FILE "data/pph1.txt"
+
 Pers *alloc_Pers (dim_path pph_max) {
     dim_path i;
 
@@ -42,22 +45,28 @@ void print_all_persistent_diagrams (Pers *P) {
     Pers_interval_p *interval;
     dim_path        p;
 
-    fh = fopen ("data/pph_diagrams.txt", "w");
-    if (fh == NULL) printf ("Problems to write pph_diagrams.txt\n");
 
     for (p = 0; p <= P->pph_max; ++p) {
-        fprintf (fh, "Persistent Path Diagrams of dimension %u:\n", p);
+        if (p == 0) {
+            fh = fopen (PPH0_FILE, "w");
+            if (fh == NULL) printf ("Problems to write diagram pph0.txt\n");
+        }
+        else {
+            fh = fopen (PPH1_FILE, "w");
+            if (fh == NULL) printf ("Problems to write diagram pph1.txt\n");
+        }
+
         interval = (P->PPH_Diagrams + p)->stack;
 
         while (interval != NULL) {
-            fprintf (fh, "%6.2f,%6.2f\n",
+            fprintf (fh, "%.2f\t%.2f\n",
                      (interval->PPH_interval_dim_p)[0],
                      (interval->PPH_interval_dim_p)[1]
             );
             interval = interval->next;
         }
+        fclose (fh);
     }
-    fclose (fh);
 }
 
 
