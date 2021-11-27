@@ -11,7 +11,7 @@
 /*#define EOB 	  0*/
 
 /* Data Types {{{1  */
-typedef unsigned int node;
+typedef unsigned long int node;
 typedef unsigned int size;
 typedef unsigned int iterator;
 typedef unsigned int generation;
@@ -175,7 +175,7 @@ void fprintf_branches (branch *print_branch) {
 void printf_branches (branch *print_branch) {
 	iterator i;
 	printf("[  ");
-	for (i = 0; i <= print_branch->end_of_branch; ++i ) printf ("%u  ", print_branch->a_branch[i]);
+	for (i = 0; i <= print_branch->end_of_branch; ++i ) printf ("%lu  ", print_branch->a_branch[i]);
 	printf("]\n");
 	
 }
@@ -215,7 +215,7 @@ int main() {
 	nodes = malloc (MAX_NODES * sizeof (vertex_generation));
 
 	i = 0;
-	while (fscanf (file_nodes, "%u %u %u", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
+	while (fscanf (file_nodes, "%lu %u %u", &node_tmp, &generation_tmp, &amount_of_sons) != EOF) {
 		(nodes + i)->vertex      = node_tmp;
 		(nodes + i)->gen         = generation_tmp;
 		(nodes + i)->amount_sons = amount_of_sons;
@@ -228,7 +228,7 @@ int main() {
 	edges = malloc (MAX_EDGES * sizeof (edge_generation));
 
 	i = 0;
-	while (fscanf (file_edges, "%u %u %u", &from_node_A, &to_node_B, &weight) != EOF) {
+	while (fscanf (file_edges, "%lu %lu %u", &from_node_A, &to_node_B, &weight) != EOF) {
 		(edges + i)->from     = from_node_A;
 		(edges + i)->to       = to_node_B;
 		(edges + i)->weight   = weight;
