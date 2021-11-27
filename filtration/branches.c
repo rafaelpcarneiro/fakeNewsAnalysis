@@ -1,7 +1,6 @@
 /* vim: foldmethod=marker: set ts=4: set expandtab:
  */
 
-/*|--- Includes and defines {{{1*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -10,9 +9,8 @@
 
 /* EOF == end of ~~~ branch NOT NECESSARY ANY MORE */
 /*#define EOB 	  0*/
-/*END Includes and defines 1}}}*/
 
-/*|--- Data Types {{{1 */
+/* Data Types {{{1  */
 typedef unsigned int node;
 typedef unsigned int size;
 typedef unsigned int iterator;
@@ -37,15 +35,14 @@ typedef struct {
 	unsigned int end_of_branch;
 
 } branch;
+/* END Data Types 1}}}  */
 
-/* END Data Types 1}}} */
-
-/*|--- FUNCTIONS {{{1 */
+/*================================ FUNCTIONS =================================*/
 
 /* add_all_branches down bellow doens't handle the problem as I wanted. 
  * The version2 is better and solve it nicely
  */
-/*|--- add_all_branches {{{2 */
+/*|--- add_all_branches {{{1 */
 /*
 iterator add_all_branches (branch 	                 *_branches,
 		               vertex_generation *_nodes,
@@ -101,9 +98,9 @@ iterator add_all_branches (branch 	                 *_branches,
 	return start_branch;
 }
 */
-/* END add_all_branches 2}}} */
+/* END add_all_branches 1}}} */
 
-/*|--- add_all_branches_version2 {{{2 */
+/*|--- add_all_branches_version2 {{{1 */
 branch *add_all_branches_version2 (vertex_generation *look_at_these_nodes,
 				          		   edge_generation   *look_at_these_edges,
 						  		   iterator          from) {
@@ -150,9 +147,9 @@ branch *add_all_branches_version2 (vertex_generation *look_at_these_nodes,
 	}
 	return NULL;
 }
-/* END add_all_branches_version2 2}}} */
+/* END add_all_branches_version2 1}}} */
  
-/*|--- fprintf_branches {{{2*/
+/*|--- fprintf_branches {{{1*/
 /* I AM NOT USING THIS FUNCTION
 void fprintf_branches (branch *print_branch) {
 	
@@ -172,9 +169,9 @@ void fprintf_branches (branch *print_branch) {
 	fclose (file);
 }
 */
-/* END fprintf_branches 2}}} */
+/* END fprintf_branches 1}}} */
 
-/*|--- printf_branches {{{2*/
+/*|--- printf_branches {{{1*/
 void printf_branches (branch *print_branch) {
 	iterator i;
 	printf("[  ");
@@ -182,14 +179,13 @@ void printf_branches (branch *print_branch) {
 	printf("]\n");
 	
 }
-/* END fprintf_branches 2}}} */
+/* END fprintf_branches 1}}} */
  
-/*|--- END FUNCTIONS 1}}} */
 
-/*|--- MAIN {{{1*/
+/*=================================== MAIN ===================================*/
 int main() {
 	
-	/*|--- Variable Declaration {{{2*/
+	/*|--- Variable Declaration {{{1*/
 	FILE              	      *file_nodes, *file_edges;
 
 	pid_t					  root_pid;
@@ -207,9 +203,9 @@ int main() {
 	
 	unsigned int 		      amount_of_sons, weight;
 
-	/*END Variable Declaration 2}}}*/
+	/*END Variable Declaration 1}}}*/
 
-	/*|--- Reading all nodes and edges {{{2*/
+	/*|--- Reading all nodes and edges {{{1*/
 	file_nodes = fopen ("nodes.txt", "r");
 	file_edges = fopen ("edges.txt", "r");
 
@@ -240,9 +236,9 @@ int main() {
 		++i;
 	}
 	fclose (file_edges);
-	/*END Reading all nodes and edges 2}}}*/
+	/*END Reading all nodes and edges 1}}}*/
 
-	/*|--- Storing all branches {{{2*/
+	/*|--- Storing all branches {{{1*/
 	i              = 0;
 	root_pid	   = getpid ();
 	while ((nodes+i)->gen == 0) {
@@ -257,8 +253,7 @@ int main() {
 		}
 		++i;
 	}
-	/*END Storing all branches 2}}}*/
+	/*END Storing all branches 1}}}*/
 
 	return 0;
 }
-/*END MAIN 1}}}*/
