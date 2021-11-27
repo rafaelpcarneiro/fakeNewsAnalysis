@@ -174,9 +174,10 @@ void fprintf_branches (branch *print_branch) {
 /*|--- printf_branches {{{1*/
 void printf_branches (branch *print_branch) {
 	iterator i;
-	printf("[  ");
+	/*printf("[  ");*/
 	for (i = 0; i <= print_branch->end_of_branch; ++i ) printf ("%lu  ", print_branch->a_branch[i]);
-	printf("]\n");
+	/*printf("]\n");*/
+	printf("\n");
 	
 }
 /* END fprintf_branches 1}}} */
