@@ -18,7 +18,7 @@ grep -o -P "^\d*" longChats.txt > longChatsB.txt
 # Now that we have the roots we will look for the users that have created 
 # these messages. Then we will store all tweet_ids connected with these accounts
 # {{{1
-longChatSize=`wc -l longChatsB.txt`
+longChatSize=`wc -l longChatsB.txt| grep -o -P "^\d*"`
 i=1
 
 echo "CREATE VIEW longChats AS" >> longChats.sql
@@ -37,7 +37,7 @@ while IFS= read -r line; do
         echo "tweet_id = $line"
         echo "OR"
     fi
-    ((i++))
+    i=$((i+1))
 done < longChatsB.txt >> longChats.sql
 
 echo "AND"                                               >> longChats.sql
@@ -72,7 +72,7 @@ grep -o -P "\d*" longChatsTweetsB.txt > longChatsTweets.txt
 
 # Finally, we just need to delete from paths_xy all edges containing these tweet ids
 # {{{1
-longChatSize=`wc -l longChatsTweets.txt`
+longChatSize=`wc -l longChatsTweets.txt| grep -o -P "^\d*"`
 i=1
 
 echo "DELETE"       >> tweetsToIgnore.sql
@@ -85,7 +85,7 @@ while IFS= read -r line; do
     else
         echo "  (from_tweet_id = $line OR to_tweet_id = $line) OR"
     fi
-    ((i++))
+    i=$((i+1))
 done < longChatsTweets.txt >> tweetsToIgnore.sql
 # 1}}}
 
