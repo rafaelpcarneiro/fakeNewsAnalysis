@@ -76,13 +76,13 @@ while IFS= read -r line; do
         echo "DELETE FROM paths_xy WHERE  (from_tweet_id = $line OR to_tweet_id = $line);"
 done < longChatsTweets.txt >> tweetsToIgnore.sql
 
-#sqlite3 twitter.db < tweetsToIgnore.sql
+sqlite3 twitter.db < tweetsToIgnore.sql
 # 1}}}
 
-# Cleaning all mess
-#for file in *.txt; do
-#    if [ $file != "allbranches.txt" ]; then
-#        rm $file
-#    fi
-#done
-#rm *.sql
+# Cleaning all the mess
+for file in *.txt; do
+    if [ $file != "allbranches.txt" ]; then
+        rm $file
+    fi
+done
+rm *.sql
