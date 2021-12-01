@@ -21,12 +21,12 @@ grep -o -P "^\d*" longChats.txt > longChatsB.txt
 longChatSize=`wc -l longChatsB.txt`
 i=1
 
-echo "CREATE VIEW longChats AS" > longChats.sql
-echo "SELECT "                  > longChats.sql
-echo "    author_tweet_id"      > longChats.sql
-echo "FROM"                     > longChats.sql
-echo "    tweet"                > longChats.sql
-echo "WHERE"                    > longChats.sql
+echo "CREATE VIEW longChats AS" >> longChats.sql
+echo "SELECT "                  >> longChats.sql
+echo "    author_tweet_id"      >> longChats.sql
+echo "FROM"                     >> longChats.sql
+echo "    tweet"                >> longChats.sql
+echo "WHERE"                    >> longChats.sql
 (while IFS= read -r line; do
     if [ $i -eq 1 ]; then
         echo "(tweet_id = $line"
@@ -38,23 +38,23 @@ echo "WHERE"                    > longChats.sql
         echo "OR"
     fi
     ((i++))
-done < longChatsB.txt) > longChats.sql
+done < longChatsB.txt) >> longChats.sql
 
-echo "AND"                                               > longChats.sql
-echo "(tweet_type = \"simple_message\""                  > longChats.sql
-echo "OR"                                                > longChats.sql
-echo "tweet_type = \"quote_plus_simple_message\");"      > longChats.sql
+echo "AND"                                               >> longChats.sql
+echo "(tweet_type = \"simple_message\""                  >> longChats.sql
+echo "OR"                                                >> longChats.sql
+echo "tweet_type = \"quote_plus_simple_message\");"      >> longChats.sql
 
-echo ".separator \"  \""                                 > longChats.sql
-echo ".output \"longChatsTweets.txt\""                   > longChats.sql
-echo "SELECT"                                            > longChats.sql
-echo "    tweet_id"                                      > longChats.sql
-echo "FROM"                                              > longChats.sql
-echo "    tweet"                                         > longChats.sql
-echo "WHERE"                                             > longChats.sql
-echo "    author_tweet_id IN (SELECT * FROM longChats);" > longChats.sql
-echo ""                                                  > longChats.sql
-echo "DROP VIEW longChats;"                              > longChats.sql
+echo ".separator \"  \""                                 >> longChats.sql
+echo ".output \"longChatsTweets.txt\""                   >> longChats.sql
+echo "SELECT"                                            >> longChats.sql
+echo "    tweet_id"                                      >> longChats.sql
+echo "FROM"                                              >> longChats.sql
+echo "    tweet"                                         >> longChats.sql
+echo "WHERE"                                             >> longChats.sql
+echo "    author_tweet_id IN (SELECT * FROM longChats);" >> longChats.sql
+echo ""                                                  >> longChats.sql
+echo "DROP VIEW longChats;"                              >> longChats.sql
 
 sqlite3 twitter.db < longChats.sql
 # 1}}}
@@ -75,10 +75,10 @@ grep -o -P "\d*" longChatsTweetsB.txt > longChatsTweets.txt
 longChatSize=`wc -l longChatsTweets.txt`
 i=1
 
-echo "DELETE"       > tweetsToIgnore.sql
-echo "FROM "        > tweetsToIgnore.sql
-echo "    paths_xy" > tweetsToIgnore.sql
-echo "WHERE"        > tweetsToIgnore.sql
+echo "DELETE"       >> tweetsToIgnore.sql
+echo "FROM "        >> tweetsToIgnore.sql
+echo "    paths_xy" >> tweetsToIgnore.sql
+echo "WHERE"        >> tweetsToIgnore.sql
 (while IFS= read -r line; do
     if [ $i -eq $longChatSize ]; then
         echo "  (from_tweet_id = $line OR to_tweet_id = $line);"
@@ -86,7 +86,7 @@ echo "WHERE"        > tweetsToIgnore.sql
         echo "  (from_tweet_id = $line OR to_tweet_id = $line) OR"
     fi
     ((i++))
-done < longChatsTweets.txt) > tweetsToIgnore.sql
+done < longChatsTweets.txt) >> tweetsToIgnore.sql
 # 1}}}
 
 # Cleaning all mess
