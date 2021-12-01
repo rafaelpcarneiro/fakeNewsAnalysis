@@ -81,7 +81,7 @@ sqlite3 twitter.db < tweetsToIgnore.sql
 
 # Cleaning all the mess
 for file in *.txt; do
-    if [ $file != "allbranches.txt" ]; then
+    if [ $file != "allBranches.txt" ]; then
         rm $file
     fi
 done
