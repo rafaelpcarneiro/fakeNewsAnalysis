@@ -1,10 +1,10 @@
 # vim: foldmethod=marker:
 echo "Considering that a message branch [a b c d e] has size 5."
 echo "What size of message branches should I take in consideration"
-echo "in order to remove it from the graph"
+echo "to remove it from the graph"
 echo ""
 echo "Give a size number N and I will remove all individuals that are roots"
-echo "of messages branches of size greater or equal to N"
+echo "of message branches whose size are greater or equal than N"
 echo ""
 echo -n "Value N: "
 read answer
@@ -72,21 +72,11 @@ grep -o -P "\d*" longChatsTweetsB.txt > longChatsTweets.txt
 
 # Finally, we just need to delete from paths_xy all edges containing these tweet ids
 # {{{1
-longChatSize=`wc -l longChatsTweets.txt| grep -o -P "^\d*"`
-i=1
-
-echo "DELETE"       >> tweetsToIgnore.sql
-echo "FROM "        >> tweetsToIgnore.sql
-echo "    paths_xy" >> tweetsToIgnore.sql
-echo "WHERE"        >> tweetsToIgnore.sql
 while IFS= read -r line; do
-    if [ $i -eq $longChatSize ]; then
-        echo "  (from_tweet_id = $line OR to_tweet_id = $line);"
-    else
-        echo "  (from_tweet_id = $line OR to_tweet_id = $line) OR"
-    fi
-    i=$((i+1))
+        echo "DELETE FROM paths_xy WHERE  (from_tweet_id = $line OR to_tweet_id = $line);"
 done < longChatsTweets.txt >> tweetsToIgnore.sql
+
+#sqlite3 twitter.db < tweetsToIgnore.sql
 # 1}}}
 
 # Cleaning all mess
