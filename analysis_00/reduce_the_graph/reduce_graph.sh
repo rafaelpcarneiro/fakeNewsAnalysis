@@ -27,7 +27,7 @@ echo "    author_tweet_id"      >> longChats.sql
 echo "FROM"                     >> longChats.sql
 echo "    tweet"                >> longChats.sql
 echo "WHERE"                    >> longChats.sql
-(while IFS= read -r line; do
+while IFS= read -r line; do
     if [ $i -eq 1 ]; then
         echo "(tweet_id = $line"
         echo "OR"
@@ -38,7 +38,7 @@ echo "WHERE"                    >> longChats.sql
         echo "OR"
     fi
     ((i++))
-done < longChatsB.txt) >> longChats.sql
+done < longChatsB.txt >> longChats.sql
 
 echo "AND"                                               >> longChats.sql
 echo "(tweet_type = \"simple_message\""                  >> longChats.sql
@@ -79,14 +79,14 @@ echo "DELETE"       >> tweetsToIgnore.sql
 echo "FROM "        >> tweetsToIgnore.sql
 echo "    paths_xy" >> tweetsToIgnore.sql
 echo "WHERE"        >> tweetsToIgnore.sql
-(while IFS= read -r line; do
+while IFS= read -r line; do
     if [ $i -eq $longChatSize ]; then
         echo "  (from_tweet_id = $line OR to_tweet_id = $line);"
     else
         echo "  (from_tweet_id = $line OR to_tweet_id = $line) OR"
     fi
     ((i++))
-done < longChatsTweets.txt) >> tweetsToIgnore.sql
+done < longChatsTweets.txt >> tweetsToIgnore.sql
 # 1}}}
 
 # Cleaning all mess
