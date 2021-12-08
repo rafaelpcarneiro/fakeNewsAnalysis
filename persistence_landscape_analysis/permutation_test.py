@@ -77,10 +77,11 @@ pvalue : float = 0
 for test_iter in range(PERM_TEST_ITER):
 	
 	# shuffle all persistence landscapes
-	np.random.shuffle (sh)
+	functional_indexes = np.arange (2*SAMPLE_SIZE)
+	np.random.shuffle (functional_indexes)
 	
-	shG = sh[:SAMPLE_SIZE].mean (axis = 0)
-	shF = sh[SAMPLE_SIZE:].mean (axis = 0)
+	shG = sh[functional_indexes[:SAMPLE_SIZE]].mean (axis = 0)
+	shF = sh[functional_indexes[SAMPLE_SIZE:]].mean (axis = 0)
 	
 	sh_diff = np.abs(shG - shF).max()
 	if (sh_diff >= diff_value_to_compare):
@@ -143,10 +144,11 @@ pvalue : float = 0
 for test_iter in range(PERM_TEST_ITER):
 	
 	# shuffle all persistence landscapes
-	np.random.shuffle (sh)
+	functional_indexes = np.arange (2*SAMPLE_SIZE)
+	np.random.shuffle (functional_indexes)
 	
-	shG = sh[:SAMPLE_SIZE].mean (axis = 0)
-	shF = sh[SAMPLE_SIZE:].mean (axis = 0)
+	shG = sh[functional_indexes[:SAMPLE_SIZE]].mean (axis = 0)
+	shF = sh[functional_indexes[SAMPLE_SIZE:]].mean (axis = 0)
 	
 	sh_diff = np.abs(shG - shF).max()
 	if (sh_diff >= diff_value_to_compare):
