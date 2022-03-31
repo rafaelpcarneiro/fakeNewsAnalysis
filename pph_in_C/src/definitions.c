@@ -19,33 +19,3 @@ boolean is_this_path_a_regular_path (regular_path path, dim_path path_dim) {
 
     return TRUE;
 }
-
-boolean is_this_vector_zero (vector x, dim_vector_space dimVS) {
-    unsigned int i;
-
-    for (i = 0; i < dimVS; ++i)
-        if (x[i] != 0) return FALSE;
-    return TRUE;
-}
-
-void sum_these_vectors (vector a, vector b, dim_vector_space dim) {
-    /*the resulting sum will be stored at the pointer a*/
-    /*Remember that we are working with the field Z/2Z*/
-    unsigned int i;
-
-    for (i = 0; i < dim; ++i)
-        a[i] = (a[i] + b[i]) % 2;
-}
-
-
-void print_vec_nicely (vector u, dim_vector_space dim, char *vec_name) {
-    unsigned int i;
-
-    if (u != NULL) {
-        printf ("%s =", vec_name);
-        for (i = 0; i < dim; ++i)
-            if (u[i] == 1) printf (" v_%d +", i);
-        printf ("\n\n");
-    }
-    else printf ("%s = 0\n", vec_name);
-}
