@@ -4,10 +4,11 @@ syntax case match
 syntax keyword myConditionals if else
 syntax keyword myReturn       return
 syntax keyword myLoop         while for do
-syntax keyword myTypes	      boolean vertex_index base_index dim_path dim_base regular_path vector
-syntax keyword myTypes	      vector_index dim_vector_space
+syntax keyword myTypes	      boolean vertex_index vectorBasis_index 
+syntax keyword myTypes	      dim_path dim_base regular_path vector
+syntax keyword myTypes	      vector_index dim_vector_space 
 syntax keyword myTypes	      tuple_regular_path_double base collection_of_basis
-syntax keyword myTypes 	      T_p_tuple T_p_tuple_collection T_p
+syntax keyword myTypes 	      T_p_tuple T_p_tuple_collection T_p vector_indexes
 syntax keyword myTypes	      Pers_interval_p root Pers
 
 syntax keyword myFunc1        are_these_regular_paths_the_same 
@@ -54,17 +55,17 @@ syntax keyword myValues       TRUE FALSE MARKED NOT_MARKED EMPTY NOT_EMPTY SORTE
 
 " COLORS
 hi myConditionals cterm=italic,bold ctermfg=darkyellow
-hi myReturn	  cterm=bold        ctermfg=red
-hi myLoop  	  cterm=bold,italic ctermfg=magenta
-hi myTypes 	  cterm=bold        ctermfg=cyan
-hi myFunc1 	  cterm=italic
-hi myFunc2 	  cterm=italic
-hi myFunc3 	  cterm=italic
-hi myFunc4 	  cterm=italic
-hi myValues	                    ctermfg=darkgray
-hi myWarnings     cterm=bold        ctermfg=black	ctermbg=yellow
+hi myReturn	      cterm=bold        ctermfg=red
+hi myLoop  	      cterm=bold,italic ctermfg=magenta
+hi myTypes 	      cterm=bold        ctermfg=cyan
+hi myFunc1 	      cterm=italic
+hi myFunc2 	      cterm=italic
+hi myFunc3 	      cterm=italic
+hi myFunc4 	      cterm=italic
+hi myValues	                        ctermfg=darkgray
+hi myWarnings     cterm=bold        ctermfg=black	    ctermbg=yellow
 
-hi Comment cterm=bold ctermfg=Green
-hi Constant ctermfg=darkgray
-hi cRepeat cterm=bold ctermfg=brown
-hi cType cterm=bold ctermfg=cyan
+hi Comment        cterm=bold        ctermfg=Green
+hi Constant                         ctermfg=darkgray
+hi cRepeat        cterm=bold        ctermfg=brown
+hi cType          cterm=bold        ctermfg=cyan

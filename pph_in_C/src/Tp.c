@@ -43,15 +43,15 @@ T_p *alloc_T_p (collection_of_basis *B) {
 
 boolean is_T_p_pathDim_i_vector_j_empty (T_p * Tp,
                                          dim_path dim,
-                                         vector_index index) {
+                                         vector_indexes index) {
     return ((Tp->all_Tp + dim)->array_of_T_p_tuple + index)->is_empty; /*returns EMPTY or NOT_EMPTY*/
 }
 
 
 void set_T_p_pathDim_i_vector_j (T_p *Tp,
                                  dim_path dim,
-                                 vector_index index,
-                                 vector u,
+                                 vector_indexes index,
+                                 vector *u,
                                  double et) {
 
     ((Tp->all_Tp + dim)->array_of_T_p_tuple + index)->path_vector = u;
@@ -60,11 +60,11 @@ void set_T_p_pathDim_i_vector_j (T_p *Tp,
 
 }
 
-vector get_Tp_vector_of_pathDim_i_index_j (T_p *Tp, dim_path dim_i, vector_index index_j) {
+vector *get_Tp_vector_of_pathDim_i_index_j (T_p *Tp, dim_path dim_i, vector_indexes index_j) {
     return ((Tp->all_Tp + dim_i)->array_of_T_p_tuple + index_j)->path_vector;
 }
 
-double get_Tp_et_of_pathDim_i_index_j (T_p *Tp, dim_path dim_i, vector_index index_j) {
+double get_Tp_et_of_pathDim_i_index_j (T_p *Tp, dim_path dim_i, vector_indexes index_j) {
     return ((Tp->all_Tp + dim_i)->array_of_T_p_tuple + index_j)->entry_time;
 }
 
@@ -74,7 +74,7 @@ void print_Tp (T_p *Tp) {
     for (i = 0; i <= Tp->max_of_Tp; ++i){
         printf ("Regular path dim = %u\n", i);
         for (j = 0; j < (Tp->all_Tp + i)->size; ++j){
-            print_vec_nicely (get_Tp_vector_of_pathDim_i_index_j (Tp, i, j),(Tp->all_Tp + i)->size, "Tp");       
+            print_vec_nicely (get_Tp_vector_of_pathDim_i_index_j (Tp, i, j), "Tp");       
         }
     }
 }
