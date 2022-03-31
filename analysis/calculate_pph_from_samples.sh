@@ -1,21 +1,30 @@
-echo -n "Running these calculations from which cpu: 0 or 1? "
-read answer
+# cpu_core = 0, 1, 2, 3
+cpu_core=$1
+loopStart=$((cpu_core * 300))
+loopEnd=$((loopstart + 300))
 
-cd filtration_samples/
-if [ $answer -eq 0 ]; then
-    for i in {0..49};
+for graph in mariliaMendonca football f1 mitoVisitaPutin onu politcsAR
+do
+    cp $graph/twitter.db -t filtration_samples/ 
+
+    cd $graph/
+    dateStart=`head -n 1 dates.txt`
+    dateEnd=`tail -n 1 dates.txt`
+    sampleSize=30
+
+    cd ../filtration_samples/
+
+    #for i in {0..299};
+    i=$loopStart
+    while [ $i -lt $loopEnd ]
     do
-        sh sampling_from_twitter_script.sh
+        sh sampling_from_twitter_script.sh $dateStart $dateEnd $sampleSize
         ./pph_prog
         file="sample_""$i"
-        mv data/ -t ../$file
+        mv data/ -t ..$graph/$file
+
+        i=$((i+1))
     done
-else
-    for i in {50..99};
-    do
-        sh sampling_from_twitter_script.sh
-        ./pph_prog
-        file="sample_""$i"
-        mv data/ -t ../$file
-    done
-fi
+    cd ..
+done
+
