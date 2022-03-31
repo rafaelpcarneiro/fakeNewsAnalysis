@@ -7,9 +7,9 @@ The first version of the pph program
 ## pph_in_C_v02
 
 The second version of pph. Now the filtration is loaded 
-from an external file and not more created by taking all combinations.
-The regular paths are created previously by taking cartesian products
-on the relational database supported by sqlite3
+from an external file and it is not created more by creating the set of all
+possible combinations.
+The regular paths now are created before pph is called.
 
 ## pph_in_C_optimized_O1
 
