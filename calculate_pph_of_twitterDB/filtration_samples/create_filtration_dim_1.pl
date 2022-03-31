@@ -33,10 +33,9 @@ my $sql_how_many_inserted;
 
 
 # Declaring SQL commands to be executed generating all possible paths
-# In another words, SQL commands that will allow us to walk on the graph
 
-# NOTE INSERT OR IGNORE if highly important so we won't get ourselves
-# into loops inside the graph. PRIMARY KEYS are here to save us =)
+# INSERT OR IGNORE are highly important so we won't get ourselves stuck
+# into loops while walking on the graph. PRIMARY KEYS are here to save us =)
 
 $sql_insert = $dbh->prepare (
                 "INSERT OR IGNORE INTO paths_xy_SAMPLE

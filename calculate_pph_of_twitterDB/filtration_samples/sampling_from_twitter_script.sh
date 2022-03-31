@@ -2,16 +2,20 @@
 
 fileToCompile="enumerate_nodes_edges_from_filtration_to_integers.c"
 
-echo "-----------------------------------------------------------"
-echo "   This script is responsible to take a sample from the"
-echo "   User interaction graph and to generate its filtration"
-echo ""
-echo "Parameter: Sample equivalent to 30% of the whole database"
-echo "-----------------------------------------------------------"
-echo ""
+#echo "-----------------------------------------------------------"
+#echo "   This script is responsible to take a sample from the"
+#echo "   User interaction graph and to generate its filtration"
+#echo ""
+#echo "Parameter: Sample equivalent to 30% of the whole database"
+#echo "-----------------------------------------------------------"
+#echo ""
+#
+#echo "Weight matrix used to calculate the distance:"
+#echo "    The expected time that users take to answer each other"
+#echo ""
 
-echo "Weight matrix used to calculate the distance:"
-echo "    The expected time that users take to answer each other"
+echo ""
+echo "Taking a sample of twitter.db to calculate the persistent homology..."
 echo ""
 
 # Firstly, we must set the sample database
@@ -42,14 +46,14 @@ rm ${fileToCompile%.c}
 
 sleep 5
 
-echo ""
-echo "=== RESULTS ================================================================"
-echo " All calculations are done and all files regarding the filtration"
-echo " are stored inside data/"
-echo ""
-echo " Obs: the file data/sample.db is the database containing the sample obtained"
-echo " as well its filtration"
-echo "============================================================================"
+#echo ""
+#echo "=== RESULTS ================================================================"
+#echo " All calculations are done and all files regarding the filtration"
+#echo " are stored inside data/"
+#echo ""
+#echo " Obs: the file data/sample.db is the database containing the sample obtained"
+#echo " as well its filtration"
+#echo "============================================================================"
 
 [ -d 'data/' ] || mkdir data
 [ -d 'data/' ] && rm    data/* 2> /dev/null
