@@ -1,6 +1,4 @@
--- The sample will be taken from all tweets produced
--- between the day 13 and 14 from the tenth month - 2021
--- That is : tweet in [2021-10-13 -- 2021-10-14]
+-- The sample will be taken from all tweets produced in one day
 
 CREATE VIEW numberOfEdges AS
 SELECT 
@@ -58,7 +56,7 @@ CREATE TABLE paths_xy_SAMPLE (
 
 );
 
--- Take a sample size equal to 30% of the numberOfEdges
+-- Take a sample size equal to 20% of the numberOfEdges
 INSERT INTO aSample_edges
 SELECT 
     from_author_tweet_id,
@@ -93,7 +91,7 @@ GROUP BY
 ORDER BY
     random()
 LIMIT
-    CAST(.30 * (SELECT * FROM numberOfEdges) AS INT);
+    CAST(.20 * (SELECT * FROM numberOfEdges) AS INT);
 
 -- Get the table of nodes from the sampled edges
 INSERT INTO aSample_nodes
