@@ -75,12 +75,11 @@ void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B, graphWeightLi
 
     /* This function was adapted to work with the two threads below */
     pthread_t dim1_threadID;
-    pthread_t dim2_threadID;
 
     pthread_arguments myArgs;
 
-    FILE         *paths_xy, *paths_xyz;
-    unsigned int size1, size2;
+    FILE         *paths_xy;
+    unsigned int size1;
 
 
     paths_xy  = fopen (FILE_REGULAR_PATHS_DIM_1, "r");
@@ -91,6 +90,7 @@ void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B, graphWeightLi
     fscanf (paths_xy, "%u", &size1);
     fclose (paths_xy);
 
+    /*
     paths_xyz = fopen (FILE_REGULAR_PATHS_DIM_2, "r");
     if (paths_xyz == NULL) {
         printf ("problems trying to open the file containing regular"
@@ -98,10 +98,14 @@ void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B, graphWeightLi
     }
     fscanf (paths_xyz, "%u", &size2);
     fclose (paths_xyz);
+    */
 
 
     myArgs.B                        = B;
+    /*
     myArgs.size_dim1_plus_size_dim2 = size1 + size2;
+    */
+    myArgs.size_dim1_plus_size_dim2 = size1;
     myArgs.W                        = W;
 
 
@@ -115,13 +119,15 @@ void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B, graphWeightLi
                     &pthread_storing_all_regular_paths_dim1,
                     &myArgs);
 
+    /*
     pthread_create (&dim2_threadID,
                     NULL,
                     &pthread_storing_all_regular_paths_dim2,
                     &myArgs);
+    */
 
     pthread_join (dim1_threadID, NULL);
-    pthread_join (dim2_threadID, NULL);
+    /*pthread_join (dim2_threadID, NULL);*/
 
     printf("\n\n");
 } /*  Tested Ok */

@@ -20,7 +20,7 @@ T_p *alloc_T_p (collection_of_basis *B) {
     /*Tp->all_Tp    = malloc (B->max_of_basis * sizeof (T_p_tuple_collection));*/
     /*Tp->max_of_Tp = B->max_of_basis;*/
     Tp->all_Tp    = malloc (2 * sizeof (T_p_tuple_collection));
-    Tp->max_of_Tp = 1;
+    Tp->max_of_Tp = 0;
 
     for (i = 0; i <= Tp->max_of_Tp; ++i) {
         Tp_i = Tp->all_Tp + i;

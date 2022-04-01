@@ -372,22 +372,9 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     
     /* printf_basis (B); */
 
-    printf("Env variables summary      status:\n");
-    printf("----------------------------------------------------\n");
-    printf("Basis         (*B)         allocated in MEM     - OK\n");
-    printf("Basis         (*B)         marked               - OK\n");
-    printf("Basis         (*B)         sorted by allow time - OK\n");
-    printf("PPH diagram   (*PPH)       allocated in MEM     - OK\n");
-    printf("Weight Matrix (*W)         allocated in MEM     - OK\n");
-    printf("T_p structure (*T_p)       allocated in MEM     - OK\n");
-    printf("Thread Args   (*pthread)   allocated in MEM     - OK\n\n");
-
-    sleep  (5);
-    printf ("Now, we are ready to calculate the persistent path homology\n");
-    printf ("\n\n");
-    sleep  (1);
 
     /*Now lets start the algorithm*/
+    printf ("\n\n");
     printf("PPH diagrams\n");
     printf("progress: ");
 
@@ -396,10 +383,12 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
                     &pthread_loop_dim0_dim1, 
                     &pthreadArgs);
 
+    /*
     pthread_create (&thread_dim1_dim2, 
                     NULL, 
                     &pthread_loop_dim1_dim2, 
                     &pthreadArgs);
+    */
 
     pthread_join (thread_dim0_dim1, NULL); 
 
@@ -408,15 +397,19 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
                     &pthread_loop_dim0_dim0, 
                     &pthreadArgs);
 
+    /*
     pthread_join (thread_dim1_dim2, NULL); 
+    */
     pthread_join (thread_dim0_dim0, NULL); 
 
+    /*
     pthread_create (&thread_dim1_dim1, 
                     NULL, 
                     &pthread_loop_dim1_dim1, 
                     &pthreadArgs);
 
     pthread_join (thread_dim1_dim1, NULL); 
+    */
 
     printf("\n\n");
     return PPH;
