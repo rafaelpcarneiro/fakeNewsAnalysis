@@ -6,19 +6,19 @@ loopEnd=$((loopstart + 300))
 cd ../pph_in_C
 make
 make clean
-mv pph_prog -t ../analysis/filtration_samples
+mv pph_prog -t "../analysis/filtration_samples$(cpu_core)"
 cd ../analysis/
 
 for graph in mariliaMendonca football f1 mitoVisitaPutin onu politcsAR
 do
-    cp $graph/twitter.db -t filtration_samples/ 
+    cp $graph/twitter.db -t "filtration_samples$(cpu_core)/" 
 
     cd $graph/
     dateStart=`head -n 1 dates.txt`
     dateEnd=`tail -n 1 dates.txt`
     sampleSize=20
 
-    cd ../filtration_samples/
+    cd "../filtration_samples$(cpu_core)/"
 
     #for i in {0..299};
     i=$loopStart
