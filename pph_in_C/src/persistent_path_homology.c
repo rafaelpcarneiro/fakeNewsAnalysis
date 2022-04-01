@@ -342,7 +342,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     pthread_loop_args   pthreadArgs;
 
     /*Setting the environment*/
-    printf ("Allocating the Environment variables\n\n");
+    printf ("\n\nAllocating the Environment variables\n\n");
     PPH = alloc_Pers (pph_max_dim);
 
     /* initializing the network weight env */
@@ -352,14 +352,11 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     printf ("Info about all basis allocated:\n");
     printf ("===============================\n\n");
 
-    for (j = 0; j < 3; ++j)
+    for (j = 0; j < 2; ++j)
         printf ("The amount of regular paths of dimension %u is: %u\n",
                 (B->basis+j)->dimension_of_the_regular_path,
                 (B->basis+j)->dimension_of_the_vs_spanned_by_base
         );
-
-    printf("\n\n");
-
 
     Tp  = alloc_T_p (B);
 
@@ -376,7 +373,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
 
 
     /*Now lets start the algorithm*/
-    printf ("\n\n");
+    printf ("\n");
     printf("PPH diagrams\n");
     printf("progress: ");
 
