@@ -33,8 +33,8 @@ GROUP BY
     from_author_tweet_id,
     to_author_tweet_id;
 
-.output pathDim2.txt
-SELECT DISTINCT COUNT(*) FROM paths_xyz_SAMPLE;
-SELECT DISTINCT       *  FROM paths_xyz_SAMPLE;
+--.output pathDim2.txt
+--SELECT DISTINCT COUNT(*) FROM paths_xyz_SAMPLE;
+--SELECT DISTINCT       *  FROM paths_xyz_SAMPLE;
 
 .output stdout

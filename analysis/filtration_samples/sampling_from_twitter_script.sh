@@ -34,7 +34,7 @@ chmod 700  ${fileToCompile%.c}
 ## cleaning all directory from auxiliary files created in the meantime
 ## Also cleaning data created that is not necessary anymore
 sqlite3 twitter.db < clean_twitterDB.sql
-rm nodes.txt edges.txt pathDim2.txt
+rm nodes.txt edges.txt 
 rm ${fileToCompile%.c}
 
 
