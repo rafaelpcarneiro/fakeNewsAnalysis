@@ -27,7 +27,7 @@ do
         sh sampling_from_twitter_script.sh $dateStart $dateEnd $sampleSize
         ./pph_prog
         file="sample_""$i"
-        mv data/ -t ../$graph/$file
+        mv data/ ../$graph/$file
 
         i=$((i+1))
     done
