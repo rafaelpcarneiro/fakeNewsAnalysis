@@ -16,7 +16,7 @@ do
     cd $graph/
     dateStart=`head -n 1 dates.txt`
     dateEnd=`tail -n 1 dates.txt`
-    sampleSize=30
+    sampleSize=20
 
     cd ../filtration_samples/
 
