@@ -3,6 +3,12 @@ cpu_core=$1
 loopStart=$((cpu_core * 300))
 loopEnd=$((loopstart + 300))
 
+cd ../pph_in_C
+make
+make clean
+mv pph_prog -t ../analysis/filtration_samples
+cd ../analysis/
+
 for graph in mariliaMendonca football f1 mitoVisitaPutin onu politcsAR
 do
     cp $graph/twitter.db -t filtration_samples/ 
@@ -21,10 +27,10 @@ do
         sh sampling_from_twitter_script.sh $dateStart $dateEnd $sampleSize
         ./pph_prog
         file="sample_""$i"
-        mv data/ -t ..$graph/$file
+        mv data/ -t ../$graph/$file
 
         i=$((i+1))
     done
-    cd ..
+    cd ../
 done
 
