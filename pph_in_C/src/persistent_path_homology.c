@@ -438,9 +438,7 @@ void *pthread_loop_dim0_dim1 (void *myArgs) {
 
 
     maxNumberOfIterations = get_dimVS_of_ith_base (B, 1) +
-                             get_dimVS_of_ith_base (B, 0) +
-                             get_dimVS_of_ith_base (B, 2) +
-                             get_dimVS_of_ith_base (B, 1);
+                             get_dimVS_of_ith_base (B, 0);
 
     onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
 
@@ -496,9 +494,7 @@ void *pthread_loop_dim0_dim0 (void *myArgs) {
 
 
     maxNumberOfIterations = get_dimVS_of_ith_base (B, 1) +
-                             get_dimVS_of_ith_base (B, 0) +
-                             get_dimVS_of_ith_base (B, 2) +
-                             get_dimVS_of_ith_base (B, 1);
+                             get_dimVS_of_ith_base (B, 0);
 
     onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
 
