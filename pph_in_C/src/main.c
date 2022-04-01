@@ -19,7 +19,7 @@ int main () {
     fscanf (nodes, "%u", &network_size);
     fclose (nodes);
 
-    PPH =  ComputePPH(1, network_size);
+    PPH =  ComputePPH(0, network_size);
 
     print_all_persistent_diagrams (PPH); 
 

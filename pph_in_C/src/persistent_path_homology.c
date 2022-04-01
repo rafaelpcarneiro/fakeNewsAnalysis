@@ -334,8 +334,10 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
 
     pthread_t           thread_dim0_dim1;
     pthread_t           thread_dim0_dim0;
+    /*
     pthread_t           thread_dim1_dim2;
     pthread_t           thread_dim1_dim1;
+    */
 
     pthread_loop_args   pthreadArgs;
 
