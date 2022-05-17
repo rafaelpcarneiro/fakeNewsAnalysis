@@ -61,7 +61,7 @@ the Entity-Relation diagram below.
 
 <div align='center'>
     <img src='database/er.png'
-         width='800px'
+         width='900px'
          alt='ER diagram'
     />
 </div>
