@@ -27,6 +27,7 @@ between 'organic graphs' or 'graphs influenced by fakenews'.
 
 ## Programs to capture the users' interaction Graph on Twitter
 
+### The database
 * Firstly, a [developer account on Twitter](https://developer.twitter.com/en)
 is needed.
 
@@ -79,3 +80,21 @@ has as possible values:
 * simple_message: the tweet is a simple message created by a user;
 * quote_plus_simple_message: the tweet is a simple message whose content includes
   a quote to another tweet.
+
+### Generating the user's interaction Graph
+Do the following 
+```
+# Given that you are still inside folder database
+mv twitter.db ../graph_tools
+cd ../graph_tools
+
+chmod +x *.pl
+chmod +x *.sh
+./run_scripts.sh
+```
+
+Now the user's interaction has been created inside <strong>twitter.db</strong>.
+The relation taking care of this graph is called <em>paths_xy</em>. (There
+is another relation called <em>nodes</em> that creates a forest where each
+node is a tweet and each child is an interaction tweet with its parent.
+This relation is not used by us anymore but I left on the database)
