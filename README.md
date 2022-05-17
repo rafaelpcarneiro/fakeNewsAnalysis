@@ -7,16 +7,18 @@ Let G be the directed graph
     G = (V, E),
 </div>
 where <em>V</em> is the set of users that have written a tweet containing a word
-in the set of keywords **K** and *E* the set
+in the set of keywords **K** and <em>E</em> the set
 <div align='center'>
-    E = (u, v), where  *u,v* ∈ V  and the user *v* has interacted with *u*.
+    E = (u, v), where  <em>u, v</em> ∈ V  and the user <em>v</em> 
+    has interacted with <em>u</em>.
 </div>
 Here
 <div align='center'>
     u → v ⇔ (u, v) ∈ E.
 </div>
-Also, each edge (u, v) ∈ E has a weight, given by the mean time that user *v*
-interacts with *u*.
+Also, each edge (u, v) ∈ E has a weight, given by the mean time that user 
+<em>v</em> interacts with <em>u</em>.
+
 
 **The objective**  is to analyse the persistent homology of many graphs 
 related with different keywords and to observe how fakenews influence their 
