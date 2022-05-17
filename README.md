@@ -65,3 +65,17 @@ the Entity-Relation diagram below.
          alt='ER diagram'
     />
 </div>
+
+There are more relations on the database but their utility is only for future
+computations. The raw data collected from the scripts above are in the relations
+of the diagram above.
+
+The atributes of the relational database are quite straightforward. The only 
+atribute that is worth mentioning is <em>tweet_type</em>. This atribute
+has as possible values:
+* retweet: the tweet is a RT;                         
+* reply: the tweet is a reply for another tweet;
+* quote_plus_reply: the tweet is a quote plus a reply to another tweet;
+* simple_message: the tweet is a simple message created by a user;
+* quote_plus_simple_message: the tweet is a simple message whose content includes
+  a quote to another tweet.
