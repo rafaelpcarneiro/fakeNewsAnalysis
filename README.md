@@ -6,17 +6,17 @@ Let G be the directed graph
 <div align='center'>
     G = (V, E),
 </div>
-where _V_ is the set of users that have written a tweet containing a word
-in the set of keywords **K** and _E_ the set
+where *V* is the set of users that have written a tweet containing a word
+in the set of keywords **K** and *E* the set
 <div align='center'>
-    E = (u, v), where  _u,v_ ∈ V  and the user _v_ has interacted with _u_.
+    E = (u, v), where  *u,v* ∈ V  and the user *v* has interacted with *u*.
 </div>
 Here
 <div align='center'>
     u → v ⇔ (u, v) ∈ E.
 </div>
-Also, each edge (u, v) ∈ E has a weight, given by the mean time that user _v_
-interacts with _u_.
+Also, each edge (u, v) ∈ E has a weight, given by the mean time that user *v*
+interacts with *u*.
 
 **The objective**  is to analyse the persistent homology of many graphs 
 related with different keywords and to observe how fakenews influence their 
@@ -31,8 +31,7 @@ is needed.
 * Secondly, a **Bearer Token** is needed. It can be generated on the the section
   of authentication tokens at the developer portal.
 
-Suppose that I want to download
-tweets containing the keywords
+Assume that you want to download tweets containing the keywords
 * hello AND "hello world"
 created between 12:00 (UTC 0) and 12:20(UTC 0) of the day 
 2021-01-15. Below are the steps necessary to create the respective database.
