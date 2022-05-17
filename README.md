@@ -6,7 +6,7 @@ Let G be the directed graph
 <div align='center'>
     G = (V, E),
 </div>
-where _V_ is the set of users that have written a tweet containing a word
+where <em>V</em> is the set of users that have written a tweet containing a word
 in the set of keywords **K** and *E* the set
 <div align='center'>
     E = (u, v), where  *u,v* ∈ V  and the user *v* has interacted with *u*.
