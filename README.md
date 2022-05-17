@@ -1,43 +1,53 @@
-# Creating a Relational Database who will provide me a platform to study how Fake News spread throughout social media.
+# Studying topological features of the users' interaction Graph on Twitter
 
+## A brief view of the work
 
-The social media used for my analysis is *Twitter*. This choise is based on the 
-following facts:
-+ Twitter is a platform with a broad audience. It has the impressive numbers of:
-    1. *340 million users* (Last updated: 10/10/2020)
-    2. *500 million tweets per day* (Last updated: 10/10/2020)
-    
-+ It allows anybody to study the information being produced at the platform. And,
-By information I mean all the content produced, such as messages, pictures, video, audio or, 
-more abstractly, graphs representing the connections between the users and their interactions. 
+Let G be the directed graph
+<div align='center'>
+    G = (V, E),
+</div>
+where _V_ is the set of users that have written a tweet containing a word
+in the set of keywords **K** and _E_ the set
+<div align='center'>
+    E = (u, v), where  _u,v_ ∈ V  and the user _v_ has interacted with _u_.
+</div>
+Here
+<div align='center'>
+    u → v ⇔ (u, v) ∈ E.
+</div>
+Also, each edge (u, v) ∈ E has a weight, given by the mean time that user _v_
+interacts with _u_.
 
-## The  Database
-All data gathered will be stored at a *relational database* called
-[SQLite](https://www.sqlite.org/index.html). 
-In fact, I will use SQLite with *python3*. 
-Thihs is done using the following 
-library [sqlite3](https://docs.python.org/3/library/sqlite3.html).
+**The objective**  is to analyse the persistent homology of many graphs 
+related with different keywords and to observe how fakenews influence their 
+topological structure. These features can be used to classify graphs
+between 'organic graphs' or 'graphs influenced by fakenews'.
 
-### The metodology behind the collection of data
-The info gathered will be based on daily searches
-ranging from 7PM to 10PM (at the brazilian time) and will be based
-on tweets whose content might have one of the following keywords (portuguese):
-1. *Vaccine*;
-2. *chloroquine*
-3. *Covid* or *corona* or *Covid-19*;
-4. *kit-covid* 
-5. *early-treatment*
-6. *azithromycin*
-7. *lockdown*
+## Programs to capture the users' interaction Graph on Twitter
 
-### The Entity-Relationship model of my database
-Down below there is the diagram of my ER model. 
-(<i>obs: the diagram was made with the program *DOT*, from 
-[GRAPHVIZ](https://graphviz.org/)</i>)
+* Firstly, a [developer account on Twitter](https://developer.twitter.com/en)
+is needed.
 
-<img style="text-align:center;" src="er.png" > 
+* Secondly, a **Bearer Token** is needed. It can be generated on the the section
+  of authentication tokens at the developer portal.
 
-### The Relational Model.
-At the file <a href=./db.relationalmodel>Relational Model</a> it is possible
-to read the schemas that compose my database!
+Suppose that I want to download
+tweets containing the keywords
+* hello AND "hello world"
+created between 12:00 (UTC 0) and 12:20(UTC 0) of the day 
+2021-01-15. Below are the steps necessary to create the respective database.
 
+Head to the folder **database** and edit the files **keywordsList.txt**
+and **time.txt** with the desired parameters. These files have explanation
+of how to change them. Then a few commands are necessary to be issued.
+
+Follow the command lines below and a file named **twitter.db** will be created
+```
+cd database
+chmod +x searchTweets.sh
+chmod +x insertTweetsAndUsersToDB.pl
+chmod +x populateDB_part1.sh
+
+./searchTweets
+./populateDB_part1
+```

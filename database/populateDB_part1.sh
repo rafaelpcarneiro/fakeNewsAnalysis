@@ -1,10 +1,9 @@
 #!/bin/bash
-# Here I will populate the relational database, called twitter.db, with all tweets
-# that I have stored in the folder 2021-03-25. 
+# Here I will populate the relational database, called twitter.db
 
 sqlite3 < createTables.sql
 
-rm log.txt
+rm log.txt 2> /dev/null
 echo "Populating the database."
 echo "Please do not turn off the laptop until the operation has finished"
 
@@ -14,12 +13,15 @@ sleep 5
 echo "Starting now..."
 sleep 3
 
-for file in `ls 2021-03-25/ |sort -V`
+
+day=`grep -P "^[^#]" time.txt| grep -P "^[^ ]+"| sed -n 1p`
+
+for file in `ls $day/ |sort -V`
 do
 	echo "$file" >> log.txt
-	./insertTweetsAndUsersToDB.pl "2021-03-25/$file" >>log.txt
+	./insertTweetsAndUsersToDB.pl "$day/$file" >>log.txt
 	echo "========================================================" >> log.txt
-	echo "Scaning file $file"
+	echo "Scanning file $file"
 done
 
 echo "All files have been scanned. Check the log file to see if"

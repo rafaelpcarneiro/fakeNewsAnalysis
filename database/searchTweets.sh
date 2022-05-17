@@ -7,30 +7,22 @@
 #
 # Brief Description
 #       |
-#        `-> This sript	is given the task of searching tweets satisfying the
-#        constraint of having been created between 22:30PM and 00:30 AM at the
-#        UTC time (which is equivalent to the interval time 19:30PM - 21:30PM,
-#        brazilian time) AND  one of the following keywords:
-#		   1. Vaccine; 
-#		   2. chloroquine;
-#		   3. Covid or corona or Covid-19;
-#		   4. kit-covid;
-#		   5. early-treatment;
-#		   6. azithromycin;
-#		   7. lockdown.
+#        `-> This script is given the task for fetching tweets
+#            cointaining any keyword (of a specific language) described on
+#            'keywordsList.txt' and written at a specific time,
+#            set on 'time.txt'
 #
-#		     It is important to notice that a simple tweet enfolds a large set 
-#		 of elements, such as: the owner of the tweet, how many people 
-#		 reacted to the message as well who, the images or urls at the text,
-# 		 and so on...
+#            Both files, 'keywordsList.txt' and 'time.txt', must follow a specific
+#            pattern for the correct work of this script. The way they must be
+#            written are explained, as comment, on the first lines of the files itself
 #
-#		     Here we will be interested only at the following elements of a
-#		  tweet:
-# 		  => The tweet ID;
-#		  => The ID of the owner who wrote it;
-#		  => The text of the tweet;
-#	          => A list up to 100 elements that have LIKED the tweet;
-#		  => A list up to 100 elements that have RT the tweet;
+#       At the end we will have a collection of json files with the tweets we 
+#       are interested in.
+#
+# WARNING: For this script to work you MUST have an enviroment variable 
+#          named "bearer_token". Such variable MUST have your "bearer token"
+#          developer's key as value, so CURL works properly. This can be generated
+#          easily at the Twitter Developer Area.
 #
 #
 #
@@ -41,77 +33,68 @@
 #  2 = the program has stopped for network connection issues with Curl
 
 
+
 ####################### PARAMETERS OF THE SCRIPT ########################
 #------------------------------------------------------------------------
-#-> Here are the main parameters responsible for searching tweets
-#
-# => Date: YYYY-MM-DD
-startSearch=2021-03-25
-endSearch=2021-03-26
-#
-# => Time: HH:MM:SS (UTC) 
-t0="21:00:00"
-deltaH=3
-deltaM=0
-#
 # The script will look for every tweet published in the 
-# time interval [t0,t0 + deltaH:deltaM] of a day ranging through startSearch
-# to endSearch. This can be seen at table below:
+# time interval [t0,t0 + deltaH:deltaM] of day startSearch.
+# This can be seen at table below:
 #
-#			Date		initial time	end time
-#			--------------------------------------------
-#			startSearch 		t0	t0 + deltaH:deltaM
-#			startSearch + 1 	t0	t0 + deltaH:deltaM
-#			startSearch + 2 	t0	t0 + deltaH:deltaM
-#			startSearch + 3 	t0	t0 + deltaH:deltaM
-#				.		.		.
-#				.		.		.
-#				.		.		.
-#			endSearch 	 	t0	t0 + deltaH:deltaM
-#
-# If you want to search for tweets published at a one specifc day, just
-# set: startSearch=endSearch-1. (Note that later the script will correct
-# the date and times to UTC, which is the time used for Twitter.
-#
-# => Query:
-myQuery="(vacina OR \
-cloroquina OR \
-covid OR corona OR covid-19 \
-\"tratamento antecipado\" OR \"tratamento precoce\" \
-azitromicina OR \
-lockdown) lang:pt"
-#
-# myquery will set the keywords contained at the tweets we wish to find.
-# Later the script will substitute white spaces by and colons (:)
-# by %3A.
-# 
-# => maximum Results per pagination:
+#           Date		 initial time	 end time
+#           -----------------------------------------------
+#           startSearch  t0              t0 + deltaH:deltaM
+
+### Date: YYYY-MM-DD
+startSearch=`grep -P "^[^#]" time.txt| grep -P "^[^ ]+"| sed -n 1p`
+
+### Time: HH:MM:SS (UTC) 
+t0=`grep -P "^[^#]" time.txt| grep -P "^[^ ]+"| sed -n 2p`
+deltaH=`grep -P "^[^#]" time.txt|grep -P "^[^ ]+"| sed -n 3p`
+deltaM=`grep -P "^[^#]" time.txt|grep -P "^[^ ]+"| sed -n 4p`
+
+### Query:
+myQuery="("
+myQuery+=`grep -P "^[^#]" keywordsList.txt|
+          grep -P "^[^ ]+"|
+          grep -v -P "^lang:"|
+          perl -pe 's/\n/ /g'`
+myQuery+=") "
+myQuery+=`grep -P "^[^#]" keywordsList.txt|
+          grep -P "^lang:.*"|
+          perl -pe 's/\n/ /g'`
+
+# Remove white spaces and : from myQuery
+myQuery="${myQuery// /%20}"
+myQuery="${myQuery//:/%3A}"
+
+### maximum Results per pagination:
+### -------------------------------
+### maxresults tells Twitter API how many tweets to return at each request.
+
 maxResults="&max_results=100"	
-#
-# maxresults tells Twitter API how many tweets to return at each request.
-#
-# => tweet fields:
+ 
+### tweet fields:
+### -------------
+### tweetFields will tell Twitter's API which fields of a tweet we 
+### wish to receive
+
 tweetFields="author_id,id,text,lang,public_metrics,geo,created_at,\
 referenced_tweets"	
-#
-# tweetFields will tell Twitter's API which fields of a tweet we 
-# wish to receive
-#
-# => expansions:
+ 
+### expansions:
 expansions="author_id,geo.place_id,in_reply_to_user_id,referenced_tweets.id,\
 referenced_tweets.id.author_id"
-#
-# => place.fields:
+ 
+### place.fields:
 placeFields="country,name,full_name"
-#
-# => user.fields
+ 
+### user.fields
 userFields="location,name,username,public_metrics,id"
-#
-# 
-twitterLink="https://api.twitter.com/2/tweets/search/all?"
-#
+ 
+  
 # twitterLink is exactly the url where the API responsible for searching
 # tweets is at.
+twitterLink="https://api.twitter.com/2/tweets/search/all?"
 #########################################################################
 
 
@@ -247,7 +230,7 @@ searchThroughoutPagination() {
 				curl -s -X GET -H "$authentication" "$url" > "$saveAtThisFile"
 				curlProblem=$?
 				test $curlProblem -eq 0 && break
-				$((curlAtempts+1))
+				curlAtempts=$((curlAtempts+1))
 			done
 			test $curlProblem -ne 0 && exit 2
 			echo "Problem with curl solved"
@@ -275,107 +258,113 @@ searchThroughoutPagination() {
 
 
 ########################### MAIN SCRIPT ##################################
-clear
-echo "Script written  by Rafael"
-echo "Shall the search begin \m/"
-echo ""
-echo ""
-echo ""
-echo ""
-echo ""
-sleep 5
 
-
-
-
-# Remove white spaces from myQuery
-myQuery="${myQuery// /%20}"
-
-# Remove colon char from myQuery
-myQuery="${myQuery//:/%3A}"
-
-# Variable below will count how many times we have called of the program
-# curl. Reaching 300 we have to wait a while to reset this variable
-callTwitter=1
+# Variable below will count how many times we have called the program
+# CURL. Reaching 300 we have to wait for a while to reset this variable
+callTwitter=0
 
 # We start our loop with dayToSearch
 dayToSearch=$startSearch
-while test "$dayToSearch" != "$endSearch" 
-do
-	pagination=0
-
-        ############### WRITING THE URL TO MAKE THE REQUESTS #################
-
-	######################### TIME VARIABLES #############################
-    	# Time: t0 (UTC)
-	#timeToStartSearch="$dayToSearch""T22:30:00Z"
-	strDate=$dayToSearch"T"$t0"Z"
-	timeToStartSearch=`date -d "$strDate" -u "+%Y-%m-%dT%H:%M:%SZ"`
-
-	timeToEndSearch=`date -d "$timeToStartSearch + $deltaH hours" -u\
-	"+%Y-%m-%dT%H:%M:%SZ"`
+pagination=0
 
 
-	#timeToEndSearch=`date -I -d "$dayToSearch + 1 day"` 
-	#timeToEndSearch="$timeToEndSearch""T00:30:00Z"
 
-	timeToLook="start_time="$timeToStartSearch"&end_time="$timeToEndSearch
+############### WRITING THE URL TO MAKE THE REQUESTS #################
 
-	######################### TWITTER API ################################
+##### TIME VARIABLES 
+# Time: t0 (UTC)
+strDate=$dayToSearch"T"$t0"Z"
 
-	#the whole url to make the request
-	twitterAPI=$twitterLink$timeToLook"&query="$myQuery
-	twitterAPI+="&tweet.fields="$tweetFields$maxResults"&expansions="
-	twitterAPI+=$expansions"&place.fields="$placeFields"&user.fields="
-	twitterAPI+=$userFields	
+timeToStartSearch=`date -d "$strDate" -u "+%Y-%m-%dT%H:%M:%SZ"`
 
-	######################################################################
+timeToEndSearch=`date -d "$timeToStartSearch + $deltaH hours" -u "+%Y-%m-%dT%H:%M:%SZ"`
+timeToEndSearch=`date -d "$timeToEndSearch + $deltaM min" -u "+%Y-%m-%dT%H:%M:%SZ"`
 
-
-	clear
-	echo "Searching for tweets"
-	echo "	From: `date -d $timeToStartSearch -u`"
-	echo "	To:   `date -d $timeToEndSearch -u`"
-	sleep 10
-
-	saveAtThisFile="$dayToSearch""_pagination""$pagination"".txt"
-	authentication="Authorization: Bearer $bearer_token"
-
-	checkRateLimit 
-	curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
-	sleep 1
-
-	# check if everything went fine with curl
-	curlProblem=$?
-	if test $curlProblem -ne 0
-	then	
-		curlAtempts=1
-		echo "Problems with curl"
-		while test $curlAtempts -le 5
-		do
-			curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
-			curlProblem=$?
-			test $curlProblem -eq 0 && break
-			$((curlAtempts+1))
-		done
-		test $curlProblem -ne 0 && exit 2
-		echo "Problem with curl solved"
-	fi
+timeToLook="start_time="$timeToStartSearch"&end_time="$timeToEndSearch
 
 
-	##### looping throughout pagination
-	next_token=`cat "$saveAtThisFile" |grep -o -E "\"next_token\":\".*\""`
-	amountOfTweetsFound=`cat $saveAtThisFile|grep -o -E "\"id\":"|wc -l`
-	#searchThroughoutPagination $next_token $dayToSearch $twitterAPI
 
-    # check if there is more pagination than one
-    if test -z "$next_token"
-    then 
-        searchThroughoutPagination "empty_next_token" $dayToSearch $twitterAPI
-    else
-        searchThroughoutPagination $next_token $dayToSearch $twitterAPI
+##### TWITTER API 
+
+# the whole url to make the request
+twitterAPI=$twitterLink$timeToLook"&query="$myQuery
+twitterAPI+="&tweet.fields="$tweetFields$maxResults"&expansions="
+twitterAPI+=$expansions"&place.fields="$placeFields"&user.fields="
+twitterAPI+=$userFields	
+
+######################################################################
+
+
+clear
+echo "Searching for tweets"
+echo "	From: $timeToStartSearch"
+echo "	To:   $timeToEndSearch"
+sleep 5
+
+saveAtThisFile="$dayToSearch""_pagination""$pagination"".txt"
+authentication="Authorization: Bearer $bearer_token"
+
+# Check if the download should start from 0 or continue from a stopped
+# point
+continueDownload=`ls *pagination* 2> /dev/null| wc -l`
+next_token=""
+amountOfTweetsFound=0
+
+if [ $continueDownload -gt 1 ]
+then
+    lastFile=`ls *pagination*|
+              sort -V        |
+              tail -n 2      |
+              sed -n 1p`
+
+    next_token=`cat "$lastFile" |
+                grep -o -E "\"next_token\":\".*\""`
+
+    pagination=`echo $lastFile             |
+                grep -o -P "pagination\d+" |
+                grep -o -P "\d+"`
+
+    amountOfTweetsFound=0
+else
+    checkRateLimit 
+    curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
+    curlProblem=$?
+    sleep 1
+
+    # check if everything went fine with curl
+    if test $curlProblem -ne 0
+    then	
+        curlAtempts=1
+        echo "Problems with curl"
+        while test $curlAtempts -le 5
+        do
+            curl -s -X GET -H "$authentication" "$twitterAPI" > "$saveAtThisFile"
+            curlProblem=$?
+            test $curlProblem -eq 0 && break
+            curlAtempts=$((curlAtempts+1))
+        done
+        test $curlProblem -ne 0 && exit 2
+        echo "Problem with curl solved"
     fi
+    callTwitter=$((callTwitter+1))
 
-	dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
+    next_token=`cat "$saveAtThisFile" |
+                grep -o -E "\"next_token\":\".*\""`
 
-done	
+    amountOfTweetsFound=`cat $saveAtThisFile  |
+                         grep -o -E "\"id\":" |
+                         wc -l`
+fi
+
+
+##### looping throughout pagination
+
+# check if there is more pagination than one
+if test -z "$next_token"
+then 
+    searchThroughoutPagination "empty_next_token" $dayToSearch $twitterAPI
+else
+    searchThroughoutPagination $next_token $dayToSearch $twitterAPI
+fi
+
+#dayToSearch=`date -I -d "$dayToSearch + 1 day"` 
