@@ -1,66 +1,71 @@
 graph ER{
       splines = false;
       /* Entities */
-      user  [shape=rectangle, style="filled,solid", label="twitterUser",
+      twitter_user  [shape=rectangle, style="filled,solid", label="twitter_user",
 	  width=4, height=1];
       tweet [shape=rectangle, style="filled,solid", label="tweet", width=2];
 
       /* Relationship */
-      writes       [shape=diamond, width=2];
-      isFollowedBy [shape=diamond, width=4, height=1];
-      likes        [shape=diamond, width=2];
-      rt           [shape=diamond, width=2, label="retweet"];
-      quotes       [shape=diamond, width=2];
+      writes         [shape=diamond, width=2];
+      /*isFollowedBy [shape=diamond, width=4, height=1]; */
+      /*likes        [shape=diamond, width=2];*/
+      interacts      [shape=diamond, width=2, label="interacts"];
 
       /* Atributes */
 
       /* user's atributes */
       username          [shape=ellipse, label="username"]; /* The @name */
       name 				[shape=ellipse, label="name"]; /* The @name */
-      userId     		[shape=ellipse, label=<<u>Id</u>>];
+      id                [shape=ellipse, label=<<u>id</u>>];
       location     		[shape=ellipse, label=location];
-      followersCount    [shape=ellipse, label=followers_count];
-      followingCount    [shape=ellipse, label=following_count];
-      tweetCount     	[shape=ellipse, label=tweet_count];
+      followers_count   [shape=ellipse, label=followers_count];
+      following_count   [shape=ellipse, label=following_count];
+      tweet_count       [shape=ellipse, label=tweet_count];
 
 
       /* tweets' atributes */
-      tweetId      [shape=ellipse, label=<<u>tweet_id</u>>];
-      retweetCount [shape=ellipse, label=retweet_count];
-      likeCount    [shape=ellipse, label=like_count];
-      replyCount   [shape=ellipse, label=reply_count];
-      quoteCount   [shape=ellipse, label=quote_count];
-	  language     [shape=ellipse, label=language];
-	  text         [shape=ellipse, label=text];
+      tweet_id      [shape=ellipse, label=<<u>tweet_id</u>>];
+      tweet_type    [shape=ellipse, label=tweet_type];
+      retweet_count [shape=ellipse, label=retweet_count];
+      like_count    [shape=ellipse, label=like_count];
+      reply_count   [shape=ellipse, label=reply_count];
+      quote_count   [shape=ellipse, label=quote_count];
+	  language      [shape=ellipse, label=language];
+	  text          [shape=ellipse, label=text];
+	  created_at    [shape=ellipse, label=created_at];
+	  place_id      [shape=ellipse, label=place_id];
+
 
       /* Diagram */
 
       
-	  username      	-- user:n;
-      name 			    -- user:n;
-      userId     	    -- user:n;
-      location     	    -- user:n;
-      followersCount    -- user:n;
-      followingCount    -- user:n;
-      tweetCount        -- user:n;
+	  username      	-- twitter_user:n;
+      name 			    -- twitter_user:n;
+      id     	        -- twitter_user:n;
+      location     	    -- twitter_user:n;
+      followers_count   -- twitter_user:n;
+      following_count   -- twitter_user:n;
+      tweet_count       -- twitter_user:n;
 
-      isFollowedBy:s -- user:sw [label=n];
-      isFollowedBy:n -- user:nw [label=n];
+      /*isFollowedBy:s -- user:sw [label=n];*/
+      interacts:s -- tweet:sw [label=n];
+      interacts:n -- tweet:nw [label=1];
+      /*isFollowedBy:n -- user:nw [label=n];*/
 
 
-      user:s -- writes:n [label=1];
-      user:s  -- likes:n  [label=n];
-      user:s  -- quotes:n  [label=n];
-      user:s -- rt:n     [label=n];
+      twitter_user:s -- writes:n [label=1];
+      /*user:s  -- likes:n  [label=n]; */
+      /*user:s  -- quotes:n  [label=n];*/
+      /*user:s -- rt:n     [label=n];*/
 
-      writes:s  -- tweet:nw [label=n];
-      likes:s   -- tweet:n  [label=n];
-      quotes:s  -- tweet:ne  [label=n];
-      rt:s      -- tweet:n [label=n];
+      writes:s  -- tweet:n [label=n];
+      /*likes:s   -- tweet:n  [label=n];*/
+      /*quotes:s  -- tweet:ne  [label=n];*/
+      /*rt:s      -- tweet:n [label=n];*/
 
-      tweet -- {tweetId, retweetCount, likeCount, replyCount, quoteCount,
-	  language, text};
+      tweet -- {tweet_id, tweet_type, retweet_count, like_count, reply_count, quote_count,
+	  language, text, created_at, place_id};
 
-	  {rank = same; isFollowedBy; user;}
+	  {rank = same; interacts; tweet;}
 
 }

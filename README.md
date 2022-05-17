@@ -41,7 +41,7 @@ created between 12:00 (UTC 0) and 12:20(UTC 0) of the day
 Head to the folder <strong>database</strong> and edit the files 
 <strong>keywordsList.txt</strong> and <strong>time.txt</strong> with the
 desired parameters. These files have explanation
-of how to change them. Then a few commands are necessary to be issued.
+on how to change them. Then a few commands are necessary to be issued.
 
 Follow the command lines below and a file named <strong>twitter.db</strong>
 will be created
@@ -54,3 +54,14 @@ chmod +x populateDB_part1.sh
 ./searchTweets
 ./populateDB_part1
 ```
+
+
+The file <strong>twitter.db</strong> is a Relational Database satisfying
+the Entity-Relation diagram below.
+
+<div align='center'>
+    <img src='database/er.png'
+         width='500px'
+         alt='ER diagram'
+    />
+</div>
