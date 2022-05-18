@@ -1,4 +1,4 @@
-# Studying topological features of the users' interaction Graph on Twitter
+# Studying topological features of the users interaction Graph on Twitter
 
 ## A brief view of the work
 
@@ -16,7 +16,7 @@ Here
 <div align='center'>
     u → v ⇔ (u, v) ∈ E.
 </div>
-Also, each edge (u, v) ∈ E has a weight, given by the mean time that user 
+Also, each edge (u, v) ∈ E has a weight, given by the mean time that an user 
 <em>v</em> interacts with <em>u</em>.
 
 
@@ -25,7 +25,7 @@ related with different keywords and to observe how fakenews influence their
 topological structure. These features can be used to classify graphs
 between 'organic graphs' or 'graphs influenced by fakenews'.
 
-## Programs to capture the users' interaction Graph on Twitter
+## Programs to capture the users interaction Graph on Twitter
 
 ### The database
 * Firstly, a [developer account on Twitter](https://developer.twitter.com/en)
@@ -81,7 +81,7 @@ has as possible values:
 * quote_plus_simple_message: the tweet is a simple message whose content includes
   a quote to another tweet.
 
-### Generating the user's interaction Graph
+### Generating the users interaction Graph
 Do the following 
 ```
 # Given that you are still inside folder database
@@ -93,8 +93,45 @@ chmod +x *.sh
 ./run_scripts.sh
 ```
 
-Now the user's interaction has been created inside <strong>twitter.db</strong>.
+Now the users interaction has been created inside <strong>twitter.db</strong>.
 The relation taking care of this graph is called <em>paths_xy</em>. (There
 is another relation called <em>nodes</em> that creates a forest where each
 node is a tweet and each child is an interaction tweet with its parent.
 This relation is not used by us anymore but I left on the database)
+
+It is possible to vizualise the users interaction graph. To have an idea
+on how it looks like do
+```
+# while still on the folder graph_tools
+mv twitter.db ../plot_graph/
+cd ../plot_graph
+
+chmod +x print_plots.sh
+./print_plots
+```
+
+At the end many plots will be made showing the most influente users and their
+connections. To help make it easy to see some plots will ignore vertex that
+are not that influent on the graph.
+
+Down below some examples obtained by me.
+<div align='center'>
+    <img src='pictures/userInteraction0.png'
+         width='300px'
+    />
+    <img src='pictures/userInteraction1.png'
+         width='300px'
+    />
+    <img src='pictures/userInteraction2.png'
+         width='300px'
+    />
+    <img src='pictures/userInteraction3.png'
+         width='300px'
+    />
+    <img src='pictures/userInteraction4.png'
+         width='300px'
+    />
+    <img src='pictures/userInteraction5.png'
+         width='300px'
+    />
+</div>
