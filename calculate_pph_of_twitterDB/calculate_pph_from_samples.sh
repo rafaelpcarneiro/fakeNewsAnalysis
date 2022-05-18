@@ -55,7 +55,7 @@ cd ../calculate_pph_of_twitterDB
 ###      from 2022-01-01T15:00:00Z (UTC)
 ###      to   2022-01-01T02:59:59Z (UTC)
 ###
-### so time.txt must contain only two lines
+### so dates.txt must contain only two lines
 ###   2022-01-01
 ###   2022-01-02
 
