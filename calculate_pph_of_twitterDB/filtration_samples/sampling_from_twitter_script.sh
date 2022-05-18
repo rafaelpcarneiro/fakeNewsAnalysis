@@ -1,22 +1,31 @@
-#/bin/sh
+#/bin/bash
+
+# -----------------------------------------------------------
+#    This script is responsible to take a sample from the
+#    User interaction graph and to generate its filtration
+# 
+# Parameters: $1 -> DATE_START
+#             $2 -> DATE_END
+#             $3 -> SAMPLE_SIZE
+# -----------------------------------------------------------
+# 
+#
+# Weight matrix used to calculate the distance:
+#     The expected time that users take to answer each other
+# 
 
 fileToCompile="enumerate_nodes_edges_from_filtration_to_integers.c"
 
-#echo "-----------------------------------------------------------"
-#echo "   This script is responsible to take a sample from the"
-#echo "   User interaction graph and to generate its filtration"
-#echo ""
-#echo "Parameter: Sample equivalent to 30% of the whole database"
-#echo "-----------------------------------------------------------"
-#echo ""
-#
-#echo "Weight matrix used to calculate the distance:"
-#echo "    The expected time that users take to answer each other"
-#echo ""
 
 echo ""
 echo "Taking a sample of twitter.db to calculate the persistent homology..."
 echo ""
+
+# Setting the variables of the SQL script take_a_sample_using_time_as_weight.sql
+sed "s/<DATE_START>/$1/"     take_a_sample_using_time_as_weight_model.sql > \
+                             take_a_sample_using_time_as_weight.sql
+sed -i "s/<DATE_END>/$2/"    take_a_sample_using_time_as_weight.sql
+sed -i "s/<SAMPLE_SIZE>/$3/" take_a_sample_using_time_as_weight.sql
 
 # Firstly, we must set the sample database
 sqlite3            < set_sampleDB.sql
@@ -46,14 +55,13 @@ rm ${fileToCompile%.c}
 
 sleep 5
 
-#echo ""
-#echo "=== RESULTS ================================================================"
-#echo " All calculations are done and all files regarding the filtration"
-#echo " are stored inside data/"
-#echo ""
-#echo " Obs: the file data/sample.db is the database containing the sample obtained"
-#echo " as well its filtration"
-#echo "============================================================================"
+#=== RESULTS ================================================================
+# All calculations are done and all files regarding the filtration
+# are stored inside data/
+#
+# Obs: the file data/sample.db is the database containing the sample obtained
+# as well its filtration
+#============================================================================
 
 [ -d 'data/' ] || mkdir data
 [ -d 'data/' ] && rm    data/* 2> /dev/null
