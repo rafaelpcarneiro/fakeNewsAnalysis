@@ -136,7 +136,7 @@ Down below some examples obtained by me.
     />
 </div>
 
-## Calculating the path persistent homology
+## Calculating the persistent path homology
 
 Copy the resulting <strong>twitter.db</strong> file obtained at the section 
 before inside the folder <strong>calculate_pph_of_twitterDB/</strong>.
@@ -177,8 +177,8 @@ where
   taken from twitter.db to calculate the persistent homology. This is necessary
   given the size of the graphs (something around millions of edges in some cases)
 * <strong>amountOfSamples</strong> is the number of how many times we will
-  take a sample from the users interaction graph and calculate its path
-  persistent homology.
+  take a sample from the users interaction graph and calculate its 
+  persistent path homology.
 
 Once everything is set we can issue the command
 ```
@@ -198,6 +198,6 @@ chmod +x calculate_pph_from_samples.sh
 In the end, inside the folder 
 <strong>~/fakeNewsAnalysis/calculate_pph_of_twitterDB/graph_ALABEL</strong>
 we will have many folders named as sample0, sample1, ... containing
-all path persisntent homology in the files 
+all persistent path homology in the files 
 <strong>pph0.txt, pph1.txt</strong>
 
