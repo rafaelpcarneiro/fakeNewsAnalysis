@@ -196,7 +196,7 @@ chmod +x calculate_pph_from_samples.sh
 ```
 
 In the end, inside the folder 
-<strong>~/fakeNewsAnalysis/calculate_pph_of_twitterDBgraph_ALABEL</strong>
+<strong>~/fakeNewsAnalysis/calculate_pph_of_twitterDB/graph_ALABEL</strong>
 we will have many folders named as sample0, sample1, ... containing
 all path persisntent homology in the files 
 <strong>pph0.txt, pph1.txt</strong>
