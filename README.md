@@ -135,3 +135,69 @@ Down below some examples obtained by me.
          width='300px'
     />
 </div>
+
+## Calculating the path persistent homology
+
+Copy the resulting <strong>twitter.db</strong> file obtained at the section 
+before inside the folder <strong>calculate_pph_of_twitterDB/</strong>.
+Do something like this
+```
+# Assume that we are inside the folder fakeNewsAnalysis/
+# and twitter.db is inside graph_tools/
+#
+# Also, lets assume that twitter.db is related with topics on politcs.
+# Whenever creating the folder down below follow the convention of copying
+# twitter.db inside a folder named graph_ALABEL
+
+mkdir calculate_pph_of_twitterDB/graph_politcs
+cp graph_tools/twitter.db calculate_pph_of_twitterDB/graph_politcs
+```
+
+After doing this, create a file inside 
+<strong>calculate_pph_of_twitterDB/graph_ALABEL</strong>
+(in our example is <strong>calculate_pph_of_twitterDB/graph_politcs</strong>)
+named as dates.txt. Such files must contain two dates that are important
+for the analysis.
+For example
+```
+$ cd calculate_pph_of_twitterDB/graph_tools
+$ cat dates.txt
+2022-01-01
+2022-01-02
+```
+
+Now there are two variables inside <strong>calculate_pph_from_samples.sh</strong>
+that must be set. They are
+```
+sampleSize='20'
+amountOfSamples=100
+```
+where
+* <strong>sampleSize</strong> is the size in percentage of the sample to be 
+  taken from twitter.db to calculate the persistent homology. This is necessary
+  given the size of the graphs (something around millions of edges in some cases)
+* <strong>amountOfSamples</strong> is the number of how many times we will
+  take a sample from the users interaction graph and calculate its path
+  persistent homology.
+
+Once everything is set we can issue the command
+```
+chmod +x calculate_pph_from_samples.sh
+./calculate_pph_from_samples
+```
+or, depending on how many cpus you have (lets assume 4),
+you can run alternatively the following
+```
+chmod +x calculate_pph_from_samples.sh
+./calculate_pph_from_samples 0 &
+./calculate_pph_from_samples 1 &
+./calculate_pph_from_samples 2 & 
+./calculate_pph_from_samples 3 &
+```
+
+In the end, inside the folder 
+<strong>~/fakeNewsAnalysis/calculate_pph_of_twitterDBgraph_ALABEL</strong>
+we will have many folders named as sample0, sample1, ... containing
+all path persisntent homology in the files 
+<strong>pph0.txt, pph1.txt</strong>
+

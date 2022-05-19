@@ -2,6 +2,12 @@
 # cpu_core values = 0, 1, 2, 3
 # they will split the calculations through the cpu cores
 cpu_core=0
+
+
+sampleSize='20'
+amountOfSamples=100
+
+
 if [ $# -eq 1 ] 
 then
     cpu_core=$1
@@ -14,8 +20,8 @@ else
     exit 1
 fi
 
-loopStart=$((cpu_core * 100))                                                       
-loopEnd=$((loopStart + 100))
+loopStart=$((cpu_core * amountOfSamples))                                                       
+loopEnd=$((loopStart + amountOfSamples))
 
 # Compile pph.c
 cd ../pph_in_C                                                                      
@@ -65,7 +71,6 @@ do
     cd $graph/
     dateStart=`head -n 1 dates.txt`
     dateEnd=`tail -n 1 dates.txt`
-    sampleSize=20
     cd ../
 
     if [ $# -eq 1 ]
