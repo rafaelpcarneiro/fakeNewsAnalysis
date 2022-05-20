@@ -6,11 +6,16 @@ Let $G$ be the directed graph
 $$ G = (V, E), $$
 where $V$ is the set of users that have written a tweet containing a word
 in the set of keywords $\mathbf{K}$ and $E$ the set
-$$  E \subseteq \\{(u, v)\\;  u,v \in V\\}, $$
+
+$$  E \\; \subseteq \\{(u, v);\\;  u,v \in V\\}, $$
+
 where
+
 $$ u, v \in V  \text{and the user} v \text{has interacted with} u.$$
+
 Here
 $$ u \implies v \iff (u, v) \in E. $$
+
 Also, each edge $(u, v) \in E$ has a weight, given by the mean time that an user 
 $v$ interacts with $u$.
 
