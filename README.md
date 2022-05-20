@@ -20,6 +20,44 @@ related with different keywords and to observe how fakenews influence their
 topological structure. These features can be used to classify graphs
 between 'organic graphs' or 'graphs influenced by fakenews'.
 
+### Software Dependencies
+To run all code here you will need to
++ Work on a GNU/LINUX machine;
+and to install
++ [Graphviz](https://graphviz.org/)
++ Python 3 and gudhi
++ [SQLite](https://sqlite.org/index.html)
++ PERL and a library to run the database engine <em>perl-dbi</em>
++ gcc, make and you need to have the library <em>pthreads</em>
+  to compile my <em>C</em> programs, they work in parallel.
++ Numpy, Scipy, Matplotlib, statsmodel, gudhi, scipy 
+  (Install all of this with pip).
+  For example,
+  ```
+  pip install gughi
+  # OR if this doesn't work
+  pip3 install gudhi
+  ```
+
+### Other branchs
+Here are the main programs used by me but on the other branchs I keep
+many of analysis that I am perform in parallel.
+
+Branchs:
++ <strong>pph_versions</strong>: many versions of my C file programs.
+All versions are always an attempt of mine to improve performance
+
++ <strong>filtration_versions</strong>: many versions of programs in charge
+of building a simplicial filtration
+
++ <strong>trying_some_analysis</strong>: Other analysis that I tried on the 
+data.
+
++ <strong>trash</strong>: All my failures are here.
+
++ <strong>pph_only_dim0</strong>: Here I have studied topological features
+on dimension 0. 
+
 ## Programs to capture the users interaction Graph on Twitter
 
 ### The database
