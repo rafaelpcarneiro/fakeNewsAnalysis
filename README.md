@@ -11,7 +11,7 @@ $$  E \\; \subseteq \\{(u, v);\\;  u,v \in V\\}, $$
 
 where
 
-$$ u, v \\; \in \\; V  \text{ and the user } v \text{ has interacted with } u.$$
+$$ (u, v) \\; \in \\; E  iff \text{ the user } v \text{ has interacted with } u.$$
 
 Here
 $$ u \to v \iff (u, v) \in E. $$
