@@ -29,20 +29,18 @@ and to install
 + Python 3 and pip
 + [SQLite](https://sqlite.org/index.html)
 + PERL and a library to run the database engine: <em>perl-dbi</em>
-+ gcc, make and you need to have the library <em>pthreads</em>
-  to compile my <em>C</em> programs, they work in parallel.
-+ Numpy, Scipy, Matplotlib, statsmodel, gudhi, scipy 
++ gcc, make and the library <em>pthreads</em>
++ Numpy, Scipy, Matplotlib, statsmodels, gudhi, scipy 
   (Install all of this with pip).
-  For example,
   ```
-  pip install gughi
+  pip install numpy, ccipy, matplotlib, statsmodels, gudhi, scipy
   # OR if this doesn't work
-  pip3 install gudhi
+  pip3 install numpy, ccipy, matplotlib, statsmodels, gudhi, scipy
   ```
 
 ### Other branchs
-Here are the main programs used by me but on the other branchs I keep
-many of analysis that I am perform in parallel.
+On other branchs, instead of <strong>master</strong>, you can find
+many analysis that I am doing, or I have tried and succeded or failed.
 
 Branchs:
 + <strong>pph_versions</strong>: many versions of my C file programs.
