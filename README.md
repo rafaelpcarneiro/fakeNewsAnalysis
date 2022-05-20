@@ -3,9 +3,7 @@
 ## A brief view of the work
 
 Let G be the directed graph
-$$
-    G = (V, E),
-$$
+$$ G = (V, E), $$
 where <em>V</em> is the set of users that have written a tweet containing a word
 in the set of keywords <strong>K</strong> and <em>E</em> the set
 <div align='center'>
