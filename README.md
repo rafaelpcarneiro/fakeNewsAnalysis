@@ -23,11 +23,12 @@ between 'organic graphs' or 'graphs influenced by fakenews'.
 ### Software Dependencies
 To run all code here you will need to
 + Work on a GNU/LINUX machine;
+
 and to install
 + [Graphviz](https://graphviz.org/)
 + Python 3 and gudhi
 + [SQLite](https://sqlite.org/index.html)
-+ PERL and a library to run the database engine <em>perl-dbi</em>
++ PERL and a library to run the database engine: <em>perl-dbi</em>
 + gcc, make and you need to have the library <em>pthreads</em>
   to compile my <em>C</em> programs, they work in parallel.
 + Numpy, Scipy, Matplotlib, statsmodel, gudhi, scipy 
