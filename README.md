@@ -4,12 +4,11 @@
 
 Let $G$ be the directed graph
 $$ G = (V, E), $$
-where <em>V</em> is the set of users that have written a tweet containing a word
-in the set of keywords <strong>K</strong> and <em>E</em> the set
+where $V$ is the set of users that have written a tweet containing a word
+in the set of keywords $\mathbf{K}$ and $E$ the set
 $$  E = (u, v), $$
 where
-$$ u, v \in V  \text{and the user} v \text{has interacted with} u.
-</div>
+$$ u, v \in V  \text{and the user} v \text{has interacted with} u.$$
 Here
 $$ u \implies v \iff (u, v) \in E. $$
 Also, each edge $(u, v) \in E$ has a weight, given by the mean time that an user 
