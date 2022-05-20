@@ -26,7 +26,7 @@ To run all code here you will need to
 
 and to install
 + [Graphviz](https://graphviz.org/)
-+ Python 3 and gudhi
++ Python 3 and pip
 + [SQLite](https://sqlite.org/index.html)
 + PERL and a library to run the database engine: <em>perl-dbi</em>
 + gcc, make and you need to have the library <em>pthreads</em>
