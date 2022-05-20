@@ -2,20 +2,18 @@
 
 ## A brief view of the work
 
-Let G be the directed graph
+Let $G$ be the directed graph
 $$ G = (V, E), $$
 where <em>V</em> is the set of users that have written a tweet containing a word
 in the set of keywords <strong>K</strong> and <em>E</em> the set
-<div align='center'>
-    E = (u, v), where  <em>u, v</em> ∈ V  and the user <em>v</em> 
-    has interacted with <em>u</em>.
+$$  E = (u, v), $$
+where
+$$ u, v \in V  \text{and the user} v \text{has interacted with} u.
 </div>
 Here
-<div align='center'>
-    u → v ⇔ (u, v) ∈ E.
-</div>
-Also, each edge (u, v) ∈ E has a weight, given by the mean time that an user 
-<em>v</em> interacts with <em>u</em>.
+$$ u \implies v \iff (u, v) \in E. $$
+Also, each edge $(u, v) \in E$ has a weight, given by the mean time that an user 
+$v$ interacts with $u$.
 
 
 <strong>The objective</strong>  is to analyse the persistent homology of many graphs 
