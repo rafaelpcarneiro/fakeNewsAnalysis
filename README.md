@@ -1,4 +1,4 @@
-# Studying topological features of the users interaction Graph on Twitter
+# Studying topological features of the Graph of users interaction collected from Twitter
 
 ## A brief view of the work
 
@@ -57,7 +57,7 @@ data.
 + <strong>pph_only_dim0</strong>: Here I have studied topological features
 on dimension 0. 
 
-## Programs to capture the users interaction Graph on Twitter
+## Programs to capture the Graph of interactions between users from Twitter
 
 ### The database
 * Firstly, a [developer account on Twitter](https://developer.twitter.com/en)
@@ -125,7 +125,7 @@ chmod +x *.sh
 ./run_scripts.sh
 ```
 
-Now the users interaction has been created inside <strong>twitter.db</strong>.
+Now the users interaction Graph has been created inside <strong>twitter.db</strong>.
 The relation taking care of this graph is called <em>paths_xy</em>. (There
 is another relation called <em>nodes</em> that creates a forest where each
 node is a tweet and each child is an interaction tweet with its parent.
@@ -142,7 +142,7 @@ chmod +x print_plots.sh
 ./print_plots
 ```
 
-At the end many plots will be made showing the most influente users and their
+At the end many plots will be made showing the most influent users and their
 connections. To help make it easy to see some plots will ignore vertex that
 are not that influent on the graph.
 
