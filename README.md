@@ -1,4 +1,4 @@
-# Studying topological features of the network of interactions on Twitter and its relation with fake news 
+# Studying topological features of the interaction network on Twitter and its relation with fake news 
 
 ## A brief view of the work
 
