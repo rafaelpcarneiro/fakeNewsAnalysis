@@ -13,7 +13,8 @@ use DBI;
 # Relational Database
 my $dbfile = 'twitter.db';
 
-my $dsn = "dbi:SQLite:dbname=$dbfile";
+#my $dsn = "dbi:SQLite:dbname=$dbfile";
+my $dsn = "dbi:SQLite:uri=file:${dbfile}?vfs=unix-none";
 my $user = '';
 my $password ='';
 my $dbh = DBI->connect ($dsn, $user, $password, {

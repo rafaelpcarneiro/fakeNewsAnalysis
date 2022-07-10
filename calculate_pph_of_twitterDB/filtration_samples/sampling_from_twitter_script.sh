@@ -28,14 +28,14 @@ sed -i "s/<DATE_END>/$2/"    take_a_sample_using_time_as_weight.sql
 sed -i "s/<SAMPLE_SIZE>/$3/" take_a_sample_using_time_as_weight.sql
 
 # Firstly, we must set the sample database
-sqlite3            < set_sampleDB.sql
-sqlite3 twitter.db < take_a_sample_using_time_as_weight.sql
+sqlite3            -vfs unix-none < set_sampleDB.sql
+sqlite3 twitter.db -vfs unix-none < take_a_sample_using_time_as_weight.sql
 
 perl create_filtration_dim_1.pl
 
-sqlite3 twitter.db < populate_sampleDB.sql
+sqlite3 twitter.db -vfs unix-none < populate_sampleDB.sql
 
-sqlite3 sample.db  < generate_the_filtration_data.sql
+sqlite3 sample.db  -vfs unix-none < generate_the_filtration_data.sql
 
 gcc -Wall -Wextra  -Werror -ansi -pedantic -O3  $fileToCompile -o ${fileToCompile%.c}
 
@@ -48,7 +48,7 @@ chmod 700  ${fileToCompile%.c}
 
 ## cleaning all directory from auxiliary files created in the meantime
 ## Also cleaning data created that is not necessary anymore
-sqlite3 twitter.db < clean_twitterDB.sql
+sqlite3 twitter.db -vfs unix-none < clean_twitterDB.sql
 rm nodes.txt edges.txt pathDim2.txt
 rm ${fileToCompile%.c}
 
