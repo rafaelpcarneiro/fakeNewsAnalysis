@@ -14,9 +14,9 @@
 #define PATHDIM2_ENUMERATED_FILE "all_regular_paths_dimension_2.txt"
 
 /* Data Types  */
-typedef unsigned long int node;
-typedef unsigned long int size;
-typedef unsigned long int iterator;
+typedef unsigned long long int node;
+typedef unsigned long long int size;
+typedef unsigned long long int iterator;
 
 typedef struct {
     node   vertex;
@@ -40,10 +40,10 @@ typedef struct {
 
 /* Progress Bar */
 void progressBar_PPH (void) {
-    static unsigned int percentagePPH = 1;
+    static unsigned long long int percentagePPH = 1;
 
     if (percentagePPH <= 100){
-        printf("█%2d%%", percentagePPH);
+        printf("█%2llu%%", percentagePPH);
         fflush(stdout);
         printf("\b\b\b");
     }
@@ -72,7 +72,7 @@ int main() {
     node               node_tmp, from_node_A, to_node_B, a0, a1, a2;
     double             weight;
 
-    unsigned int       maxIterations, onePercentageIter;
+    unsigned long long int       maxIterations, onePercentageIter;
 
     /* Reading all nodes and edges 2*/
     file_nodes    = fopen (NODES_FILE,    "r");
@@ -82,9 +82,9 @@ int main() {
     if (file_nodes == NULL || file_edges == NULL || file_pathDim2 == NULL ) 
         printf("Problems to open the files\n");
 
-    fscanf (file_nodes,    "%lu", &MAX_NODES);
-    fscanf (file_edges,    "%lu", &MAX_EDGES);
-    fscanf (file_pathDim2, "%lu", &MAX_PATHDIM2);
+    fscanf (file_nodes,    "%llu", &MAX_NODES);
+    fscanf (file_edges,    "%llu", &MAX_EDGES);
+    fscanf (file_pathDim2, "%llu", &MAX_PATHDIM2);
 
     maxIterations     = 2 * (MAX_NODES + MAX_EDGES + MAX_PATHDIM2);
     onePercentageIter = (unsigned int) (0.01 * (double) maxIterations);
@@ -97,7 +97,7 @@ int main() {
     printf("Progress: ");
     /* reading nodes */
     i = 0;
-    while (fscanf (file_nodes, "%lu", &node_tmp) != EOF) {
+    while (fscanf (file_nodes, "%llu", &node_tmp) != EOF) {
         (nodes + i)->vertex = node_tmp;
         ++i;
         if (i % onePercentageIter == 0) progressBar_PPH ();
@@ -106,7 +106,7 @@ int main() {
 
     /* reading edges */
     i = 0;
-    while (fscanf (file_edges, "%lu %lu %lf", &from_node_A, &to_node_B, &weight) != EOF) {
+    while (fscanf (file_edges, "%llu %llu %lf", &from_node_A, &to_node_B, &weight) != EOF) {
         (edges + i)->from     = from_node_A;
         (edges + i)->to       = to_node_B;
         (edges + i)->weight   = weight;
@@ -118,7 +118,7 @@ int main() {
 
     /* reading paths dim 2 */
     i = 0;
-    while (fscanf (file_pathDim2, "%lu %lu %lu", &a0, &a1, &a2) != EOF) {
+    while (fscanf (file_pathDim2, "%llu %llu %llu", &a0, &a1, &a2) != EOF) {
         (pathsDim2 + i)->a0   = a0;
         (pathsDim2 + i)->a1   = a1;
         (pathsDim2 + i)->a2   = a2;
@@ -139,9 +139,9 @@ int main() {
         printf("Problems to write the files\n");
 
     /* writing nodes indexed by Z >= 0 */
-    fprintf (file_nodes_enumerated, "%lu\n", MAX_NODES);
+    fprintf (file_nodes_enumerated, "%llu\n", MAX_NODES);
     for (i = 0; i < MAX_NODES; ++i) {
-        fprintf (file_nodes_enumerated, "%lu\n", i);
+        fprintf (file_nodes_enumerated, "%llu\n", i);
 
         if (i % onePercentageIter == 0) progressBar_PPH ();
     }
@@ -150,8 +150,8 @@ int main() {
 
 
     /* writing edges indexed by Z >= 0*/
-    fprintf (file_edges_enumerated,    "%lu\n", MAX_EDGES);
-    fprintf (file_pathDim1_enumerated, "%lu\n", MAX_EDGES);
+    fprintf (file_edges_enumerated,    "%llu\n", MAX_EDGES);
+    fprintf (file_pathDim1_enumerated, "%llu\n", MAX_EDGES);
     for (i = 0; i < MAX_EDGES; ++i) {
         for (from = 0; from < MAX_NODES; ++from)
             if ((edges+i)->from == (nodes+from)->vertex) break;
@@ -160,11 +160,11 @@ int main() {
             if ((edges+i)->to == (nodes+to)->vertex) break;
         
         fprintf (file_edges_enumerated,
-                 "%lu\t%lu\t%f\n",
+                 "%llu\t%llu\t%f\n",
                  from, to, (edges+i)->weight);
 
         fprintf (file_pathDim1_enumerated,
-                 "%lu\t%lu\n",
+                 "%llu\t%llu\n",
                  from, to);
 
         if (i % onePercentageIter == 0) progressBar_PPH ();
@@ -174,7 +174,7 @@ int main() {
 
 
     /* writing paths dim 2 indexed by Z >= 0*/
-    fprintf (file_pathDim2_enumerated, "%lu\n", MAX_PATHDIM2);
+    fprintf (file_pathDim2_enumerated, "%llu\n", MAX_PATHDIM2);
     for (i = 0; i < MAX_PATHDIM2; ++i) {
         for (b0 = 0; b0 < MAX_NODES; ++b0)
             if ((pathsDim2+i)->a0 == (nodes+b0)->vertex) break;
@@ -186,7 +186,7 @@ int main() {
             if ((pathsDim2+i)->a2 == (nodes+b2)->vertex) break;
         
         fprintf (file_pathDim2_enumerated,
-                 "%lu\t%lu\t%lu\n",
+                 "%llu\t%llu\t%llu\n",
                  b0, b1, b2);
 
         if (i % onePercentageIter == 0) progressBar_PPH ();

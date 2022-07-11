@@ -37,7 +37,7 @@ sqlite3 twitter.db -vfs unix-none < populate_sampleDB.sql
 
 sqlite3 sample.db  -vfs unix-none < generate_the_filtration_data.sql
 
-gcc -Wall -Wextra  -Werror -ansi -pedantic -O3  $fileToCompile -o ${fileToCompile%.c}
+gcc -Wall -Wextra  -Werror -Wno-long-long -ansi -pedantic -O3  $fileToCompile -o ${fileToCompile%.c}
 
 echo "All filtration is complete"
 echo ""
@@ -70,5 +70,6 @@ mv  edges_enumerated.txt edges.txt
 mv  nodes_enumerated.txt nodes.txt
 
 mv *txt       -t data/
-mv sample.db  -t data/
+#mv sample.db  -t data/
+rm sample.db  
 #mv twitter.db -t ../

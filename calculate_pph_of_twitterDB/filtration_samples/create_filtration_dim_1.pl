@@ -61,7 +61,7 @@ $sql_how_many_inserted = $dbh->prepare (
 # Now lets walk on the graph - step by step
 $path_distance = 1;
 do {
-    #print "Path distance = $path_distance\n";
+    print "Path distance = $path_distance\n";
 
     $sql_insert->execute ($path_distance + 1, $path_distance);
 

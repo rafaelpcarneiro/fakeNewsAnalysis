@@ -4,8 +4,8 @@
 cpu_core=0
 
 
-sampleSize='20'
-amountOfSamples=100
+sampleSize='5'
+amountOfSamples=10
 
 
 if [ $# -eq 1 ] 
@@ -50,11 +50,10 @@ cd ../calculate_pph_of_twitterDB
 ###          ----- dates.txt
 ###
 ### Here twitter.db is the database and dates.txt is a text file
-### whose the first line we have the first day we collected the data and
-### the second line is related with tweets that might have passed midnight
-### at UTC 0 but are still the same day on the respectively time zone
+### whose first line is the day we collected the data, considering time as UTC 0, and
+### the second line is the day set as the end of tweet's search
 ###
-### For example, in Brazil tweets collected 
+### For example, in Brazil, tweets collected 
 ###      from 2022-01-01T12:00:00Z (UTC -3)
 ###      to   2022-01-01T23:59:59Z (UTC -3)
 ### are represented as 
