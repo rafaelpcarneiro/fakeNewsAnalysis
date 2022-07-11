@@ -4,22 +4,21 @@
 cpu_core=0
 
 
-sampleSize='05'
-amountOfSamples=2
+sampleSize='30'
+amountOfSamples=1
 
 
 if [ $# -eq 1 ] 
 then
     cpu_core=$1
-    cp -r filtration_samples/ filtration_samples$cpu_core
 elif [ $# -eq 0 ] 
 then 
     cpu_core=0
-    cp -r filtration_samples/ filtration_samples$cpu_core
 else
     echo "Only zero or one argument"
     exit 1
 fi
+cp -r filtration_samples/ filtration_samples$cpu_core
 
 loopStart=$((cpu_core * amountOfSamples))                                                       
 loopEnd=$((loopStart + amountOfSamples))
@@ -74,16 +73,8 @@ do
     dateEnd=`tail -n 1 dates.txt`
     cd ../
 
-    if [ $# -eq 1 ]
-    then
-        cp $graph/twitter.db -t filtration_samples$cpu_core/
-        cd filtration_samples$cpu_core/
-    else
-        cp $graph/twitter.db -t filtration_samples$cpu_core/
-        cd filtration_samples$cpu_core/
-        #cp $graph/twitter.db -t filtration_samples
-        #cd filtration_samples
-    fi
+    cp $graph/twitter.db -t filtration_samples$cpu_core/
+    cd filtration_samples$cpu_core/
 
 
     #for i in {0..299};
