@@ -11,12 +11,12 @@ int main () {
 
     Pers  *PPH; 
     FILE *nodes;
-    unsigned int network_size;
+    unsigned long long int network_size;
 
     nodes = fopen ("data/nodes.txt", "r");
     if (nodes == NULL) printf ("Problems to read data/nodes.txt\n");
 
-    fscanf (nodes, "%u", &network_size);
+    fscanf (nodes, "%llu", &network_size);
     fclose (nodes);
 
     PPH =  ComputePPH(1, network_size);

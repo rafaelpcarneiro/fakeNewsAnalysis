@@ -11,7 +11,7 @@ vector *alloc_vec (void) {
     return u;
 }
 
-void add_index_to_vector (vector *u, unsigned long int position) {
+void add_index_to_vector (vector *u, unsigned long long int position) {
     /* In case of adding an index which already exists the index will
        be removed from the vector
        */
@@ -52,7 +52,7 @@ void add_index_to_vector (vector *u, unsigned long int position) {
     }
 }
 
-void remove_index_from_vector (vector *u, unsigned long int position) {
+void remove_index_from_vector (vector *u, unsigned long long int position) {
     boolean test;
 
     vector_index *prev_index, *next_index, *tmp_index;
@@ -118,7 +118,7 @@ void sum_these_vectors (vector *a, vector *b) {
     }
 }
 
-vector *I_k (unsigned long int k) {
+vector *I_k (unsigned long long int k) {
     vector *u = alloc_vec ();
     add_index_to_vector (u, k);
 
@@ -159,7 +159,7 @@ void print_vec_nicely (vector *u, char *str) {
         tmp = u->root;
         printf ("%s = ", str);
         while (tmp != NULL) {
-            printf ("e%lu + ", tmp->pos);
+            printf ("e%llu + ", tmp->pos);
             tmp = tmp->next;
         }
         printf ("\n");

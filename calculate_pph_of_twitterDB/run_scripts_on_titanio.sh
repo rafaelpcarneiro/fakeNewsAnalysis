@@ -17,7 +17,8 @@
 #       that I will allocate 128 threads or, equivalently, 16 cores.
 
 #local instances=2
-local total_of_processes=128   #16 * 8
+#total_of_processes=128   #16 * 8
+total_of_processes=2   #16 * 8
 
 i=0
 while [ $i -lt $total_of_processes ]; do

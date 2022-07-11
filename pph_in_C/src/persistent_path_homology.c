@@ -75,7 +75,7 @@ double allow_time_vector (collection_of_basis *B,
                           dim_path path_dim,
                           graphWeightList *W) {
 
-    unsigned int j;
+    unsigned long long int j;
     double       distance = 0.0;
     regular_path temp_path;
     vertex_index vertex, vertex_next;
@@ -112,7 +112,7 @@ double entry_time_vector (collection_of_basis *B,
                           graphWeightList *W) {
 
     double distance = 0.0;
-    unsigned int j, k, l;
+    unsigned long long int j, k, l;
     regular_path boundary, temp;
     boolean test;
     vector_index *tmp_index;
@@ -163,7 +163,7 @@ double entry_time_regular_path (collection_of_basis *B,
                                 graphWeightList *W) {
 
     double distance = 0.0;
-    unsigned int j, k, l;
+    unsigned long long int j, k, l;
     regular_path boundary, temp;
 
     if (path_dim == 0) return 0.0;
@@ -209,7 +209,7 @@ vector *apply_border_operator_and_take_out_unmarked_points (collection_of_basis 
                                                             dim_path path_dim) {
 
     vector *u;
-    unsigned int j, l, k;
+    unsigned long long int j, l, k;
     regular_path boundary_of_path_vector, temp;
     vector_index *tmp_index;
 
@@ -323,14 +323,14 @@ vector *BasisChange (collection_of_basis *B,
 }
 
 
-Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
+Pers *ComputePPH(unsigned long long int pph_max_dim, unsigned long long int network_set_size) {
 
     Pers                *PPH; 
     collection_of_basis *B  ;
     T_p                 *Tp ;
     graphWeightList     *W;
 
-    unsigned int        j;
+    unsigned long long int        j;
 
     pthread_t           thread_dim0_dim1;
     pthread_t           thread_dim0_dim0;
@@ -351,7 +351,7 @@ Pers *ComputePPH(unsigned int pph_max_dim, unsigned int network_set_size) {
     printf ("===============================\n\n");
 
     for (j = 0; j < 3; ++j)
-        printf ("The amount of regular paths of dimension %u is: %u\n",
+        printf ("The amount of regular paths of dimension %llu is: %llu\n",
                 (B->basis+j)->dimension_of_the_regular_path,
                 (B->basis+j)->dimension_of_the_vs_spanned_by_base
         );
@@ -437,8 +437,8 @@ void *pthread_loop_dim0_dim1 (void *myArgs) {
     T_p                 *Tp  = pt->Tp;
     graphWeightList     *W   = pt->W;
 
-    unsigned int        maxNumberOfIterations, onePercentageProgress;
-    unsigned int        j, p, max_index;
+    unsigned long long int        maxNumberOfIterations, onePercentageProgress;
+    unsigned long long int        j, p, max_index;
     vector              *u, *v_j;
     double              et, lower, upper;
 
@@ -450,7 +450,7 @@ void *pthread_loop_dim0_dim1 (void *myArgs) {
                              get_dimVS_of_ith_base (B, 2) +
                              get_dimVS_of_ith_base (B, 1);
 
-    onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
+    onePercentageProgress = (long long int) (0.01 * (double) maxNumberOfIterations);
 
     /*Now lets start the algorithm*/
     p   = 0;            /* p == dimension */
@@ -496,8 +496,8 @@ void *pthread_loop_dim0_dim0 (void *myArgs) {
     T_p                 *Tp  = pt->Tp;
     graphWeightList     *W   = pt->W;
 
-    unsigned int        maxNumberOfIterations, onePercentageProgress;
-    unsigned int        j, p;
+    unsigned long long int        maxNumberOfIterations, onePercentageProgress;
+    unsigned long long int        j, p;
     double              lower, upper;
 
 
@@ -508,7 +508,7 @@ void *pthread_loop_dim0_dim0 (void *myArgs) {
                              get_dimVS_of_ith_base (B, 2) +
                              get_dimVS_of_ith_base (B, 1);
 
-    onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
+    onePercentageProgress = (long long int) (0.01 * (double) maxNumberOfIterations);
 
     /*Now lets start the algorithm*/
     p   = 0;            /* p == dimension */
@@ -545,8 +545,8 @@ void *pthread_loop_dim1_dim2 (void *myArgs) {
     T_p                 *Tp  = pt->Tp;
     graphWeightList     *W   = pt->W;
 
-    unsigned int        maxNumberOfIterations, onePercentageProgress;
-    unsigned int        j, p, max_index;
+    unsigned long long int        maxNumberOfIterations, onePercentageProgress;
+    unsigned long long int        j, p, max_index;
     vector              *u, *v_j;
     double              et, lower, upper;
 
@@ -558,7 +558,7 @@ void *pthread_loop_dim1_dim2 (void *myArgs) {
                              get_dimVS_of_ith_base (B, 2) +
                              get_dimVS_of_ith_base (B, 1);
 
-    onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
+    onePercentageProgress = (long long int) (0.01 * (double) maxNumberOfIterations);
 
     /*Now lets start the algorithm*/
     p   = 1;            /* p == dimension */
@@ -604,8 +604,8 @@ void *pthread_loop_dim1_dim1 (void *myArgs) {
     T_p                 *Tp  = pt->Tp;
     graphWeightList     *W   = pt->W;
 
-    unsigned int        maxNumberOfIterations, onePercentageProgress;
-    unsigned int        j, p;
+    unsigned long long int        maxNumberOfIterations, onePercentageProgress;
+    unsigned long long int        j, p;
     double              lower, upper;
 
 
@@ -616,7 +616,7 @@ void *pthread_loop_dim1_dim1 (void *myArgs) {
                              get_dimVS_of_ith_base (B, 2) +
                              get_dimVS_of_ith_base (B, 1);
 
-    onePercentageProgress = (int) (0.01 * (double) maxNumberOfIterations);
+    onePercentageProgress = (long long int) (0.01 * (double) maxNumberOfIterations);
 
     /*Now lets start the algorithm*/
     p   = 1;            /* p == dimension */
@@ -640,10 +640,10 @@ void *pthread_loop_dim1_dim1 (void *myArgs) {
 
 /* Progress Bar */
 void progressBar_PPH (void) {
-    static unsigned int percentagePPH = 1;
+    static unsigned long long int percentagePPH = 1;
 
     if (percentagePPH <= 100){
-        printf("█%2d%%", percentagePPH);
+        printf("█%2llu%%", percentagePPH);
         fflush(stdout);
         printf("\b\b\b");
     }

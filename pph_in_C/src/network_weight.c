@@ -14,9 +14,9 @@
 
 graphWeightList *alloc_graphWeightMatrix (void) {
     FILE         *fh;
-    unsigned int i;
+    unsigned long long int i;
     vertex_index a, b;
-    unsigned int weight_matrix_size;
+    unsigned long long int weight_matrix_size;
     double       weight_tmp;
 
     graphWeightList  *weight  = malloc (sizeof (graphWeightList));
@@ -27,13 +27,13 @@ graphWeightList *alloc_graphWeightMatrix (void) {
     if (fh == NULL) 
         printf ("Problems reading the file with the matix of the weights\n\n");
 
-    fscanf (fh, "%u", &weight_matrix_size);
+    fscanf (fh, "%llu", &weight_matrix_size);
 
     weight->thegraphWeight = malloc (weight_matrix_size * sizeof(graphWeight));
     weight->size           = weight_matrix_size;
 
     i = 0;
-    while ( fscanf (fh, "%u %u %lf", &a, &b, &weight_tmp) != EOF ) {
+    while ( fscanf (fh, "%llu %llu %lf", &a, &b, &weight_tmp) != EOF ) {
         (weight->thegraphWeight + i)->from       = a;
         (weight->thegraphWeight + i)->to         = b;
         (weight->thegraphWeight + i)->weightEdge = weight_tmp;
@@ -46,7 +46,7 @@ graphWeightList *alloc_graphWeightMatrix (void) {
 
 double network_weight (vertex_index x, vertex_index y, graphWeightList *W) {
 
-    unsigned int    i;
+    unsigned long long int    i;
     double          weight_to_return = 0.0; 
     /* unsigned int test; */
 

@@ -4,8 +4,8 @@
 cpu_core=0
 
 
-sampleSize='5'
-amountOfSamples=10
+sampleSize='05'
+amountOfSamples=2
 
 
 if [ $# -eq 1 ] 
@@ -15,6 +15,7 @@ then
 elif [ $# -eq 0 ] 
 then 
     cpu_core=0
+    cp -r filtration_samples/ filtration_samples$cpu_core
 else
     echo "Only zero or one argument"
     exit 1
@@ -25,13 +26,14 @@ loopEnd=$((loopStart + amountOfSamples))
 
 # Compile pph.c
 cd ../pph_in_C                                                                      
-make                                                                                
-make clean    
+#make                                                                                
+#make clean    
 if [ $# -eq 1 ]
 then
-    mv pph_prog -t ../calculate_pph_of_twitterDB/filtration_samples$cpu_core
+    cp pph_prog -t ../calculate_pph_of_twitterDB/filtration_samples$cpu_core
 else
-    mv pph_prog -t ../calculate_pph_of_twitterDB/filtration_samples
+    cp pph_prog -t ../calculate_pph_of_twitterDB/filtration_samples$cpu_core
+    #mv pph_prog -t ../calculate_pph_of_twitterDB/filtration_samples
 fi
 
 cd ../calculate_pph_of_twitterDB
@@ -77,8 +79,10 @@ do
         cp $graph/twitter.db -t filtration_samples$cpu_core/
         cd filtration_samples$cpu_core/
     else
-        cp $graph/twitter.db -t filtration_samples
-        cd filtration_samples
+        cp $graph/twitter.db -t filtration_samples$cpu_core/
+        cd filtration_samples$cpu_core/
+        #cp $graph/twitter.db -t filtration_samples
+        #cd filtration_samples
     fi
 
 
@@ -94,4 +98,7 @@ do
         i=$((i+1))
     done
     cd ../
+
+    # exclude the filtration_samples copy
+    rm -rf filtration_samples$cpu_core
 done

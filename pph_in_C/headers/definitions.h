@@ -22,17 +22,17 @@
 
 typedef char         	boolean;
 
-typedef unsigned int 	vertex_index;
+typedef unsigned long long int 	vertex_index;
 
-typedef unsigned int 	vectorBasis_index;
+typedef unsigned long long int 	vectorBasis_index;
 
-typedef unsigned int 	dim_path;
+typedef unsigned long long int 	dim_path;
 
-typedef unsigned int 	dim_vector_space;
+typedef unsigned long long int 	dim_vector_space;
 
-typedef vertex_index 	*regular_path;
+typedef vertex_index 	        *regular_path;
 
-typedef unsigned long int vector_indexes; /* To use in Tp.h for consistence */
+typedef unsigned long long int  vector_indexes; /* To use in Tp.h for consistence */
 
 /*  Some functions dealing with these data types */
 boolean are_these_regular_paths_the_same (regular_path, regular_path, dim_path);

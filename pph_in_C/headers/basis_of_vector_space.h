@@ -23,28 +23,28 @@ typedef struct {
 /*  Here 'vs' stands for vector space */
 typedef struct{
     tuple_regular_path_double  *base_matrix;
-    unsigned int               dimension_of_the_regular_path;
-    unsigned int               dimension_of_the_vs_spanned_by_base;
+    unsigned long long int     dimension_of_the_regular_path;
+    unsigned long long int     dimension_of_the_vs_spanned_by_base;
     boolean                    *marks;
 
 } base;
 
 typedef struct{
     base                       *basis;
-    unsigned int               max_of_basis;
+    unsigned long long int     max_of_basis;
 
 } collection_of_basis;
 
 /* A structure to be used with Threads */
 typedef struct {
-    collection_of_basis *B;
-    unsigned int long   size_dim1_plus_size_dim2;
-    graphWeightList     *W;
+    collection_of_basis     *B;
+    unsigned long long int  size_dim1_plus_size_dim2;
+    graphWeightList         *W;
 } pthread_arguments;
 
 /*  FUNCTIONS OPERATING ON THESE STRUCTS  */
-collection_of_basis *alloc_all_basis        (unsigned int,
-                                             unsigned int,
+collection_of_basis *alloc_all_basis        (unsigned long long int,
+                                             unsigned long long int,
                                              graphWeightList*);
 
 void storing_all_regular_paths_up_to_dim2   (collection_of_basis*,

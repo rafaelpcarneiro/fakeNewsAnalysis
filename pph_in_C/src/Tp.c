@@ -12,7 +12,7 @@ T_p *alloc_T_p (collection_of_basis *B) {
     T_p_tuple_collection *Tp_i;
     T_p_tuple            *Tp_i_j;
 
-    unsigned int i, j;
+    unsigned long long int i, j;
 	
     /* I will loook for diagrams of dimension 0 and 1. Thus, I just need the
      * T_p structure of dimension 0 and 1. The code will have this changes in mind
@@ -69,10 +69,10 @@ double get_Tp_et_of_pathDim_i_index_j (T_p *Tp, dim_path dim_i, vector_indexes i
 }
 
 void print_Tp (T_p *Tp) {
-    unsigned int i,j;
+    unsigned long long int i,j;
 
     for (i = 0; i <= Tp->max_of_Tp; ++i){
-        printf ("Regular path dim = %u\n", i);
+        printf ("Regular path dim = %llu\n", i);
         for (j = 0; j < (Tp->all_Tp + i)->size; ++j){
             print_vec_nicely (get_Tp_vector_of_pathDim_i_index_j (Tp, i, j), "Tp");       
         }

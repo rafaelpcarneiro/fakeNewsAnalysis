@@ -34,8 +34,8 @@ boolean is_path_of_dimPath_p_index_j_marked (collection_of_basis *B, dim_path pa
 }
 
 /*  main functions */
-collection_of_basis *alloc_all_basis (unsigned int number_of_basis_to_allocate_minus_one,
-                                      unsigned int network_set_size,
+collection_of_basis *alloc_all_basis (unsigned long long int number_of_basis_to_allocate_minus_one,
+                                      unsigned long long int network_set_size,
                                       graphWeightList *W) {
     
     /* since the index for arrays start from 0, number_of_basis_to_allocate_minus_one
@@ -80,7 +80,7 @@ void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B, graphWeightLi
     pthread_arguments myArgs;
 
     FILE         *paths_xy, *paths_xyz;
-    unsigned int size1, size2;
+    unsigned long long int size1, size2;
 
 
     paths_xy  = fopen (FILE_REGULAR_PATHS_DIM_1, "r");
@@ -88,7 +88,7 @@ void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B, graphWeightLi
         printf ("problems trying to open the file containing regular"
                 "paths of dimension 1. STOP HERE");
     }
-    fscanf (paths_xy, "%u", &size1);
+    fscanf (paths_xy, "%llu", &size1);
     fclose (paths_xy);
 
     paths_xyz = fopen (FILE_REGULAR_PATHS_DIM_2, "r");
@@ -96,7 +96,7 @@ void storing_all_regular_paths_up_to_dim2 (collection_of_basis *B, graphWeightLi
         printf ("problems trying to open the file containing regular"
                 "paths of dimension 2. STOP HERE");
     }
-    fscanf (paths_xyz, "%u", &size2);
+    fscanf (paths_xyz, "%llu", &size2);
     fclose (paths_xyz);
 
 
@@ -139,11 +139,11 @@ void *pthread_storing_all_regular_paths_dim1 (void *parameters) {
     collection_of_basis       *B  = p->B;
     graphWeightList           *W  = p->W;
     tuple_regular_path_double *temp_dim_p;
-    unsigned int              x, y, i;
+    unsigned long long int    x, y, i;
 	dim_path                  dim_p;
     dim_vector_space          size;
-    unsigned int              sizeTotal      = p->size_dim1_plus_size_dim2;
-    unsigned int              one_percentage = (int) (0.01 * ( (float) sizeTotal));
+    unsigned long long int    sizeTotal      = p->size_dim1_plus_size_dim2;
+    unsigned long long int    one_percentage = (long long int) (0.01 * ( (float) sizeTotal));
 
     FILE *paths_xy;
 
@@ -160,13 +160,13 @@ void *pthread_storing_all_regular_paths_dim1 (void *parameters) {
     /* First line of paths_xy.txt is a description of how many regular
      * paths the file has.
      */
-    fscanf (paths_xy, "%u", &size);
+    fscanf (paths_xy, "%llu", &size);
     ((B->basis) + dim_p)->base_matrix				          = malloc (size * sizeof (tuple_regular_path_double));
 	((B->basis) + dim_p)->dimension_of_the_regular_path       = dim_p;
 	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
 
     i = 0;
-    while (fscanf (paths_xy, "%u %u", &x, &y) != EOF) {
+    while (fscanf (paths_xy, "%llu %llu", &x, &y) != EOF) {
 		temp_dim_p                 = ((((B->basis) + dim_p)->base_matrix) + i);
 		temp_dim_p->jth_vectorBase = malloc (2 * sizeof (vertex_index));
 
@@ -193,11 +193,11 @@ void *pthread_storing_all_regular_paths_dim2 (void *parameters) {
     collection_of_basis       *B  = p->B;
     graphWeightList           *W  = p->W;
     tuple_regular_path_double *temp_dim_p;
-    unsigned int              x, y, z, i;
+    unsigned long long int    x, y, z, i;
 	dim_path                  dim_p;
     dim_vector_space          size;
-    unsigned int              sizeTotal      = p->size_dim1_plus_size_dim2;
-    unsigned int              one_percentage = (int) (0.01 * ( (float) sizeTotal));
+    unsigned long long int    sizeTotal      = p->size_dim1_plus_size_dim2;
+    unsigned long long int    one_percentage = (long long int) (0.01 * ( (float) sizeTotal));
 
     FILE *paths_xyz;
 
@@ -214,13 +214,13 @@ void *pthread_storing_all_regular_paths_dim2 (void *parameters) {
     /* First line of paths_xyz.txt is a description of how many regular
      * paths the file has.
      */
-    fscanf (paths_xyz, "%u", &size);
+    fscanf (paths_xyz, "%llu", &size);
     ((B->basis) + dim_p)->base_matrix				          = malloc (size * sizeof (tuple_regular_path_double));
 	((B->basis) + dim_p)->dimension_of_the_regular_path       = dim_p;
 	((B->basis) + dim_p)->dimension_of_the_vs_spanned_by_base = size;
 
 	i = 0;
-    while (fscanf (paths_xyz, "%u %u %u", &x, &y, &z) != EOF) {
+    while (fscanf (paths_xyz, "%llu %llu %llu", &x, &y, &z) != EOF) {
 		temp_dim_p           = ((((B->basis) + dim_p)->base_matrix) + i);
 		temp_dim_p->jth_vectorBase = malloc (3 * sizeof (vertex_index));
 
@@ -241,10 +241,10 @@ void *pthread_storing_all_regular_paths_dim2 (void *parameters) {
 } /*  Tested Ok */
 
 void progressBar_reading_filtration (void) {
-    static unsigned int percentage = 1;
+    static unsigned long long int percentage = 1;
 
     if (percentage <= 100){
-        printf("█%2d%%", percentage);
+        printf("█%2llu%%", percentage);
         fflush(stdout);
         printf("\b\b\b");
     }
@@ -256,7 +256,7 @@ void progressBar_reading_filtration (void) {
 void initialize_Marking_basis_vectors (collection_of_basis *B) {
 
     dim_path i;
-    unsigned int j;
+    unsigned long long int j;
 
 
     for (i = 0; i <= B->max_of_basis; ++i) {
@@ -294,7 +294,7 @@ void sorting_the_basis_by_their_allow_times (collection_of_basis *B) {
 double allow_time_regular_path (regular_path path, dim_path path_dim, graphWeightList *W) {
     /* Calculates the allow time of a regular path. It will be used to sort our basis */
 
-    unsigned int j;
+    unsigned long long int j;
     vertex_index i, i_plus_one;
     double distance = 0.0;
 
@@ -323,21 +323,21 @@ int compareTuple (const void *p1, const void *p2) {
 void printf_basis (collection_of_basis *B) {
 	
 	FILE *fh;
-	unsigned int i, j, k;
+	unsigned long long int i, j, k;
 
 	fh = fopen ("data/basis.txt", "w");
 	if (fh == NULL) printf ("Problems to write the basis\n");
 
 	for (i = 0; i <= B->max_of_basis; ++i) {
 		fprintf (fh,
-				 "Regular paths of dimension %u\nVS dimension = %u\n\n",
+				 "Regular paths of dimension %llu\nVS dimension = %llu\n\n",
 			 	 (B->basis + i)->dimension_of_the_regular_path,
 				 (B->basis + i)->dimension_of_the_vs_spanned_by_base);
 		
 		for (j = 0; j < (B->basis + i)->dimension_of_the_vs_spanned_by_base; ++j) {
 			fprintf (fh, "[");
 			for (k = 0; k <= (B->basis + i)->dimension_of_the_regular_path; ++k)
-				fprintf (fh, "%u ", ((B->basis + i)->base_matrix + j)->jth_vectorBase[k]);
+				fprintf (fh, "%llu ", ((B->basis + i)->base_matrix + j)->jth_vectorBase[k]);
 			fprintf (fh, "]\n");
 		}
 		fprintf (fh, "\n");

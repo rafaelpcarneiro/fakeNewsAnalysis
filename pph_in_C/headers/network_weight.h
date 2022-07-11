@@ -21,7 +21,7 @@ typedef struct {
 
 typedef struct {
     graphWeight  *thegraphWeight;
-    unsigned int size;
+    unsigned long long int size;
 } graphWeightList;
 
 graphWeightList *alloc_graphWeightMatrix (void);

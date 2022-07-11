@@ -49,7 +49,7 @@ void print_all_persistent_diagrams (Pers*);
 
 double allow_time_vector           (collection_of_basis*, vector*, dim_path, graphWeightList*);
 
-double entry_time_vector           (collection_of_basis*, vector*, unsigned int, graphWeightList*);
+double entry_time_vector           (collection_of_basis*, vector*, unsigned long long int, graphWeightList*);
 
 double entry_time_regular_path     (collection_of_basis*, dim_path, vectorBasis_index, graphWeightList*);
                                 
@@ -67,12 +67,12 @@ vector *BasisChange (collection_of_basis *B,
                      vector *path_vector,
                      dim_path path_dim,
                      double *return_et,
-                     unsigned int *return_max_index,
+                     unsigned long long int *return_max_index,
                      graphWeightList *W);
 
 
-Pers *ComputePPH    (unsigned int pph_dim,
-                     unsigned int network_set_size);
+Pers *ComputePPH    (unsigned long long int pph_dim,
+                     unsigned long long int network_set_size);
 
 /* THREADS AUXILIARY FUNCTIONS */
 void *pthread_loop_dim0_dim1 (void *);
