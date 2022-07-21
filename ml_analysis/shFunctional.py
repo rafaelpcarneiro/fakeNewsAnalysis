@@ -175,10 +175,10 @@ if __name__ == '__main__':
 	##SH_RESOLUTION0     : int = 1_000 
 	##SH_MAX_0           : int = 97_000
 	NUMBER_PPH0SAMPLES : int = 10
-	NUMBER_PPH1SAMPLES : int = 10,
-	SH_RESOLUTION0     : int = 1_000,
-	SH_RESOLUTION1     : int = 1_000,
-	SH_MAX0            : int = 97_000,
+	NUMBER_PPH1SAMPLES : int = 10
+	SH_RESOLUTION0     : int = 1_000
+	SH_RESOLUTION1     : int = 1_000
+	SH_MAX0            : int = 97_000
 	SH_MAX1            : int = 97_000
 	
 	obj = None
@@ -189,7 +189,7 @@ if __name__ == '__main__':
 			NUMBER_PPH1SAMPLES,
 			SH_RESOLUTION0,
 			SH_RESOLUTION1,
-			SH_MAX_0,
+			SH_MAX0,
 			SH_MAX1
 		)
 
