@@ -5,71 +5,303 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 
-class Filtration:
+#-------------------------------------------------------------------------------
+#                             Exception Classes
+#-------------------------------------------------------------------------------
+#{{{1 Exception Classes
+class PathsConflict(Exception):
+	def __init__(self):
+		pass
+
+	def __str__(self):
+		return (
+			"Cannot happen at same time neither new_paths and existing_paths to  "
+			"be None nor new_paths and existing_paths to be not None\n"
+		)
+
+class PathsStepError(Exception):
+	def __init__(self):
+		pass
+
+	def __str__(self):
+		return (
+			"Be sure that self.paths['distance'] == step - 1 is not empty!!!\n"
+		)
+
+class PathsEmpty(Exception):
+	def __init__(self):
+		pass
+
+	def __str__(self):
+		return (
+			"The collection of paths is empty"
+		)
+
+class PathsColumnMissMatch(Exception):
+	def __init__(self):
+		pass
+
+	def __str__(self):
+		return (
+			"DataFrame doesn't have the proper column names"
+		)
+
+#1}}}
+
+
+class Paths:
 	"""
-		Apply the filtration over a Barabasi Graph
+		Consider a finite set of oriented paths
+
+			P = { (x_0, x_1), (x_2, x_3), ... },
+
+		where P will be pandas Dataframe.
+
+		This class aims to deal with paths operations such as 
+		difference, concatenation, and walking on connected paths
+
+		Class Atributes
+		---------------
+		+ columns (private)::
+		   Column names of the DataFrame regarding the paths
+		+ paths  (public)::
+		   The pandas DataFrame containing all paths
 	"""
-	
-	def __init__(self, G):
+
+	#{{{1 Paths Attributes
+	def __init__(self, new_paths=None, existing_paths=None):
 		"""
-			The graph G must be an instance of the networkx class
+			Parameters
+			----------
+			+ new paths::
+			   is a numpy array of shape == (N, 2) where
+			   the first column represents the starting point of a path and
+			   the second column represents the ending point of a path.
+			+ existing_paths::
+			   a pandas DataFrame with columns
+			   ["from", "fromID", "to", "toID", "distance"]
 		"""
-		self.graph = G
-		
+		self.__columns = ["from", "fromID", "to", "toID", "distance"]
+		self.paths = {'new_paths': new_paths, 'existing_paths': existing_paths}
 
 	@property
-	def graph(self):
-		return self.__graph
+	def paths(self):
+		return self.__collection_of_paths
 
-	@graph.setter
-	def graph(self, G):
-		self.__graph = G
+	@paths.setter
+	def paths(self, kwargs: dict):
+		"""
+			kwargs.keys() == ['new_paths', 'existing_paths']
+		"""
+		new_paths      = kwargs['new_paths']
+		existing_paths = kwargs['existing_paths']
 
-	def createFiltration(self):
+		if (new_paths is not None and existing_paths is None):
+			if not new_paths.size:
+				raise PathsEmpty()
 
-		df = pd.DataFrame(
-			data = G.edges(),
-			names = ["from", "to"]
+			self.__collection_of_paths = pd.DataFrame( {
+				"from"    : new_paths[ : , 0],
+
+				"to"      : new_paths[ : , 1],
+
+				"fromID"  : np.arange(new_paths.shape[0]),
+				 
+				"toID"    : np.arange(new_paths.shape[0], 
+									  2*new_paths.shape[0]),
+
+				"distance": np.ones(new_paths.shape[0], dtype=int)
+			})
+
+		elif (new_paths is None and existing_paths is not None):
+			if not existing_paths.size:
+				raise PathsEmpty()
+
+			if set(existing_paths.columns.to_list()) != set(self.__columns):
+				raise PathsColumnMissMatch()
+
+			self.__collection_of_paths = existing_paths
+
+		else:
+			raise PathsConflict()
+	#1}}}
+
+	#{{{1 Paths Methods
+	def __add__(self, other):
+		"""
+			This will concatenate two Paths instances
+		"""
+		new_df = pd.concat([self.paths, other.paths], ignore_index=True)
+		return Paths(
+			existing_paths = new_df
 		)
-		df['fromID']   = np.arange(df.shape[0], dtype=int)
-		df['toID']     = np.arange(df.shape[0], 2*df.shape[0], dtype=int)
 
-		df_dist1       = df ## copy of df with distance == 1
-		                    ## but without distance column
+	def __sub__(self, other):
+		"""
+			This will take the difference between sets:
+			         self.paths ╲ other.paths
+		"""
+		indexSelf = pd.MultiIndex.from_arrays([
+			self.paths[col] 
+			for col in self.__columns
+			if col != "distance"
+		])
 
-		df['distance'] = 1
+		indexOther = pd.MultiIndex.from_arrays([
+			other.paths[col] 
+			for col in other.__columns
+			if col != "distance"
+		])
 
-		distance = 1
-		columns_to_look_at = ["from", "fromID", "to", "toID"]
+		result = self.paths.loc[~indexSelf.isin(indexOther)]
+
+		if result.size:
+			return Paths(existing_paths = result)
+		else:
+			raise PathsEmpty()
+		
+	def __rshift__(self, step: int):
+		"""
+			Given the inputs
+				+ instance of Paths (self);
+				+ and a step 
+
+			this method will return a Path P' where:
+
+				P' = { (x,y); exist a graph path w = [a_0, a_1, ..., a_N]
+				              where a_0 == x, a_N == y, N == step
+							  and (a_0, a_1), (a_1,a_2), ... are edges
+							  of the graph }
+
+			Note that
+				+ If step == 1 then the method doesn't do anything and return 
+				  self
+
+				+ If self.paths['distance'] == step - 1 is empty then the method
+				  raises the Error PathStepError
+				
+			In order to walk an amount of N steps you must do something like
+				a = a + a >> 2 (walk one step and join the results)
+				a = a + a >> 3 (walk two steps and join the results)
+				a = a + a >> 4 (walk three steps and join the results)
+				      .
+				      .
+				      .
+				a = a + a >> N-1 (walk N-1 steps and join the results)
+				a = a + a >> N   (walk N steps and join the results)
+
+			Return:
+				The method returns P' if P' is not empty and None otherwise.
+		"""
+		if (~self.paths['distance'] == step -1).sum():
+			raise PathsStepError()
+
+		tmp = pd.merge(
+			self.paths[self.paths['distance'] == step - 1],
+			self.paths[self.paths['distance'] == 1],
+			left_on  = "to",
+			right_on = "from"
+		)
+
+		if not tmp.size:
+			raise PathsEmpty()
+
 		columns_to_rename  = {
 			"from_x"     : "from",
 			"fromID_x"   : "fromID",
 			"to_y"       : "to",
 			"toID_y"     : "toID",
+			"distance_x" : "distance"
 		}
-			
+
+		tmp = tmp.rename(columns = columns_to_rename)
+		tmp = tmp[tmp["from"] != tmp["to"]]  # exclude loops
+
+		tmp['distance'] = step
+
+		try:
+			result = Paths(existing_paths=tmp[self.__columns])
+
+			result = result - self
+
+			return result
+
+		except PathsEmpty:
+			raise PathsEmpty()
+	#1}}}
+
+
+class BarabasiSample(Paths):
+	"""
+		Class Atributes
+		---------------
+			+ a Barabasi graph (public)::
+			   Column names of the DataFrame regarding the paths
+
+			+ a Paths instance object  (public)::
+
+		Class Methods
+		-------------
+			+ performFiltration
+			   method responsible for performing the filtration of dimension
+			   1 and 2
+	"""
+
+	#{{{1 Atributes {{{1
+	def __init__(self, sample_from_a_Barabasi_graph):
+		"""
+			sample_from_a_Barabasi_graph: is an instance of Graph from networkx
+		"""
+
+		self.graph = sample_from_a_Barabasi_graph
+		#nx.barabasi_albert_graph(
+		#	nodes,
+		#	edges_to_attach_per_node
+		#)
+
+		super().__init__( new_paths = np.array(self.graph.edges()) )
+	#1}}}
+
+	#{{{1 Methods
+	def performFiltration(self):
+		distance = 2
+
+		filtration = self
 		while True:
-			tmp = pd.merge(
-				df[df['distance'] == distance],
-				df_dist1,
-				left_on  = "to",
-				right_on = "from"
-			)
+			try:
+				tmp = filtration >> distance
 
-			tmp = tmp.rename(columns = columns_to_rename)
-
-			tmp = tmp[columns_to_look_at]
-
-			tmp = tmp[~tmp.isin(df_dist1).all(axis=1)]
-			tmp = tmp[tmp["from"] != tmp["to"]]
-
-			if tmp.size:
+				filtration = filtration + tmp
 				distance += 1
-				tmp['distance'] = distance
 
-				df = pd.concat([df, tmp], ignore_index=True)
-			else:
+			except PathsEmpty:
 				break
-			
-		fitration_dim1 = df.groupby(['from', 'to']).agg( {"distance": min} )
+
+		self.paths = {'new_paths': None, 'existing_paths': filtration.paths}
+	#1}}}
+	#fitration_dim1 = df.groupby(['from', 'to']).agg( {"distance": min} )
+
+if __name__ == "__main__":
+	
+	NODES                = 5
+	CONNECTIONS_PER_NODE = 2
+
+	g = nx.barabasi_albert_graph(NODES, CONNECTIONS_PER_NODE)
+
+	g_sample = BarabasiSample(g)
+	with open("aaaa.txt", "w") as fh:
+		fh.write(f"{len(g_sample.graph.edges())}\n")
+
+	g_sample.paths.to_csv(
+		'aaaa.txt',
+		sep     = "\t",
+		columns = ["from", "to"],
+		index   = False,
+		header  = False,
+		mode    = "a"
+	)
+
+	g_sample.performFiltration()
+	print(g_sample.paths.distance.max())
+	
 
