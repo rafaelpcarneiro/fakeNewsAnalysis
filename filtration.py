@@ -48,6 +48,42 @@ class PathsColumnMissMatch(Exception):
 
 #1}}}
 
+#-------------------------------------------------------------------------------
+#                             Auxiliary functions
+#-------------------------------------------------------------------------------
+#{{{1 Auxiliary functions
+def print_data(filename:str, data, header=False):
+	"""
+		Function to be used to print all relevant data inside the method
+		performFiltration from BarabasiSample.
+
+		Atributes::
+		----------
+		  + filename: wich file should I write the data;
+		  + data: the data itself;
+		  + header: should the first line be the total amount of lines in data
+	"""
+	if header:
+		with open(filename, "w") as fh:
+			fh.write(f"{data.shape[0]}\n")
+	
+	if isinstance(data, pd.DataFrame):
+		data.to_csv(
+			filename,
+			sep    = " ",
+			header = False,
+			index  = False
+		)
+	elif isinstance(data, np.ndarray): 
+		np.savetxt(
+			filename,
+			data,
+			fmt = "%d "
+		)
+	else:
+		print(f"Error, data type not known: {type(data)}")
+#1}}}
+
 
 class Paths:
 	"""
@@ -235,7 +271,7 @@ class BarabasiSample(Paths):
 	"""
 		Class Atributes
 		---------------
-			+ a Barabasi graph (public)::
+			+ a Barabasi subgraph (public)::
 			   Column names of the DataFrame regarding the paths
 
 			+ a Paths instance object  (public)::
@@ -264,6 +300,15 @@ class BarabasiSample(Paths):
 
 	#{{{1 Methods
 	def performFiltration(self):
+		"""
+			This method will firstly calculate all possible paths w = [a_0, a_1],
+			regardless its distance.
+
+			Once all paths are discovered, that is, the filtration is calculated,
+			then the program will proceed printing the paths of dim 0,1,2 to
+			the respective files so ppph.c can finish the job
+		"""
+		## Calculating the filtration
 		distance = 2
 
 		filtration = self
@@ -278,6 +323,28 @@ class BarabasiSample(Paths):
 				break
 
 		self.paths = {'new_paths': None, 'existing_paths': filtration.paths}
+
+		## Printing all files so pph.c can calculate the persistent diagrams
+		print_data(
+			'nodes.txt',
+			np.array(self.graph.nodes()),
+			header=True
+		)
+		print_data(
+			'edges.txt',
+			self.paths.groupby(['from', 'to']).agg( {'distance': min} )
+			header=True
+		)
+		print_data(
+			'pathdim1.txt',
+			self.paths[['from', 'to']].drop_duplicates()
+			header=True
+		)
+
+
+
+	# Nodes)
+
 	#1}}}
 	#fitration_dim1 = df.groupby(['from', 'to']).agg( {"distance": min} )
 

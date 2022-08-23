@@ -17,6 +17,7 @@ if __name__ == "__main__":
 			dtype = int
 		)
 
-		edges.savetxt(f"barabasi_{seed}.dat", fmt="%d ")
+		fname="barabasi_{}.dat".format(seed)
+		np.savetxt(fname, edges, fmt="%d ")
 
 
