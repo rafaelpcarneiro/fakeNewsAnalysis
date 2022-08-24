@@ -8,7 +8,12 @@
 ./filtration.py  --sampleSize $1
 ./enumerate_nodes_edges_from_filtration_to_integers
 
+rm nodes.txt edges.txt pathDim2.txt
+
 [ -d 'data/' ] || mkdir data
 [ -d 'data/' ] && rm    data/* 2> /dev/null
+
+mv  edges_enumerated.txt edges.txt
+mv  nodes_enumerated.txt nodes.txt
 
 mv *txt       -t data/
