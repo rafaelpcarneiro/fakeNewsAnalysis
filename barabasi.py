@@ -3,21 +3,35 @@
 
 import numpy as np
 import networkx as nx
+from datetime import datetime
 
 if __name__ == "__main__":
-	NODES                = 5
+	NODES                = 10
 	CONNECTIONS_PER_NODE = 2
 
+	seed            = abs(hash(datetime.today())) & 2**32 -1
+	randomVariable  = np.random.RandomState(seed)
 
-	for seed in range(6):
-		g = nx.barabasi_albert_graph(NODES, CONNECTIONS_PER_NODE, seed)
+
+	for i in range(6):
+		g = nx.barabasi_albert_graph(NODES, CONNECTIONS_PER_NODE, i)
+
+		flip_edges = []
+
+		for edge in g.edges(): 
+			prob = randomVariable.random()
+
+			if prob > 0.5:
+				flip_edges.append( (edge[1], edge[0]) )
+			else:
+				flip_edges.append( edge )
 
 		edges = np.array(
-			g.edges(),
+			flip_edges,
 			dtype = int
 		)
 
-		fname="barabasi_{}.dat".format(seed)
+		fname="barabasi_{}.dat".format(i)
 		np.savetxt(fname, edges, fmt="%d ")
 
 

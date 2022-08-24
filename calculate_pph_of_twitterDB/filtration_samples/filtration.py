@@ -4,6 +4,8 @@
 import numpy as np
 import pandas as pd
 import networkx as nx
+import argparse
+import re
 
 #-------------------------------------------------------------------------------
 #                             Exception Classes
@@ -52,7 +54,7 @@ class PathsColumnMissMatch(Exception):
 #                             Auxiliary functions
 #-------------------------------------------------------------------------------
 #{{{1 Auxiliary functions
-def print_data(filename:str, data, header=False):
+def print_data(filename:str, data, index=False):
 	"""
 		Function to be used to print all relevant data inside the method
 		performFiltration from BarabasiSample.
@@ -61,27 +63,26 @@ def print_data(filename:str, data, header=False):
 		----------
 		  + filename: wich file should I write the data;
 		  + data: the data itself;
-		  + header: should the first line be the total amount of lines in data
+		  + index: should the index of thr DataFrame be printed
 	"""
-	if header:
-		with open(filename, "w") as fh:
-			fh.write(f"{data.shape[0]}\n")
-	
-	if isinstance(data, pd.DataFrame):
-		data.to_csv(
-			filename,
-			sep    = " ",
-			header = False,
-			index  = False
-		)
-	elif isinstance(data, np.ndarray): 
-		np.savetxt(
-			filename,
-			data,
-			fmt = "%d "
-		)
-	else:
-		print(f"Error, data type not known: {type(data)}")
+	with open(filename, "w") as fh:
+		fh.write(f"{data.shape[0]}\n")
+
+		if isinstance(data, pd.DataFrame):
+			data.to_csv(
+				fh,
+				sep    = " ",
+				header = False,
+				index  = index
+			)
+		elif isinstance(data, np.ndarray): 
+			np.savetxt(
+				fh,
+				data,
+				fmt = "%d "
+			)
+		else:
+			print(f"Error, data type not known: {type(data)}")
 #1}}}
 
 
@@ -327,48 +328,77 @@ class BarabasiSample(Paths):
 		## Printing all files so pph.c can calculate the persistent diagrams
 		print_data(
 			'nodes.txt',
-			np.array(self.graph.nodes()),
-			header=True
+			np.array(self.graph.nodes())
 		)
+
 		print_data(
 			'edges.txt',
-			self.paths.groupby(['from', 'to']).agg( {'distance': min} )
-			header=True
+			self.paths.groupby(['from', 'to']).agg( {'distance': min} ),
+			index=True
 		)
+
 		print_data(
-			'pathdim1.txt',
+			'all_regular_paths_dimension_1.txt',
 			self.paths[['from', 'to']].drop_duplicates()
-			header=True
 		)
 
+		pathsDim2 = pd.merge(
+			self.paths,
+			self.paths,
+			how="inner",
+			left_on="to",
+			right_on="from")[['from_x', 'to_x', 'to_y']].drop_duplicates()
 
-
-	# Nodes)
-
+		print_data(
+			'all_regular_paths_dimension_2.txt',
+			pathsDim2
+		)
 	#1}}}
-	#fitration_dim1 = df.groupby(['from', 'to']).agg( {"distance": min} )
 
 if __name__ == "__main__":
-	
-	NODES                = 5
-	CONNECTIONS_PER_NODE = 2
 
-	g = nx.barabasi_albert_graph(NODES, CONNECTIONS_PER_NODE)
-
-	g_sample = BarabasiSample(g)
-	with open("aaaa.txt", "w") as fh:
-		fh.write(f"{len(g_sample.graph.edges())}\n")
-
-	g_sample.paths.to_csv(
-		'aaaa.txt',
-		sep     = "\t",
-		columns = ["from", "to"],
-		index   = False,
-		header  = False,
-		mode    = "a"
+	# Catching sample size from the Terminal Console
+	parser = argparse.ArgumentParser(
+		description = 'Calculating the filtration of a Directed Graph'
 	)
 
-	g_sample.performFiltration()
-	print(g_sample.paths.distance.max())
+	parser.add_argument(
+		'--sampleSize', 
+		action = 'store', 
+		dest = 'sampleSize',
+		required = True,
+		help='Sample size percentage. It must be something like 0.2 or 0.45,...'
+	)
+	
+	check_arg = re.search("^0{0,1}\.\d+", str(parser.parse_args().sampleSize))
+	if check_arg is None:
+		error_msg = (
+			"The command line argument must be a float in the real interval "
+			"[0, 1)"
+		)
+		raise Exception(error_msg)
+
+	# Creating the graph so later we can calculate the filtration
+	barabasi_edges = None
+	with open("barabasi.dat", "r") as fh:
+		barabasi_edges = np.loadtxt(fh, dtype=int)
+	
+	edges_size  = barabasi_edges.shape[0]
+	sample_size = int(np.ceil( float(parser.parse_args().sampleSize) * edges_size ))
+
+	sample = np.random.choice(
+		np.arange(edges_size),
+		size    = sample_size,
+		replace = False
+	)
+
+	G = nx.DiGraph()
+	G.add_edges_from( barabasi_edges[sample] )
+
+
+	# Perform the filtration over G
+	BarabasiSample(G).performFiltration()
+	#g_sample.performFiltration()
+
 	
 
