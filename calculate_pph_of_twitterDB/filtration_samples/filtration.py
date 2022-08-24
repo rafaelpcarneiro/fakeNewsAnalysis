@@ -79,7 +79,7 @@ def print_data(filename:str, data, index=False):
 			np.savetxt(
 				fh,
 				data,
-				fmt = "%d "
+				fmt = "%d"
 			)
 		else:
 			print(f"Error, data type not known: {type(data)}")
@@ -337,10 +337,10 @@ class BarabasiSample(Paths):
 			index=True
 		)
 
-		print_data(
-			'all_regular_paths_dimension_1.txt',
-			self.paths[['from', 'to']].drop_duplicates()
-		)
+		#print_data(
+		#	'all_regular_paths_dimension_1.txt',
+		#	self.paths[['from', 'to']].drop_duplicates()
+		#)
 
 		pathsDim2 = pd.merge(
 			self.paths,
@@ -350,7 +350,7 @@ class BarabasiSample(Paths):
 			right_on="from")[['from_x', 'to_x', 'to_y']].drop_duplicates()
 
 		print_data(
-			'all_regular_paths_dimension_2.txt',
+			'pathDim2.txt',
 			pathsDim2
 		)
 	#1}}}
