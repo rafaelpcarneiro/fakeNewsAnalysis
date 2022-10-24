@@ -38,18 +38,18 @@ my $sql_how_many_inserted;
 # into loops while walking on the graph. PRIMARY KEYS are here to save us =)
 
 $sql_insert = $dbh->prepare (
-                "INSERT OR IGNORE INTO paths_xy_SAMPLE
+                "INSERT OR IGNORE INTO paths_xy_WINDOW
                  SELECT L.from_tweet_id,        R.to_tweet_id,
                         L.from_author_tweet_id, R.to_author_tweet_id,
                         ?,
                         L.path_weight + R.path_weight
                  FROM 
                     (SELECT * 
-                     FROM paths_xy_SAMPLE
+                     FROM paths_xy_WINDOW
                      WHERE path_length = ?) AS L
                  INNER JOIN
                     (SELECT *
-                     FROM paths_xy_SAMPLE
+                     FROM paths_xy_WINDOW
                      WHERE path_length = 1) AS R
                  ON L.to_author_tweet_id = R.from_author_tweet_id");
 

@@ -1,10 +1,10 @@
 
-CREATE TABLE aSample_nodes (
+CREATE TABLE aWindow_nodes (
     nodes                INT  NOT NULL,
     PRIMARY KEY (nodes)
 );
 
-CREATE TABLE aSample_edges (
+CREATE TABLE aWindow_edges (
     from_author_tweet_id INT  NOT NULL,
     to_author_tweet_id   INT  NOT NULL,
 
@@ -14,7 +14,7 @@ CREATE TABLE aSample_edges (
     PRIMARY KEY (from_author_tweet_id, to_author_tweet_id)
 );
 
-CREATE TABLE paths_xy_SAMPLE (
+CREATE TABLE paths_xy_WINDOW (
     from_tweet_id        INT  NOT NULL,
     to_tweet_id          INT  NOT NULL,
 
@@ -28,7 +28,7 @@ CREATE TABLE paths_xy_SAMPLE (
 
 );
 
-CREATE TABLE paths_xyz_SAMPLE (
+CREATE TABLE paths_xyz_WINDOW (
     -- here the path is of the form [A, B, C]
     -- representing A -> B -> C
     author_tweet_id_A   INT  NOT NULL,
@@ -38,4 +38,4 @@ CREATE TABLE paths_xyz_SAMPLE (
     PRIMARY KEY (author_tweet_id_A, author_tweet_id_B, author_tweet_id_C)
 );
 
-.save sample.db
+.save graph_of_a_time_interval.db

@@ -1,16 +1,14 @@
 #/bin/bash
-
 # -----------------------------------------------------------
-#    This script is responsible to take a sample from the
-#    User interaction graph and to generate its filtration
-# 
-# Parameters: $1 -> DATE_START
-#             $2 -> DATE_END
-#             $3 -> SAMPLE_SIZE
-# -----------------------------------------------------------
-# 
+#    This script is responsible for generating the whole
+#    filtration
 #
-# Weight matrix used to calculate the distance:
+# Parameters: $1 -> BIN_EDGE_MIN
+#             $2 -> BIN_EDGE_LENGTH_MIN
+# -----------------------------------------------------------
+#
+#
+# Weight function weight: {e an edge for the graph G} -> R:
 #     The expected time that users take to answer each other
 # 
 
@@ -18,22 +16,22 @@ fileToCompile="enumerate_nodes_edges_from_filtration_to_integers.c"
 
 
 echo ""
-echo "Taking a sample of twitter.db to calculate the persistent homology..."
+echo "Selecting edges inside a time interval && calculating its weights"
 echo ""
 
 # Setting the variables of the SQL script take_a_sample_using_time_as_weight.sql
-sed "s/<DATE_START>/$1/"     take_a_sample_using_time_as_weight_model.sql > \
-                             take_a_sample_using_time_as_weight.sql
-sed -i "s/<DATE_END>/$2/"    take_a_sample_using_time_as_weight.sql
-sed -i "s/<SAMPLE_SIZE>/$3/" take_a_sample_using_time_as_weight.sql
+sed "s/<BIN_EDGE_MIN>/$1/" select_edges_inside_a_time_interval.template > \
+    select_edges_inside_a_time_interval.sql
+
+sed -i "s/<BIN_EDGE_LENGTH_MIN>/$2/"    select_edges_inside_a_time_interval.sql
 
 # Firstly, we must set the sample database
-sqlite3            < set_sampleDB.sql
-sqlite3 twitter.db < take_a_sample_using_time_as_weight.sql
+sqlite3            < set_graph_of_a_time_intervalDB.sql
+sqlite3 twitter.db < select_edges_inside_a_time_interval.sql
 
 perl create_filtration_dim_1.pl
 
-sqlite3 twitter.db < populate_sampleDB.sql
+sqlite3 twitter.db < populate_graph_of_a_time_interval.sql
 
 sqlite3 sample.db  < generate_the_filtration_data.sql
 
@@ -59,8 +57,9 @@ sleep 5
 # All calculations are done and all files regarding the filtration
 # are stored inside data/
 #
-# Obs: the file data/sample.db is the database containing the sample obtained
-# as well its filtration
+# Obs: the file data/graph_of_a_time_interval.db is the database containing
+# the graph obtained applying the condtraint of all tweets being contained
+# on a time interval I
 #============================================================================
 
 [ -d 'data/' ] || mkdir data
@@ -70,5 +69,5 @@ mv  edges_enumerated.txt edges.txt
 mv  nodes_enumerated.txt nodes.txt
 
 mv *txt       -t data/
-mv sample.db  -t data/
+mv graph_of_a_time_interval.db  -t data/
 #mv twitter.db -t ../

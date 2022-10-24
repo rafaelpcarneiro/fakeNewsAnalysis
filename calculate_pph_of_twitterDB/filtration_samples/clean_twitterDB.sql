@@ -1,10 +1,10 @@
-DELETE FROM  aSample_nodes;
-DROP   TABLE aSample_nodes;
+DELETE FROM  aWindow_nodes;
+DROP   TABLE aWindow_nodes;
 
-DELETE FROM  aSample_edges;
-DROP   TABLE aSample_edges;
+DELETE FROM  aWindow_edges;
+DROP   TABLE aWindow_edges;
 
-DELETE FROM  paths_xy_SAMPLE;
-DROP   TABLE paths_xy_SAMPLE;
+DELETE FROM  paths_xy_WINDOW;
+DROP   TABLE paths_xy_WINDOW;
 
 DROP VIEW numberOfEdges;

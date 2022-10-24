@@ -1,21 +1,21 @@
-ATTACH DATABASE 'sample.db' AS sampleDB;
+ATTACH DATABASE 'graph_of_a_time_interval.db' AS WDB;
 
-INSERT INTO sampleDB.aSample_nodes 
+INSERT INTO WDB.aWindow_nodes
 SELECT *
-FROM aSample_nodes;
+FROM aWindow_nodes;
 
 
-INSERT INTO sampleDB.aSample_edges
+INSERT INTO WDB.aWindow_edges
 SELECT *
-FROM aSample_edges;
+FROM aWindow_edges;
 
 
-INSERT INTO sampleDB.paths_xy_SAMPLE
+INSERT INTO WDB.paths_xy_WINDOW
 SELECT *
-FROM paths_xy_SAMPLE;
+FROM paths_xy_WINDOW;
 
 
-INSERT INTO sampleDB.paths_xyz_SAMPLE
+INSERT INTO WDB.paths_xyz_WINDOW
 SELECT
     L.from_author_tweet_id,
     L.to_author_tweet_id,
@@ -23,7 +23,7 @@ SELECT
 FROM 
    (SELECT from_author_tweet_id, to_author_tweet_id 
     FROM 
-        paths_xy_SAMPLE
+        paths_xy_WINDOW
     WHERE
         from_author_tweet_id != -1
         AND 
@@ -33,7 +33,7 @@ FROM
 INNER JOIN
    (SELECT from_author_tweet_id, to_author_tweet_id
     FROM
-        paths_xy_SAMPLE
+        paths_xy_WINDOW
     WHERE
         from_author_tweet_id != -1
         AND 
